@@ -1,0 +1,101 @@
+@model IEnumerable<Organize4u.Core.Models.ActivityLog>
+
+@{
+    ViewData["Title"] = "Activity Timeline";
+    Layout = "_EmployeeLayout";
+}
+
+<div class="mb-5">
+    <h1 style="font-weight: 800; font-size: 32px; letter-spacing: -1px;">Activity Timeline</h1>
+    <p class="text-secondary">A chronological view of all your actions and system updates.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-9 mx-auto">
+        <div class="ess-card p-5">
+            <div class="timeline-container">
+                @if (Model.Any())
+                {
+                    var groups = Model.GroupBy(a => a.Timestamp.Date);
+                    foreach (var group in groups)
+                    {
+                        <div class="timeline-group mb-5">
+                            <div class="timeline-date mb-4">
+                                <span class="badge bg-premium px-3 py-2 rounded-3">@group.Key.ToString("MMMM dd, yyyy")</span>
+                            </div>
+                            
+                            @foreach (var activity in group)
+                            {
+                                <div class="timeline-item d-flex gap-4 mb-4 position-relative">
+                                    <div class="timeline-icon-box">
+                                        <div class="stat-icon-box @(activity.Action.Contains("Leave") ? "purple" : activity.Action.Contains("Task") ? "green" : "blue")" style="width: 40px; height: 40px;">
+                                            <i class="fas @(activity.Action.Contains("Leave") ? "fa-calendar-alt" : activity.Action.Contains("Task") ? "fa-tasks" : "fa-user-cog")"></i>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-content pt-1">
+                                        <h6 class="fw-700 mb-1">@activity.Action</h6>
+                                        <p class="text-secondary mb-1">@activity.Details</p>
+                                        <span class="small text-secondary opacity-75"><i class="far fa-clock me-1"></i> @activity.Timestamp.ToString("h:mm tt")</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                   <!-- Mock Timeline for demo -->
+                   <div class="timeline-group mb-5">
+                        <div class="timeline-date mb-4">
+                            <span class="badge bg-premium px-3 py-2 rounded-3">Today, @DateTime.Now.ToString("MMM dd")</span>
+                        </div>
+                        
+                        <div class="timeline-item d-flex gap-4 mb-4 position-relative">
+                            <div class="timeline-icon-box">
+                                <div class="stat-icon-box green" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="timeline-content pt-1">
+                                <h6 class="fw-700 mb-1">Task Completed</h6>
+                                <p class="text-secondary mb-1">Finalized UI Kit Components for Organize4U Redesign</p>
+                                <span class="small text-secondary opacity-75"><i class="far fa-clock me-1"></i> 2:30 PM</span>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item d-flex gap-4 mb-4 position-relative border-start ps-4 ms-20px">
+                             <div class="timeline-icon-box">
+                                <div class="stat-icon-box purple" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-calendar-plus"></i>
+                                </div>
+                            </div>
+                            <div class="timeline-content pt-1">
+                                <h6 class="fw-700 mb-1">Leave Applied</h6>
+                                <p class="text-secondary mb-1">Requested Casual Leave for Oct 30 - Nov 01</p>
+                                <span class="small text-secondary opacity-75"><i class="far fa-clock me-1"></i> 10:15 AM</span>
+                            </div>
+                        </div>
+                   </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 40px;
+        bottom: -20px;
+        width: 2px;
+        background: #f1f5f9;
+        z-index: 1;
+    }
+    .timeline-icon-box {
+        position: relative;
+        z-index: 2;
+        background: white;
+    }
+</style>

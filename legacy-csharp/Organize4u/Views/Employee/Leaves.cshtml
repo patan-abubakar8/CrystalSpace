@@ -1,0 +1,147 @@
+@using Organize4u.Core.ViewModels
+@using Organize4u.Core.Models
+@model IEnumerable<Leave>
+
+@{
+    ViewData["Title"] = "Leave Management";
+    Layout = "_EmployeeLayout";
+    var balance = ViewBag.Balance as LeaveBalanceViewModel;
+}
+
+<div class="d-flex justify-content-between align-items-end mb-5">
+    <div>
+        <h1 style="font-weight: 800; font-size: 32px; letter-spacing: -1px; color: #011222;">Leave Management</h1>
+        <p class="text-secondary">Plan your time off and track your leave history.</p>
+    </div>
+</div>
+
+<div class="ess-layout-grid">
+    <!-- Left Column: Balances and History -->
+    <div class="d-flex flex-column gap-4">
+        <!-- Balance Cards -->
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="ess-card premium-shadow" style="background: #10b981; color: white;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <i class="fas fa-umbrella-beach opacity-50"></i>
+                        <span class="small fw-700">Annual Leave</span>
+                    </div>
+                    <h3 class="fw-800">@(balance?.PaidLeaveBalance ?? 0) Days</h3>
+                    <div class="small opacity-75">Available Balance</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ess-card premium-shadow" style="background: #f59e0b; color: white;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <i class="fas fa-stethoscope opacity-50"></i>
+                        <span class="small fw-700">Sick Leave</span>
+                    </div>
+                    <h3 class="fw-800">@(balance?.SickLeaveBalance ?? 0) Days</h3>
+                    <div class="small opacity-75">Available Balance</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ess-card premium-shadow" style="background: #6366f1; color: white;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <i class="fas fa-coffee opacity-50"></i>
+                        <span class="small fw-700">Casual Leave</span>
+                    </div>
+                    <h3 class="fw-800">@(balance?.CasualLeaveBalance ?? 0) Days</h3>
+                    <div class="small opacity-75">Available Balance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leave History -->
+        <div class="ess-card p-0 premium-shadow">
+            <div class="p-4 border-bottom">
+                <h5 class="mb-0 fw-800">Leave History</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table-ess mb-0">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th class="ps-4">LEAVE TYPE</th>
+                            <th>DATES</th>
+                            <th>DAYS</th>
+                            <th>STATUS</th>
+                            <th class="pe-4 text-end">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var leave in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-700">@leave.LeaveType?.Name</div>
+                                    <div class="text-secondary small">Reason: @leave.Reason</div>
+                                </td>
+                                <td class="text-secondary">@leave.StartDate.ToString("MMM dd") - @leave.EndDate.ToString("MMM dd")</td>
+                                <td class="fw-700">@(((leave.EndDate - leave.StartDate).Days) + 1)</td>
+                                <td>
+                                    <span class="pill-ess" style="background: @(leave.Status == LeaveStatus.Approved ? "#dcfce7" : "#fef3c7"); color: @(leave.Status == LeaveStatus.Approved ? "#166534" : "#92400e");">@leave.Status</span>
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <button class="btn btn-icon-action"><i class="fas fa-ellipsis-v"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Apply for Leave -->
+    <div class="d-flex flex-column gap-4">
+        <div class="ess-card premium-shadow">
+            <h5 class="mb-4 fw-800">Apply for Leave</h5>
+            <form asp-action="ApplyLeave" method="post">
+                <div class="mb-3">
+                    <label class="form-label small fw-700 text-secondary">LEAVE TYPE</label>
+                    <select name="LeaveType" class="form-select border-0 bg-light" style="border-radius: 12px; height: 44px; font-weight: 600;">
+                        <option>Annual Leave</option>
+                        <option>Sick Leave</option>
+                        <option>Casual Leave</option>
+                    </select>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label small fw-700 text-secondary">FROM DATE</label>
+                        <input type="date" name="StartDate" class="form-control border-0 bg-light" style="border-radius: 12px; height: 44px; font-weight: 600;">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-700 text-secondary">TO DATE</label>
+                        <input type="date" name="EndDate" class="form-control border-0 bg-light" style="border-radius: 12px; height: 44px; font-weight: 600;">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-700 text-secondary">REASON</label>
+                    <textarea name="Reason" rows="3" class="form-control border-0 bg-light" style="border-radius: 12px; font-weight: 600;" placeholder="Add a note..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-accent w-100 fw-700 py-3" style="background: #10b981; color: white; border-radius: 12px;">Submit Request</button>
+            </form>
+        </div>
+
+        <!-- Calendar Widget Simplified -->
+        <div class="ess-card premium-shadow">
+            <h6 class="mb-3 fw-800">Calendar Overview</h6>
+            <div class="p-4 bg-light rounded-4 text-center">
+                <div class="text-accent fw-800 mb-2" style="color: #10b981;">NOVEMBER 2023</div>
+                <div class="row g-2 small fw-700 text-secondary opacity-50 mb-2">
+                    <div class="col">M</div><div class="col">T</div><div class="col">W</div><div class="col">T</div><div class="col">F</div><div class="col">S</div><div class="col">S</div>
+                </div>
+                <div class="row g-2 small fw-800">
+                    <div class="col opacity-25">30</div>
+                    <div class="col opacity-25">31</div>
+                    <div class="col">01</div>
+                    <div class="col">02</div>
+                    <div class="col">03</div>
+                    <div class="col" style="color: #ef4444;">04</div>
+                    <div class="col" style="color: #ef4444;">05</div>
+                </div>
+                <div class="mt-3 small text-secondary">You have 1 holiday this month.</div>
+            </div>
+        </div>
+    </div>
+</div>

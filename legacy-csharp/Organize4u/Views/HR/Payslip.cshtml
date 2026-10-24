@@ -1,0 +1,356 @@
+@model Organize4u.Core.ViewModels.PayslipViewModel
+
+@{
+    ViewData["Title"] = $"Payslip - {Model.EmployeeName}";
+    Layout = null; // Clean layout for printing
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;
+            --accent: #00c853;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text-main);
+            line-height: 1.5;
+            background: #f8fafc;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .payslip-card {
+            background: white;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .company-logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .company-logo span {
+            color: var(--accent);
+        }
+
+        .payslip-title {
+            text-align: right;
+        }
+
+        .payslip-title h1 {
+            margin: 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .payslip-title p {
+            margin: 5px 0 0;
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            width: 120px;
+            display: inline-block;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+
+        .salary-table th {
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 12px 0;
+            border-bottom: 2px solid var(--primary);
+            color: var(--text-muted);
+        }
+
+        .salary-table td {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 15px;
+        }
+
+        .amount {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .total-row {
+            background: #f8fafc;
+        }
+
+        .total-row td {
+            font-weight: 700;
+            font-size: 16px;
+            border-bottom: none;
+        }
+
+        .summary-section {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .net-pay-box {
+            background: var(--primary);
+            color: white;
+            padding: 25px 40px;
+            border-radius: 12px;
+            text-align: right;
+        }
+
+        .net-pay-label {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .net-pay-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .footer {
+            padding: 40px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .no-print {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-print {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back {
+            background: white;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @@media print {
+            .no-print { display: none; }
+            body { background: white; padding: 0; }
+            .payslip-card { box-shadow: none; border: none; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <a href="javascript:history.back()" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <button onclick="window.print()" class="btn-print">
+            <i class="fas fa-print"></i> Print Payslip
+        </button>
+    </div>
+
+    <div class="payslip-card">
+        <header class="header">
+            <div class="company-logo">
+                <i class="fas fa-rocket"></i> ORGANIZE<span>4U</span>
+            </div>
+            <div class="payslip-title">
+                <h1>Payslip</h1>
+                <p>Period: @Model.MonthName @Model.Year</p>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="info-grid">
+                <div class="info-section">
+                    <h3>Employee Details</h3>
+                    <div class="info-item">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">@Model.EmployeeName</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">ID:</span>
+                        <span class="info-value">@Model.EmployeeCode</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Designation:</span>
+                        <span class="info-value">@Model.Designation</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Department:</span>
+                        <span class="info-value">@Model.Department</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3>Payment Details</h3>
+                    <div class="info-item">
+                        <span class="info-label">Date:</span>
+                        <span class="info-value">@Model.GeneratedDate.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">@Model.Email</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value" style="color: var(--accent);">PAID</span>
+                    </div>
+                </div>
+            </div>
+
+            <table class="salary-table">
+                <thead>
+                    <tr>
+                        <th>Earnings Description</th>
+                        <th class="amount">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Base Salary</td>
+                        <td class="amount">@Model.BaseSalary.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Housing & Utility Allowance</td>
+                        <td class="amount">@Model.Allowance.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Performance Bonus</td>
+                        <td class="amount">@Model.Bonus.ToString("C")</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Gross Earnings</td>
+                        <td class="amount">@Model.TotalEarnings.ToString("C")</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="salary-table">
+                <thead>
+                    <tr>
+                        <th>Deductions Description</th>
+                        <th class="amount">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Income Tax (@(Model.TaxRate * 100)%)</td>
+                        <td class="amount" style="color: #ef4444;">-@Model.TaxAmount.ToString("C")</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Total Deductions</td>
+                        <td class="amount" style="color: #ef4444;">@Model.TaxAmount.ToString("C")</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="summary-section">
+                <div class="net-pay-box">
+                    <div class="net-pay-label">NET PAYABLE</div>
+                    <div class="net-pay-amount">@Model.NetSalary.ToString("C")</div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div>
+                <p><strong>Note:</strong> This is a computer generated document and does not require a physical signature.</p>
+                <p>Organize4u HR Management System • Confidential Document</p>
+            </div>
+            <div style="text-align: right;">
+                <p>Generated on: @DateTime.Now.ToString("F")</p>
+                <p>Support: hr-support@@organize.com</p>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>

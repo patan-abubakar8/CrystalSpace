@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Organize4u ESS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/employee-ess.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="ess-sidebar">
+        <div class="ess-logo">
+            <div class="ess-logo-icon">
+                <i class="fas fa-cube"></i>
+            </div>
+            <div>
+                <div style="font-weight: 700; font-size: 18px;">Organize4U</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">All-in-one Workspace</div>
+            </div>
+        </div>
+
+        <nav>
+            <a asp-controller="Employee" asp-action="Index" class="ess-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a asp-controller="Employee" asp-action="Profile" class="ess-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Profile" ? "active" : "")">
+                <i class="fas fa-user-circle"></i> My Profile
+            </a>
+            <a asp-controller="Employee" asp-action="Tasks" class="ess-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Tasks" ? "active" : "")">
+                <i class="fas fa-check-double"></i> My Tasks
+            </a>
+            <a asp-controller="Employee" asp-action="Leaves" class="ess-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Leaves" ? "active" : "")">
+                <i class="fas fa-calendar-alt"></i> Leave Management
+            </a>
+            <a asp-controller="Employee" asp-action="Salary" class="ess-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Salary" ? "active" : "")">
+                <i class="fas fa-wallet"></i> Salary & Payslips
+            </a>
+            <a asp-controller="Employee" asp-action="Documents" class="ess-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Documents" ? "active" : "")">
+                <i class="fas fa-file-alt"></i> Documents
+            </a>
+            <a asp-controller="Employee" asp-action="Activity" class="ess-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Activity" ? "active" : "")">
+                <i class="fas fa-history"></i> Activity
+            </a>
+        </nav>
+
+        @using Microsoft.AspNetCore.Identity
+        @inject SignInManager<IdentityUser> SignInManager
+        @inject UserManager<IdentityUser> UserManager
+
+        <div class="ess-user-footer">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <img src="https://ui-avatars.com/api/?name=@User.Identity?.Name&background=6366f1&color=fff" class="ess-avatar" alt="User">
+                <div class="flex-grow-1 overflow-hidden">
+                    <div style="font-size: 14px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">@User.Identity?.Name</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Employee</div>
+                </div>
+                <form class="ms-auto" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Login", "Account")">
+                    <button type="submit" class="btn btn-link p-0 text-secondary">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <div class="ess-main-content">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

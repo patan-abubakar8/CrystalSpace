@@ -1,0 +1,194 @@
+@model IEnumerable<Organize4u.Core.Models.Employee>
+
+@{
+    ViewData["Title"] = "Employee Directory";
+    Layout = "_HRLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+        <h1 class="h2 mb-1" style="font-weight: 800;">Employee Directory</h1>
+        <p class="text-secondary mb-0">Manage and view all team members across the organization.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-premium px-4 py-2">
+        <i class="fas fa-plus-circle me-2"></i> Add Employee
+    </a>
+</div>
+
+<!-- Filters & Search -->
+<div class="row mb-4 align-items-center">
+    <div class="col-lg-7">
+        <div class="hr-search-bar">
+            <i class="fas fa-search text-secondary"></i>
+            <input type="text" class="hr-search-input" placeholder="Search by name, role, or department...">
+        </div>
+    </div>
+    <div class="col-lg-5 d-flex gap-3 justify-content-end">
+        <select class="form-control w-auto">
+            <option>Department</option>
+        </select>
+        <select class="form-control w-auto">
+            <option>Role</option>
+        </select>
+        <select class="form-control w-auto">
+            <option>Status</option>
+        </select>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mb-5 align-items-center">
+    <span class="text-secondary small me-2" style="font-weight: 700;">DEPARTMENTS:</span>
+    <a href="#" class="hr-filter-chip active">All</a>
+    @foreach(var dept in Model.Select(e => e.Department?.Name).Distinct().Where(d => d != null))
+    {
+        <a href="#" class="hr-filter-chip">@dept</a>
+    }
+</div>
+
+<!-- Grid -->
+<div class="row">
+    @foreach (var emp in Model)
+    {
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+            <div class="hr-card employee-card h-100 d-flex flex-column">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <img src="https://ui-avatars.com/api/?name=@emp.FirstName+@emp.LastName&background=random&color=fff&size=56" class="rounded-circle" style="width: 56px; height: 56px;" alt="">
+                    <div>
+                        <h5 class="mb-0" style="font-weight: 700; font-size: 16px;">@emp.FirstName @emp.LastName</h5>
+                        <p class="small mb-0" style="color: var(--accent-green); font-weight: 600;">@emp.Designation</p>
+                    </div>
+                </div>
+
+                <div class="card-info-item">
+                    <i class="fas fa-network-wired"></i> @(emp.Department?.Name ?? "General")
+                </div>
+                <div class="card-info-item">
+                    <i class="fas fa-envelope"></i> @emp.Email
+                </div>
+                <div class="card-info-item mb-4">
+                    <i class="fas fa-phone"></i> @(emp.Phone ?? "+1 (555) 000-0000")
+                </div>
+
+                <div class="mt-auto">
+                    <a asp-action="Details" asp-route-id="@emp.Id" class="btn btn-outline-premium w-100 py-2" style="font-weight: 600;">View Profile</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-between align-items-center mt-5">
+    <div class="text-secondary small">Showing 1 to @Model.Count() of @Model.Count() employees</div>
+    <nav>
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a></li>
+            <li class="page-item active"><a class="page-link" style="background: var(--accent-green); border-color: var(--accent-green); color: #fff;" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a></li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Employee Credentials Modal -->
+<div class="modal fade" id="credentialsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #fff; border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden;">
+            <div class="modal-body p-5">
+                <div class="text-center mb-4">
+                    <div class="icon-box mx-auto mb-3" style="width: 64px; height: 64px; background: var(--accent-green-light); border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
+                        <i class="fas fa-user-check" style="font-size: 28px; color: var(--accent-green);"></i>
+                    </div>
+                    <h4 style="font-weight: 800; color: var(--text-primary);">Employee Created!</h4>
+                    <p class="text-secondary small">Credentials have been generated for <span id="modalEmpName" style="color: var(--text-primary);" class="fw-bold"></span>.</p>
+                </div>
+
+                <div class="credentials-info mb-4" id="copyArea">
+                    <div class="p-3 mb-3" style="background: var(--accent-green-light); border: 1px solid var(--border-color); border-radius: 12px;">
+                        <label class="x-small text-secondary text-uppercase mb-1" style="letter-spacing: 0.1em; font-weight: 700;">Employee ID</label>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="modalEmpID" style="color: var(--text-primary);" class="fw-bold"></span>
+                        </div>
+                    </div>
+                    <div class="p-3 mb-3" style="background: var(--accent-green-light); border: 1px solid var(--border-color); border-radius: 12px;">
+                        <label class="x-small text-secondary text-uppercase mb-1" style="letter-spacing: 0.1em; font-weight: 700;">Official Email</label>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="modalEmpEmail" style="color: var(--text-primary);" class="fw-bold"></span>
+                        </div>
+                    </div>
+                    <div class="p-3 mb-4" style="background: var(--accent-green-light); border: 1px solid var(--border-color); border-radius: 12px;">
+                        <label class="x-small text-secondary text-uppercase mb-1" style="letter-spacing: 0.1em; font-weight: 700;">Temporary Password</label>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="modalEmpPass" style="color: var(--text-primary);" class="fw-bold"></span>
+                            <i class="fas fa-eye text-secondary cursor-pointer" onclick="togglePassVisibility()"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <button type="button" class="btn btn-premium py-3" onclick="copyCredentials()">
+                        <i class="fas fa-copy me-2"></i> Copy Details
+                    </button>
+                    <button type="button" class="btn btn-link text-secondary text-decoration-none small" data-bs-dismiss="modal">Close</button>
+                </div>
+                
+                <p class="text-center x-small text-muted mt-4">
+                    <i class="fas fa-info-circle me-1"></i> Notification will be sent to personal email once SMTP is configured.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            var creds = '@TempData["NewEmployeeCreds"]';
+            if (creds) {
+                var parts = creds.split('|');
+                $('#modalEmpName').text(parts[0]);
+                $('#modalEmpID').text(parts[1]);
+                $('#modalEmpEmail').text(parts[2]);
+                $('#modalEmpPass').text(parts[3]).attr('data-pass', parts[3]);
+                
+                // Mask password by default
+                $('#modalEmpPass').text('••••••••');
+
+                var myModal = new bootstrap.Modal(document.getElementById('credentialsModal'));
+                myModal.show();
+            }
+        });
+
+        function togglePassVisibility() {
+            var el = $('#modalEmpPass');
+            var icon = event.target;
+            if (el.text() === '••••••••') {
+                el.text(el.attr('data-pass'));
+                $(icon).removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                el.text('••••••••');
+                $(icon).removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        }
+
+        function copyCredentials() {
+            var name = $('#modalEmpName').text();
+            var id = $('#modalEmpID').text();
+            var email = $('#modalEmpEmail').text();
+            var pass = $('#modalEmpPass').attr('data-pass');
+
+            var text = `Organize4u Employee Credentials\n--------------------------\nName: ${name}\nEmployee ID: ${id}\nEmail: ${email}\nPassword: ${pass}\n--------------------------`;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = $(event.currentTarget);
+                var originalHtml = btn.html();
+                btn.html('<i class="fas fa-check me-2"></i> Copied!');
+                btn.removeClass('btn-premium').addClass('btn-success');
+                setTimeout(function() {
+                    btn.html(originalHtml);
+                    btn.removeClass('btn-success').addClass('btn-premium');
+                }, 2000);
+            });
+        }
+    </script>
+}

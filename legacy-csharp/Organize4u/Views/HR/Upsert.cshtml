@@ -1,0 +1,363 @@
+@model Organize4u.Core.Models.Employee
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Add Employee" : "Edit Employee";
+    Layout = "_HRLayout";
+}
+
+<style>
+    .form-section {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 30px;
+        box-shadow: var(--card-shadow);
+    }
+    .form-section-title {
+        color: var(--text-primary);
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .form-section-title i { color: var(--accent-green); }
+    
+    label { 
+        color: var(--text-secondary); 
+        font-size: 13px; 
+        font-weight: 500; 
+        margin-bottom: 8px; 
+        display: block;
+        text-transform: none;
+    }
+    
+    .form-control, .form-select {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    .form-control:focus, .form-select:focus {
+        background: #f0fbf4;
+        border-color: var(--accent-green);
+        color: var(--text-primary);
+        box-shadow: 0 0 0 3px rgba(0,200,83,0.12);
+    }
+    .form-control::placeholder { color: var(--text-secondary); }
+
+    .dropzone-area {
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #fafffe;
+    }
+    .dropzone-area:hover {
+        border-color: var(--accent-green);
+        background: var(--accent-green-light);
+    }
+    .upload-icon { font-size: 32px; color: var(--text-secondary); margin-bottom: 15px; }
+    
+    .file-item {
+        background: var(--accent-green-light);
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+    .file-icon { color: #e53935; font-size: 20px; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1" style="font-size: 12px;">
+                <li class="breadcrumb-item"><a asp-action="Employees" class="text-decoration-none text-secondary">Employees</a></li>
+                <li class="breadcrumb-item active text-dark" aria-current="page">@(Model.Id == 0 ? "Add New Employee" : "Edit Employee")</li>
+            </ol>
+        </nav>
+        <h1 class="h2 mb-1" style="font-weight: 800;">@(Model.Id == 0 ? "Add New Employee" : "Edit Employee")</h1>
+        <p class="text-secondary mb-0">Fill in the profile details and contract settings for the new team member.</p>
+    </div>
+    <div class="d-flex gap-3">
+        <a asp-action="Employees" class="btn btn-outline-premium px-4">Cancel</a>
+        <button type="button" onclick="document.getElementById('upsertForm').submit()" class="btn btn-premium px-4">
+            <i class="fas fa-save me-2"></i>Save Employee
+        </button>
+    </div>
+</div>
+
+<form asp-action="Upsert" id="upsertForm">
+    <input type="hidden" asp-for="Id" />
+    
+    <!-- Basic Information -->
+    <div class="form-section">
+        <div class="form-section-title">
+            <i class="fas fa-user-circle"></i> Basic Information
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <label asp-for="FirstName">First Name</label>
+                <input asp-for="FirstName" class="form-control" placeholder="e.g. John" required />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="LastName">Last Name</label>
+                <input asp-for="LastName" class="form-control" placeholder="e.g. Doe" required />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="Email">Email Address</label>
+                <input asp-for="Email" class="form-control" type="email" placeholder="john.doe@company.com" required />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="Phone">Phone Number</label>
+                <input asp-for="Phone" class="form-control" placeholder="+1 (555) 000-0000" />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="PersonalDetail!.DateOfBirth">Birth Date</label>
+                <input asp-for="PersonalDetail!.DateOfBirth" class="form-control" type="date" required />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="PersonalDetail!.Gender">Gender</label>
+                <select asp-for="PersonalDetail!.Gender" class="form-select">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="form-section-title">
+            <i class="fas fa-briefcase"></i> Job Details
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <label>System Access Role</label>
+                <select name="selectedRole" class="form-select">
+                    @foreach (var role in ViewBag.AvailableRoles as IEnumerable<string>)
+                    {
+                        <option value="@role">@role</option>
+                    }
+                </select>
+                @if (Model.Id != 0)
+                {
+                    <span class="x-small text-secondary">Note: Changing role won't reset existing credentials.</span>
+                }
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="Designation">Job Title / Role</label>
+                <input asp-for="Designation" class="form-control" placeholder="e.g. Senior Product Designer" required />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="DepartmentId">Department</label>
+                <select asp-for="DepartmentId" class="form-select" asp-items="@(new SelectList(ViewBag.Departments, "Id", "Name"))">
+                    <option value="">Select Dept</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="JoiningDate">Joining Date</label>
+                <input asp-for="JoiningDate" class="form-control" type="date" required />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="ManagerId">Reporting Manager</label>
+                <select asp-for="ManagerId" class="form-select" asp-items="@(new SelectList(ViewBag.Managers, "Id", "FirstName"))">
+                    <option value="">Select Manager</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="EmploymentType">Employment Type</label>
+                <select asp-for="EmploymentType" class="form-select">
+                    <option value="Full Time">Full-time</option>
+                    <option value="Part Time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="OfficeLocation">Office Location</label>
+                <select asp-for="OfficeLocation" class="form-select">
+                    <option value="New York">New York</option>
+                    <option value="San Francisco">San Francisco</option>
+                    <option value="Karachi">Karachi</option>
+                    <option value="Remote">Remote</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Salary Setup -->
+    <div class="form-section">
+        <div class="form-section-title">
+            <i class="fas fa-money-check-alt"></i> Salary Setup
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <label asp-for="ProfessionalDetail!.BaseSalary">Base Salary (Annual)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0 text-secondary" style="border-color: var(--border-color);">$</span>
+                    <input asp-for="ProfessionalDetail!.BaseSalary" class="form-control border-start-0" placeholder="80,000" />
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="ProfessionalDetail!.HousingAllowance">House Allowance</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0 text-secondary" style="border-color: var(--border-color);">$</span>
+                    <input asp-for="ProfessionalDetail!.HousingAllowance" class="form-control border-start-0" placeholder="5,000" />
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="ProfessionalDetail!.PerformanceBonusPercentage">Performance Bonus (%)</label>
+                <div class="input-group">
+                    <input asp-for="ProfessionalDetail!.PerformanceBonusPercentage" class="form-control border-end-0" placeholder="10" />
+                    <span class="input-group-text bg-transparent border-start-0 text-secondary" style="border-color: var(--border-color);">%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contact -->
+    <div class="form-section">
+        <div class="form-section-title">
+            <i class="fas fa-heartbeat"></i> Emergency Contact
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <label asp-for="EmergencyContact!.ContactName">Contact Person Name</label>
+                <input asp-for="EmergencyContact!.ContactName" class="form-control" placeholder="Full name" />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="EmergencyContact!.Relationship">Relationship</label>
+                <input asp-for="EmergencyContact!.Relationship" class="form-control" placeholder="e.g. Spouse, Parent" />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="EmergencyContact!.ContactNumber">Contact Number</label>
+                <input asp-for="EmergencyContact!.ContactNumber" class="form-control" placeholder="+1 (555) 000-0000" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Details -->
+    <div class="form-section">
+        <div class="form-section-title">
+            <i class="fas fa-info-circle"></i> Other Details
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <label asp-for="PersonalDetail!.Nationality">Nationality</label>
+                <input asp-for="PersonalDetail!.Nationality" class="form-control" placeholder="e.g. Pakistani" />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="PersonalDetail!.MaritalStatus">Marital Status</label>
+                <select asp-for="PersonalDetail!.MaritalStatus" class="form-select">
+                    <option value="">Select Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="Skills">Skills (comma-separated)</label>
+                <input asp-for="Skills" class="form-control" placeholder="e.g. C#, .NET, SQL Server" />
+            </div>
+            <div class="col-md-8 mb-4">
+                <label asp-for="PersonalDetail!.Address">Residential Address</label>
+                <input asp-for="PersonalDetail!.Address" class="form-control" placeholder="Street address, house number" />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="PersonalDetail!.City">City</label>
+                <input asp-for="PersonalDetail!.City" class="form-control" placeholder="e.g. New York" />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="PersonalDetail!.Country">Country</label>
+                <input asp-for="PersonalDetail!.Country" class="form-control" placeholder="e.g. United States" />
+            </div>
+            <div class="col-md-4 mb-4">
+                <label asp-for="PersonalDetail!.ZIPCode">ZIP/Postal Code</label>
+                <input asp-for="PersonalDetail!.ZIPCode" class="form-control" placeholder="e.g. 10001" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Upload -->
+    <div class="form-section">
+        <div class="form-section-title">
+            <i class="fas fa-file-signature"></i> Document Upload
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <label>Required Documents</label>
+                <p class="x-small text-secondary mb-3">Upload high-quality scans of ID and certificates.</p>
+                <div class="dropzone-area" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <h6 class="mb-1 text-white">Click to upload or drag and drop</h6>
+                    <p class="x-small text-secondary">PDF, PNG, JPG (max. 10MB)</p>
+                    <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(this)" />
+                </div>
+            </div>
+            <div class="col-md-5">
+                <label>Uploaded Documents</label>
+                <div class="mt-4" id="uploadedDocsList">
+                    <!-- Dynamic list items will appear here -->
+                    <div class="file-item">
+                        <i class="fas fa-file-pdf file-icon"></i>
+                        <div class="flex-grow-1">
+                            <div class="text-white small fw-bold">Passport_Copy.pdf</div>
+                            <div class="x-small text-secondary">2.4 MB • COMPLETE</div>
+                        </div>
+                        <button type="button" class="btn btn-link text-secondary p-0 ms-auto"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('employeeId', '@Model.Id');
+
+            // Show loading placeholder
+            const placeholder = $(`<div class="file-item opacity-50">
+                <i class="fas fa-spinner fa-spin file-icon"></i>
+                <div class="flex-grow-1">
+                    <div class="text-white small fw-bold">${file.name}</div>
+                    <div class="x-small text-secondary">Uploading...</div>
+                </div>
+            </div>`);
+            $('#uploadedDocsList').prepend(placeholder);
+
+            $.ajax({
+                url: '/HR/UploadDocument',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    placeholder.removeClass('opacity-50').find('i').removeClass('fa-spinner fa-spin').addClass('fa-check-circle').css('color', 'var(--accent-green)');
+                    placeholder.find('.text-secondary').text('COMPLETE');
+                },
+                error: function () {
+                    placeholder.remove();
+                    alert('Upload failed. Please try again.');
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,97 @@
+@using Organize4u.Core.ViewModels
+@model IEnumerable<PayslipViewModel>
+
+@{
+    ViewData["Title"] = "Salary & Payslips";
+    Layout = "_EmployeeLayout";
+    var details = ViewBag.Details as SalaryDetailsViewModel;
+}
+
+<div class="d-flex justify-content-between align-items-end mb-5">
+    <div>
+        <h1 style="font-weight: 800; font-size: 32px; letter-spacing: -1px; color: #011222;">Salary & Payslips</h1>
+        <p class="text-secondary">View your earnings and download payslips.</p>
+    </div>
+</div>
+
+<div class="ess-layout-grid">
+    <!-- Left Column: Current Salary Info -->
+    <div class="d-flex flex-column gap-4">
+        <!-- Net Salary Card -->
+        <div class="profile-banner-dark premium-shadow" style="background: #0f172a;">
+            <div class="flex-grow-1">
+                <div class="text-secondary small fw-700 opacity-75 mb-1">TOTAL NET SALARY (OCT 2023)</div>
+                <h1 class="mb-0 fw-800" style="font-size: 40px;">$@(details?.NetSalary.ToString("N2") ?? "0.00")</h1>
+                <div class="badge bg-success bg-opacity-10 text-success mt-2 fw-700" style="font-size: 11px;">
+                    <i class="fas fa-arrow-up me-1"></i> 2.5% increase from last month
+                </div>
+            </div>
+            <button class="btn btn-accent fw-700 px-4" style="background: #10b981; color: white; border-radius: 12px; height: 44px;">
+                Download Slip
+            </button>
+        </div>
+
+        <!-- Salary Breakdown -->
+        <div class="ess-card premium-shadow">
+            <h6 class="mb-4 fw-800">Earnings Breakdown</h6>
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-secondary fw-700 small">BASE SALARY</div>
+                    <div class="fw-800">$@(details?.BaseSalary.ToString("N2") ?? "0.00")</div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-secondary fw-700 small">HOUSE RENT ALLOWANCE</div>
+                    <div class="fw-800">$@(details?.Allowance.ToString("N2") ?? "0.00")</div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-secondary fw-700 small">PERFORMANCE BONUS</div>
+                    <div class="fw-800">$@(details?.Bonus.ToString("N2") ?? "0.00")</div>
+                </div>
+                <hr class="my-2 opacity-5">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-danger fw-700 small">DEDUCTIONS (Tax, PF)</div>
+                    <div class="text-danger fw-800">-$@(details?.Deductions.ToString("N2") ?? "0.00")</div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2 pt-3 border-top">
+                    <div class="fw-800">TOTAL TAKE-HOME</div>
+                    <div class="fw-800" style="font-size: 20px; color: #10b981;">$@(details?.NetSalary.ToString("N2") ?? "0.00")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: History and Trend -->
+    <div class="d-flex flex-column gap-4">
+        <!-- Payslip History -->
+        <div class="ess-card premium-shadow">
+            <h6 class="mb-4 fw-800">Payslip History</h6>
+            <div class="d-flex flex-column gap-3">
+                @foreach (var slip in Model)
+                {
+                    <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon-box" style="background: white; color: #10b981; width: 40px; height: 40px; border-radius: 12px;">
+                                <i class="fas fa-file-invoice-dollar" style="font-size: 16px;"></i>
+                            </div>
+                            <div>
+                                <div class="fw-800" style="font-size: 14px;">@(new DateTime(slip.Year, slip.Month, 1).ToString("MMMM yyyy"))</div>
+                                <div class="text-secondary small">Generated: @slip.GeneratedDate.ToString("MMM dd, yyyy")</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-icon-action"><i class="fas fa-download"></i></button>
+                    </div>
+                }
+            </div>
+            <button class="btn btn-outline-success w-100 mt-4 border-0 fw-700" style="font-size: 14px;">View Full History</button>
+        </div>
+
+        <!-- Net Salary Trend Placeholder -->
+        <div class="ess-card premium-shadow">
+            <h6 class="mb-3 fw-800">Salary Trend</h6>
+            <div class="text-center py-4 bg-light rounded-4">
+                <i class="fas fa-chart-line fa-3x opacity-25 text-success mb-3"></i>
+                <div class="text-secondary small fw-700">Earnings are consistent</div>
+            </div>
+        </div>
+    </div>
+</div>

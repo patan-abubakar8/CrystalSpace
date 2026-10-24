@@ -1,0 +1,38 @@
+@model Organize4u.Core.Models.Employee
+
+<div class="hr-card mb-4">
+    <h5 class="mb-4" style="font-weight: 700;"><i class="fas fa-briefcase me-2 text-accent-green"></i> Employment Information</h5>
+    <div class="row row-cols-2 g-4">
+        <div>
+            <div class="text-secondary small mb-1">EMPLOYEE CODE</div>
+            <div style="font-weight: 600;">@(Model.EmployeeCode ?? "EMP-" + Model.Id)</div>
+        </div>
+        <div>
+            <div class="text-secondary small mb-1">DESIGNATION</div>
+            <div style="font-weight: 600;">@Model.Designation</div>
+        </div>
+        <div>
+            <div class="text-secondary small mb-1">DEPARTMENT</div>
+            <div style="font-weight: 600;">@(Model.Department?.Name ?? "Not Assigned")</div>
+        </div>
+        <div>
+            <div class="text-secondary small mb-1">JOINING DATE</div>
+            <div style="font-weight: 600;">@Model.JoiningDate.ToString("MMMM dd, yyyy")</div>
+        </div>
+        <div>
+            <div class="text-secondary small mb-1">EMPLOYMENT TYPE</div>
+            <div style="font-weight: 600;">@Model.EmploymentType</div>
+        </div>
+        <div>
+            <div class="text-secondary small mb-1">OFFICE LOCATION</div>
+            <div style="font-weight: 600;">@(Model.OfficeLocation ?? "Not Specified")</div>
+        </div>
+        @if (Model.ManagerId.HasValue)
+        {
+            <div>
+                <div class="text-secondary small mb-1">REPORTING MANAGER</div>
+                <div style="font-weight: 600;">@Model.Manager?.FirstName @Model.Manager?.LastName</div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,43 @@
+@model IEnumerable<Organize4u.Core.Models.TaskItem>
+
+@{
+    ViewData["Title"] = "My Tasks";
+    Layout = "_EmployeeLayout";
+}
+
+<div class="d-flex justify-content-between align-items-end mb-5">
+    <div>
+        <h1 style="font-weight: 800; font-size: 32px; letter-spacing: -1px; color: #011222;">My Tasks</h1>
+        <p class="text-secondary">Keep track of your assignments and deadlines.</p>
+    </div>
+    <div class="d-flex gap-2">
+                }
+                else
+                {
+                    <!-- Mock Data for demo -->
+                    <tr>
+                        <td class="ps-4">
+                            <div style="font-weight: 600;">Finalize UI Kit Components</div>
+                            <div class="text-secondary small">ID: #TSK-1024</div>
+                        </td>
+                        <td><span class="badge bg-light text-dark">Organize4U Redesign</span></td>
+                        <td><span class="badge bg-danger bg-opacity-10 text-danger">High</span></td>
+                        <td class="text-secondary">Oct 24, 2023</td>
+                        <td style="width: 150px;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 45%"></div>
+                                </div>
+                                <span class="small fw-bold">45%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-in-progress">In Progress</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-icon-action"><i class="fas fa-ellipsis-v"></i></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

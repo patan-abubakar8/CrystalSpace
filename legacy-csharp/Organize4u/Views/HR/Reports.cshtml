@@ -1,0 +1,55 @@
+@{
+    ViewData["Title"] = "HR Reports";
+    Layout = "_HRLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+        <h1 class="h3 mb-1" style="font-weight: 700;">HR Analytics & Reports</h1>
+        <p class="text-secondary mb-0">Insights into your organization's growth and health</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="hr-card">
+            <h6 class="mb-4" style="font-weight: 700;">Department Distribution</h6>
+            <div class="mb-4">
+                <div class="d-flex justify-content-between small text-secondary mb-2">
+                    <span>Engineering</span>
+                    <span>20%</span>
+                </div>
+                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 20%"></div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex justify-content-between small text-secondary mb-2">
+                    <span>Sales</span>
+                    <span>40%</span>
+                </div>
+                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                    <div class="progress-bar" role="progressbar" style="width: 40%; background: #ffca28;"></div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex justify-content-between small text-secondary mb-2">
+                    <span>HR</span>
+                    <span>60%</span>
+                </div>
+                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                    <div class="progress-bar" role="progressbar" style="width: 60%; background: var(--accent-green);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="hr-card text-center py-5">
+            <h6 class="mb-4 text-start" style="font-weight: 700;">Monthly Growth</h6>
+            <i class="fas fa-chart-line fa-3x mb-3" style="color: var(--border-color);"></i>
+            <p class="text-secondary small">Chart integration pending (Chart.js recommended)</p>
+            <button class="btn btn-sm btn-outline-premium mt-3">Configure Data Source</button>
+        </div>
+    </div>
+</div>

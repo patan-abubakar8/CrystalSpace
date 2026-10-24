@@ -1,0 +1,392 @@
+:root {
+    --bg-main: #f4f7f5;           /* very light green-tinted white background */
+    --bg-sidebar: #ffffff;        /* pure white sidebar */
+    --bg-card: #ffffff;           /* white cards */
+    --accent-green: #00c853;      /* vivid green accent */
+    --accent-green-light: #e8f5e9;/* light green tint for hovers */
+    --accent-green-dark: #009624; /* darker green for hover states */
+    --text-primary: #1a2e1c;      /* very dark green-black for main text */
+    --text-secondary: #5f7a62;    /* muted green-grey */
+    --border-color: #d8e8da;      /* soft green-grey border */
+    --card-shadow: 0 2px 12px rgba(0, 100, 50, 0.08);
+    --sidebar-width: 260px;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+}
+
+/* ── Sidebar ── */
+.hr-sidebar {
+    background-color: var(--bg-sidebar);
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    box-shadow: 2px 0 8px rgba(0, 100, 50, 0.06);
+}
+
+.hr-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.hr-logo-icon {
+    background: var(--accent-green);
+    color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.hr-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-secondary);
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: all 0.25s;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.hr-nav-item:hover,
+.hr-nav-item.active {
+    background: var(--accent-green-light);
+    color: var(--accent-green-dark);
+}
+
+.hr-nav-item.active {
+    font-weight: 600;
+}
+
+/* ── Main Content ── */
+.hr-main-content {
+    margin-left: var(--sidebar-width);
+    padding: 40px;
+    min-height: 100vh;
+    background-color: var(--bg-main);
+}
+
+/* ── Cards ── */
+.hr-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--card-shadow);
+}
+
+/* ── Stat Cards ── */
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-icon {
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--accent-green-light);
+    color: var(--accent-green-dark);
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-change {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.stat-change.up {
+    color: var(--accent-green);
+}
+
+.stat-change.down {
+    color: #e53935;
+}
+
+/* ── Buttons ── */
+.btn-premium {
+    background: var(--accent-green);
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    transition: 0.25s;
+}
+
+.btn-premium:hover {
+    background: var(--accent-green-dark);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 150, 36, 0.25);
+}
+
+.btn-outline-premium {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: 0.25s;
+}
+
+.btn-outline-premium:hover {
+    background: var(--accent-green-light);
+    border-color: var(--accent-green);
+    color: var(--accent-green-dark);
+}
+
+/* ── Activity Feed ── */
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ── Table ── */
+.table-premium {
+    width: 100%;
+    color: var(--text-primary);
+}
+
+.table-premium th {
+    color: var(--text-secondary);
+    font-weight: 600;
+    padding: 12px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table-premium td {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.table-premium tbody tr:hover {
+    background-color: var(--accent-green-light);
+}
+
+/* ── Badges ── */
+.badge-premium {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-annual {
+    background: rgba(255, 193, 7, 0.15);
+    color: #f57c00;
+}
+
+.badge-medical {
+    background: rgba(33, 150, 243, 0.12);
+    color: #1565c0;
+}
+
+.badge-unpaid {
+    background: rgba(158, 158, 158, 0.15);
+    color: #546e7a;
+}
+
+/* ── Sidebar Footer ── */
+.user-profile-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ── Search Bar ── */
+.hr-search-bar {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.hr-search-input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    width: 100%;
+    outline: none;
+}
+
+.hr-search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* ── Filter Chips ── */
+.hr-filter-chip {
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: #fff;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.25s;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+}
+
+.hr-filter-chip:hover,
+.hr-filter-chip.active {
+    background: var(--accent-green);
+    color: #fff;
+    border-color: var(--accent-green);
+}
+
+/* ── Employee Card ── */
+.employee-card {
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.employee-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-green);
+    box-shadow: 0 8px 24px rgba(0, 150, 36, 0.12);
+}
+
+.card-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+/* ── Profile Tabs ── */
+.hr-tabs {
+    display: flex;
+    gap: 32px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 32px;
+}
+
+.hr-tab-item {
+    padding: 12px 0;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.hr-tab-item:hover,
+.hr-tab-item.active {
+    color: var(--accent-green-dark);
+    border-bottom-color: var(--accent-green);
+}
+
+/* ── Performance Card ── */
+.performance-card {
+    background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+    color: #fff;
+}
+
+/* ── Skill Tag ── */
+.skill-tag {
+    background: var(--accent-green-light);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 12px;
+    display: inline-block;
+    color: var(--accent-green-dark);
+}
+
+/* ── Upcoming Leave Item ── */
+.upcoming-leave-item {
+    background: var(--accent-green-light);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ── Form Controls (HR portal) ── */
+.form-control,
+.form-select {
+    border: 1px solid var(--border-color);
+    background-color: #fff;
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.15);
+    outline: none;
+    background-color: #fff;
+    color: var(--text-primary);
+}
+
+/* ── Page Headings ── */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.page-subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+}

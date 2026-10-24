@@ -1,0 +1,451 @@
+@model Dictionary<string, List<Organize4u.Core.Models.EmployeeDocument>>
+
+@{
+    ViewData["Title"] = "Employee Documents";
+    Layout = "_HRLayout";
+    var employees = ViewBag.Employees as IEnumerable<Organize4u.Core.Models.Employee> ?? new List<Organize4u.Core.Models.Employee>();
+    var selectedEmployee = ViewBag.SelectedEmployee as Organize4u.Core.Models.Employee;
+}
+
+<div class="documents-container">
+    <!-- Left Sidebar: Employee Search/List -->
+    <div class="docs-sidebar">
+        <div class="search-container mb-4">
+            <div class="premium-search">
+                <i class="fas fa-search text-secondary"></i>
+                <input type="text" placeholder="Find employee..." class="search-input">
+            </div>
+        </div>
+
+        <div class="employee-list">
+            @foreach (var emp in employees)
+            {
+                <a asp-action="Documents" asp-route-employeeId="@emp.Id" class="employee-item @(selectedEmployee?.Id == emp.Id ? "active" : "")">
+                    <div class="avatar-initials-small" style="background: rgba(0, 230, 118, 0.1); color: var(--accent-green);">
+                        @(emp.FirstName?[0])@(emp.LastName?[0])
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="emp-name">@emp.FirstName @emp.LastName</div>
+                        <div class="emp-designation">@emp.Designation</div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Main Content: Document Groups -->
+    <div class="docs-main">
+        @if (selectedEmployee != null)
+        {
+            <div class="d-flex justify-content-between align-items-start mb-5">
+                <div>
+                    <div class="d-flex align-items-center gap-3 mb-1">
+                        <h1 class="h2 mb-0" style="font-weight: 700;">@selectedEmployee.FirstName @selectedEmployee.LastName</h1>
+                        <span class="status-badge-active">ACTIVE EMPLOYEE</span>
+                    </div>
+                    <p class="text-secondary mb-0">Manage all internal records, legal documents, and payroll history for this employee.</p>
+                </div>
+                <button class="btn btn-premium px-4" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                    <i class="fas fa-file-upload me-2"></i> Upload Document
+                </button>
+            </div>
+
+            <div class="row g-4">
+                @foreach (var category in Model)
+                {
+                    <div class="col-md-6">
+                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="@GetCategoryIcon(category.Key) text-success"></i>
+                                <span style="font-weight: 700; letter-spacing: 0.5px; font-size: 14px;">@category.Key</span>
+                            </div>
+                            <span class="text-secondary" style="font-size: 11px;">@category.Value.Count Files</span>
+                        </div>
+                        
+                        <div class="d-flex flex-column gap-2">
+                            @if (!category.Value.Any())
+                            {
+                                <div class="empty-category-card">No files found</div>
+                            }
+                            @foreach (var doc in category.Value)
+                            {
+                                <div class="doc-card">
+                                    <div class="doc-icon-container">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </div>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <div class="doc-name text-truncate">@doc.DocumentName</div>
+                                        <div class="doc-meta">Added @doc.UploadDate.ToString("MMM dd, yyyy") • @doc.FileSize</div>
+                                    </div>
+                                    <a href="@doc.FilePath" target="_blank" class="text-secondary"><i class="fas fa-external-link-alt"></i></a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-auto pt-5 border-top border-secondary border-opacity-10 d-flex justify-content-between align-items-center text-secondary" style="font-size: 12px;">
+                <div>All documents are encrypted and compliant with internal privacy policies.</div>
+                <div class="d-flex gap-4">
+                    <a href="#" class="text-secondary text-decoration-none hover-white">Policy Handbook</a>
+                    <a href="#" class="text-secondary text-decoration-none hover-white">Audit Log</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary">
+                <i class="fas fa-user-circle fa-4x mb-3 opacity-25"></i>
+                <p>Select an employee to view documents</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: #fff; border: 1px solid var(--border-color);">
+            <div class="modal-header" style="border-bottom-color: var(--border-color);">
+                <h5 class="modal-title">Upload Document for <span style="color: var(--accent-green);">@selectedEmployee?.FirstName @selectedEmployee?.LastName</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <input type="hidden" name="employeeId" value="@selectedEmployee?.Id" />
+                    <div class="mb-4">
+                        <label class="form-label text-secondary" style="font-size: 13px; font-weight: 600;">DOCUMENT CATEGORY</label>
+                        <select name="documentType" class="form-select premium-select" required>
+                            <option value="">Select Category...</option>
+                            <option value="ONBOARDING DOCS">Onboarding Documents</option>
+                            <option value="EDUCATION">Education Certificates</option>
+                            <option value="EXPERIENCE">Experience Letters</option>
+                            <option value="PAYSLIPS">Previous Payslips</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-secondary" style="font-size: 13px; font-weight: 600;">SELECT FILE</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" name="file" id="fileInput" class="file-upload-input" required />
+                            <div class="file-upload-design">
+                                <i class="fas fa-cloud-upload-alt fa-2x mb-2" style="color: var(--accent-green);"></i>
+                                <div id="fileNameDisplay">Click or drag to select file</div>
+                                <div class="text-secondary mt-1" style="font-size: 11px;">PDF, JPG, PNG (Max 10MB)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="uploadProgress" class="progress d-none mb-3" style="height: 6px; border-radius: 3px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="uploadStatus" class="alert d-none mt-3" style="font-size: 13px;"></div>
+                </form>
+            </div>
+            <div class="modal-footer" style="border-top-color: var(--border-color);">
+                <button type="button" class="btn btn-outline-premium" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-premium px-4" id="btnStartUpload">
+                    <i class="fas fa-arrow-up me-2"></i> Start Upload
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#fileInput').on('change', function() {
+                const fileName = $(this).val().split('\\').pop() || 'Click or drag to select file';
+                $('#fileNameDisplay').text(fileName).addClass('text-success').css('font-weight', '600');
+            });
+
+            $('#btnStartUpload').on('click', function() {
+                const form = $('#uploadForm')[0];
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const formData = new FormData(form);
+                const $btn = $(this);
+                const $progress = $('#uploadProgress');
+                const $progressBar = $progress.find('.progress-bar');
+                const $status = $('#uploadStatus');
+
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i> Uploading...');
+                $progress.removeClass('d-none');
+                $status.addClass('d-none').removeClass('alert-success alert-danger');
+
+                $.ajax({
+                    url: '/HR/UploadDocument',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        const xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                const percentComplete = (evt.loaded / evt.total) * 100;
+                                $progressBar.css('width', percentComplete + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response) {
+                        $status.text('Document uploaded successfully! Refreshing...').removeClass('d-none').addClass('alert-success');
+                        setTimeout(() => location.reload(), 1000);
+                    },
+                    error: function(xhr) {
+                        $btn.prop('disabled', false).html('<i class="fas fa-arrow-up me-2"></i> Start Upload');
+                        $progress.addClass('d-none');
+                        $status.text(xhr.responseText || 'Error uploading file').removeClass('d-none').addClass('alert-danger');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+@functions {
+    public string GetCategoryIcon(string category)
+    {
+        return category.ToUpper() switch
+        {
+            "ONBOARDING DOCS" => "fas fa-user-check",
+            "EDUCATION" => "fas fa-graduation-cap",
+            "EXPERIENCE" => "fas fa-briefcase",
+            "PAYSLIPS" => "fas fa-file-invoice-dollar",
+            _ => "fas fa-file-alt"
+        };
+    }
+}
+
+<style>
+    .documents-container {
+        display: flex;
+        gap: 30px;
+        height: calc(100vh - 80px); /* Adjust based on layout padding */
+    }
+    
+    .docs-sidebar {
+        width: 300px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border-color);
+        padding-right: 30px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .docs-main {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        padding-bottom: 20px;
+    }
+
+    .premium-search {
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .search-input {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        outline: none;
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .employee-list {
+        overflow-y: auto;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .employee-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: 0.2s;
+        border: 1px solid transparent;
+    }
+
+    .employee-item:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .employee-item.active {
+        background: rgba(0, 230, 118, 0.08);
+        border-color: rgba(0, 230, 118, 0.1);
+    }
+
+    .avatar-initials-small {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .emp-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    .emp-designation {
+        font-size: 11px;
+        color: var(--text-secondary);
+    }
+
+    .status-badge-active {
+        background: rgba(0, 230, 118, 0.1);
+        color: var(--accent-green);
+        font-size: 10px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+    }
+
+    .doc-card {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .doc-card:hover {
+        border-color: var(--accent-green);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 230, 118, 0.08);
+    }
+
+    .doc-icon-container {
+        width: 40px;
+        height: 40px;
+        background: rgba(33, 118, 255, 0.1);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4299e1;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .doc-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+
+    .doc-meta {
+        font-size: 11px;
+        color: var(--text-secondary);
+    }
+
+    .empty-category-card {
+        background: #f8fafc;
+        border: 1px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    .hover-white:hover {
+        color: white !important;
+    }
+
+    /* Modal Styling */
+    .premium-select {
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        color: var(--text-primary);
+        transition: 0.2s;
+    }
+    .premium-select:focus {
+        border-color: var(--accent-green);
+        box-shadow: 0 0 0 4px rgba(0, 230, 118, 0.1);
+    }
+
+    .file-upload-wrapper {
+        position: relative;
+        width: 100%;
+        height: 150px;
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+        background: #fdfdfd;
+        overflow: hidden;
+    }
+    .file-upload-wrapper:hover {
+        border-color: var(--accent-green);
+        background: rgba(0, 230, 118, 0.02);
+    }
+    .file-upload-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+    .file-upload-design {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        pointer-events: none;
+    }
+    #fileNameDisplay {
+        font-size: 14px;
+        color: var(--text-secondary);
+        max-width: 100%;
+        word-break: break-all;
+    }
+    .btn-outline-premium {
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        font-weight: 600;
+        transition: 0.2s;
+    }
+    .btn-outline-premium:hover {
+        background: #f1f5f9;
+        color: var(--text-primary);
+    }
+</style>

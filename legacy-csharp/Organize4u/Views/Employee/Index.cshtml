@@ -1,0 +1,212 @@
+@model Organize4u.Core.ViewModels.EmployeeDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_EmployeeLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+        <h1 style="font-weight: 800; font-size: 32px; letter-spacing: -1px; color: #011222;">Welcome back, Alex</h1>
+        <p class="text-secondary">Here's an overview of your workspace today.</p>
+    </div>
+    <div class="d-flex gap-3 align-items-center">
+        <div class="input-group glass-card premium-shadow" style="width: 300px; border-radius: 12px; overflow: hidden;">
+            <span class="input-group-text bg-transparent border-0 pe-0">
+                <i class="fas fa-search text-secondary"></i>
+            </span>
+            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search tasks..." style="font-size: 14px;">
+        </div>
+        <button class="btn btn-white premium-shadow border-0" style="border-radius: 12px; width: 44px; height: 44px; background: white;">
+            <i class="fas fa-bell" style="color: #64748b;"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="ess-card stat-card-ess premium-shadow">
+            <div class="stat-icon-box" style="background: #ecfdf5; color: #10b981;">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>
+                <div class="stat-label-ess">Assigned Tasks</div>
+                <div class="stat-value-ess">@Model.AssignedTasksCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="ess-card stat-card-ess premium-shadow">
+            <div class="stat-icon-box" style="background: #ecfdf5; color: #10b981;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+                <div class="stat-label-ess">Completed Tasks</div>
+                <div class="stat-value-ess">@Model.CompletedTasksCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="ess-card stat-card-ess premium-shadow">
+            <div class="stat-icon-box" style="background: #f0fdfa; color: #0d9488;">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <div>
+                <div class="stat-label-ess">Leave Balance</div>
+                <div class="stat-value-ess">@Model.LeaveBalance Days</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="ess-card stat-card-ess premium-shadow">
+            <div class="stat-icon-box" style="background: #f0f9ff; color: #0ea5e9;">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div>
+                <div class="stat-label-ess">Upcoming Holidays</div>
+                <div class="stat-value-ess">@Model.UpcomingHolidaysCount</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ess-layout-grid">
+    <!-- Main Content: Today's Tasks -->
+    <div class="ess-card p-0 premium-shadow">
+        <div class="p-4 d-flex justify-content-between align-items-center border-bottom">
+            <h5 class="mb-0 fw-800">Today's Tasks</h5>
+            <a asp-action="Tasks" class="text-accent fw-700 text-decoration-none" style="font-size: 14px; color: #10b981;">View All</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table-ess mb-0">
+                <thead>
+                    <tr style="background: #f8fafc;">
+                        <th class="ps-4">TASK NAME</th>
+                        <th>PROJECT</th>
+                        <th>DEADLINE</th>
+                        <th class="pe-4">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.TodayTasks.Any())
+                    {
+                        foreach (var task in Model.TodayTasks)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-700" style="color: #1e293b;">@task.Title</td>
+                                <td class="text-secondary">@(task.Project?.Name ?? "General")</td>
+                                <td class="text-secondary">@task.Deadline.ToString("ddd, h:mm tt")</td>
+                                <td class="pe-4">
+                                    <span class="pill-ess @(task.Status switch {
+                                        "In Progress" => "pill-medium",
+                                        "Completed" => "status-complete",
+                                        _ => "pill-low"
+                                    })" style="background: @(task.Status == "In Progress" ? "#fef3c7" : "#dcfce7"); color: @(task.Status == "In Progress" ? "#92400e" : "#166534");">@task.Status</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="ps-4 fw-700">Finalize UI Kit Components</td>
+                            <td class="text-secondary">Organize4U Redesign</td>
+                            <td class="text-secondary">Today, 5:00 PM</td>
+                            <td class="pe-4"><span class="pill-ess pill-medium" style="background: #fef3c7; color: #92400e;">In Progress</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-4 fw-700">Client Presentation Prep</td>
+                            <td class="text-secondary">Green Energy Portal</td>
+                            <td class="text-secondary">Tomorrow, 10:00 AM</td>
+                            <td class="pe-4"><span class="pill-ess pill-low" style="background: #f1f5f9; color: #475569;">Pending</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sidebar Widgets -->
+    <div class="d-flex flex-column gap-4">
+        <!-- Upcoming Leaves -->
+        <div class="ess-card premium-shadow">
+            <h5 class="mb-4 fw-800">Upcoming Leaves</h5>
+            <div class="d-flex flex-column gap-3">
+                @if (Model.UpcomingLeaves.Any())
+                {
+                    foreach (var leave in Model.UpcomingLeaves)
+                    {
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="date-badge-ess">
+                                <span class="month">@leave.StartDate.ToString("MMM")</span>
+                                <span class="day">@leave.StartDate.Day</span>
+                            </div>
+                            <div>
+                                <div class="fw-700" style="font-size: 14px;">@leave.Reason</div>
+                                <div class="text-secondary" style="font-size: 12px;">@(((leave.EndDate - leave.StartDate).Days) + 1) Days • Approved</div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="date-badge-ess" style="background: #ecfdf5;">
+                            <span class="month" style="color: #10b981;">NOV</span>
+                            <span class="day" style="color: #10b981;">12</span>
+                        </div>
+                        <div>
+                            <div class="fw-700" style="font-size: 14px;">Annual Vacation</div>
+                            <div class="text-secondary" style="font-size: 12px;">5 Days • Approved</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="ess-card premium-shadow">
+            <h5 class="mb-4 fw-800">Recent Activity</h5>
+            <div class="timeline-ess">
+                @if (Model.RecentActivities.Any())
+                {
+                    foreach (var log in Model.RecentActivities)
+                    {
+                        <div class="timeline-item">
+                            <div class="timeline-dot">
+                                <i class="fas @(log.Action.Contains("Task") ? "fa-check" : "fa-file")" style="color: var(--ess-accent);"></i>
+                            </div>
+                            <div class="ps-3">
+                                <div style="font-size: 13px; font-weight: 600;">@log.Action <span class="text-success">@log.Details</span></div>
+                                <div class="text-secondary" style="font-size: 11px;">@log.Timestamp.ToString("h:mm tt")</div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="border-color: #10b981;">
+                            <i class="fas fa-check" style="color: #10b981;"></i>
+                        </div>
+                        <div class="ps-3">
+                            <div style="font-size: 13px; font-weight: 600;">Task <span class="text-success">Documentation Update</span> completed</div>
+                            <div class="text-secondary" style="font-size: 11px;">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="border-color: #f59e0b;">
+                            <i class="fas fa-money-bill-wave" style="color: #f59e0b;"></i>
+                        </div>
+                        <div class="ps-3">
+                            <div style="font-size: 13px; font-weight: 600;">Salary slip for <span class="text-success">October 2023</span> published</div>
+                            <div class="text-secondary" style="font-size: 11px;">Yesterday</div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="btn btn-outline-success w-100 mt-2 border-0 fw-700" style="font-size: 14px;">View All Activity</button>
+        </div>
+    </div>
+</div>

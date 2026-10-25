@@ -5,7 +5,11 @@ import { CrystalLogo } from '../../../core/ui/CrystalLogo';
 import { Eye, EyeOff, Moon, Sun, AlertCircle } from 'lucide-react';
 import './LoginPage.css';
 
-export const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  onNavigateToForgot?: () => void;
+}
+
+export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
   const { login, isLoading } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -134,7 +138,11 @@ export const LoginPage: React.FC = () => {
                 className="login-forgot-link"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert('Demo accounts:\n• SuperAdmin: superadmin@organize.com / Admin@123\n• HR Manager: hr@organize.com / HR@123');
+                  if (onNavigateToForgot) {
+                    onNavigateToForgot();
+                  } else {
+                    window.location.hash = '#forgot';
+                  }
                 }}
               >
                 Forget password

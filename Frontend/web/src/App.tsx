@@ -5,6 +5,7 @@ import { ThemeProvider } from './core/context/ThemeContext';
 import { NotificationProvider } from './core/context/NotificationContext';
 import { AuthProvider, useAuth } from './modules/auth/context/AuthContext';
 import { LoginPage } from './modules/auth/pages/LoginPage';
+import { ForgotPasswordPage } from './modules/auth/pages/ForgotPasswordPage';
 import { AppLayout } from './layouts/AppLayout';
 import type { NavigationTab } from './layouts/Sidebar';
 import { DashboardPage } from './modules/dashboard/pages/DashboardPage';
@@ -15,6 +16,17 @@ import { LeavesPage } from './modules/leaves/pages/LeavesPage';
 const MainAppContent: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const [currentTab, setCurrentTab] = useState<NavigationTab>('dashboard');
+  const [authView, setAuthView] = useState<'login' | 'forgot'>(() => {
+    return window.location.hash === '#forgot' ? 'forgot' : 'login';
+  });
+
+  React.useEffect(() => {
+    const handleHash = () => {
+      setAuthView(window.location.hash === '#forgot' ? 'forgot' : 'login');
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // Modal triggers across pages
   const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
@@ -51,7 +63,25 @@ const MainAppContent: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    return <LoginPage />;
+    if (authView === 'forgot') {
+      return (
+        <ForgotPasswordPage
+          onBackToLogin={() => {
+            window.location.hash = '#login';
+            setAuthView('login');
+          }}
+        />
+      );
+    }
+
+    return (
+      <LoginPage
+        onNavigateToForgot={() => {
+          window.location.hash = '#forgot';
+          setAuthView('forgot');
+        }}
+      />
+    );
   }
 
   return (

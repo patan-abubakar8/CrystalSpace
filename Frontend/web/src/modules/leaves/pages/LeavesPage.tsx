@@ -96,13 +96,13 @@ export const LeavesPage: React.FC<LeavesPageProps> = ({
               <div
                 style={{
                   fontSize: '1.75rem',
-                  fontWeight: 800,
+                  fontWeight: 500,
                   fontFamily: 'var(--font-heading)',
                   marginTop: '0.25rem',
                 }}
               >
                 {type.default_days}{' '}
-                <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-tertiary)' }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 400, color: 'var(--text-tertiary)' }}>
                   Days
                 </span>
               </div>
@@ -157,7 +157,7 @@ export const LeavesPage: React.FC<LeavesPageProps> = ({
           ) : myLeaves.length === 0 ? (
             <div style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
               <FileText size={40} color="var(--text-tertiary)" style={{ marginBottom: '0.75rem' }} />
-              <div style={{ fontWeight: 600 }}>No Leave Records Yet</div>
+              <div style={{ fontWeight: 400 }}>No Leave Records Yet</div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
                 You have not filed any leave requests for the current calendar cycle.
               </p>
@@ -183,7 +183,7 @@ export const LeavesPage: React.FC<LeavesPageProps> = ({
                       </span>
                     </td>
                     <td>
-                      <strong>{leave.total_days} Day(s)</strong>
+                      <span>{leave.total_days} Day(s)</span>
                     </td>
                     <td>
                       <span style={{ fontSize: '0.8125rem' }}>

@@ -103,7 +103,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
             }}
           >
             <div>
-              <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{n.title}</div>
+              <div style={{ fontWeight: 500, fontSize: '0.875rem' }}>{n.title}</div>
               {n.message && (
                 <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
                   {n.message}

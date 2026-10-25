@@ -47,7 +47,7 @@ export const DepartmentsPage: React.FC = () => {
       ) : departments.length === 0 ? (
         <div className="card" style={{ padding: '3rem 1rem', textAlign: 'center' }}>
           <Building2 size={40} color="var(--text-tertiary)" style={{ marginBottom: '0.75rem' }} />
-          <div style={{ fontWeight: 600 }}>No Departments Configured</div>
+          <div style={{ fontWeight: 400 }}>No Departments Configured</div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
             Click "New Department" to set up your organization structure.
           </p>

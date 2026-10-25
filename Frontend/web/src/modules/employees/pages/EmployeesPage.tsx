@@ -169,7 +169,7 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
         ) : employees.length === 0 ? (
           <div style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
             <Users size={40} color="var(--text-tertiary)" style={{ marginBottom: '0.75rem' }} />
-            <div style={{ fontWeight: 600, fontSize: '1rem' }}>No Employees Found</div>
+            <div style={{ fontWeight: 400, fontSize: '1rem' }}>No Employees Found</div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
               {searchQuery || selectedDeptId
                 ? 'Try adjusting your filters or search keywords.'
@@ -198,12 +198,12 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
                           width: '34px',
                           height: '34px',
                           borderRadius: 'var(--radius-full)',
-                          background: 'linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800))',
+                          background: 'var(--color-primary-gradient)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           color: '#ffffff',
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: '0.8125rem',
                           flexShrink: 0,
                         }}
@@ -212,7 +212,7 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
                         {emp.last_name.charAt(0)}
                       </div>
                       <div>
-                        <div style={{ fontWeight: 600 }}>
+                        <div style={{ fontWeight: 400 }}>
                           {emp.first_name} {emp.last_name}
                         </div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
@@ -225,7 +225,7 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
                     <span
                       style={{
                         fontFamily: 'monospace',
-                        fontWeight: 600,
+                        fontWeight: 400,
                         fontSize: '0.8125rem',
                         color: 'var(--text-secondary)',
                       }}

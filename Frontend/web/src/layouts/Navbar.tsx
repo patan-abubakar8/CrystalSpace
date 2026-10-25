@@ -49,8 +49,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab }) => {
       }}
     >
       <div>
-        <div style={{ fontSize: '1.125rem', fontWeight: 700 }}>{meta.title}</div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{meta.subtitle}</div>
+        <div style={{ fontSize: '1.0625rem', fontWeight: 500 }}>{meta.title}</div>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400 }}>{meta.subtitle}</div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

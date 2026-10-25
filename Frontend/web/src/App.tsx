@@ -40,12 +40,12 @@ const MainAppContent: React.FC = () => {
             height: '40px',
             borderRadius: '50%',
             border: '3px solid var(--border-default)',
-            borderTopColor: 'var(--color-primary-600)',
+            borderTopColor: 'var(--color-accent-magenta)',
             animation: 'spin 1s linear infinite',
           }}
         />
         <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-        <div style={{ fontWeight: 600, fontSize: '0.9375rem' }}>Initializing CrystalSpace...</div>
+        <div style={{ fontWeight: 400, fontSize: '0.9375rem' }}>Initializing CrystalSpace...</div>
       </div>
     );
   }

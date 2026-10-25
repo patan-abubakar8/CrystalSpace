@@ -27,12 +27,12 @@ export const EmployeeDetailDrawer: React.FC<EmployeeDetailDrawerProps> = ({
                 width: '42px',
                 height: '42px',
                 borderRadius: 'var(--radius-full)',
-                background: 'linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800))',
+                background: 'var(--color-primary-gradient)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#ffffff',
-                fontWeight: 700,
+                fontWeight: 500,
                 fontSize: '1rem',
               }}
             >
@@ -40,10 +40,10 @@ export const EmployeeDetailDrawer: React.FC<EmployeeDetailDrawerProps> = ({
               {employee.last_name.charAt(0)}
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: '1.125rem' }}>
+              <div style={{ fontWeight: 500, fontSize: '1.0625rem' }}>
                 {employee.first_name} {employee.last_name}
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400 }}>
                 {employee.employee_code} • {employee.designation}
               </div>
             </div>
@@ -108,7 +108,7 @@ export const EmployeeDetailDrawer: React.FC<EmployeeDetailDrawerProps> = ({
 
           {/* Professional Overview */}
           <div>
-            <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+            <div style={{ fontWeight: 400, fontSize: '0.875rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
               Professional Background
             </div>
             <div
@@ -137,7 +137,7 @@ export const EmployeeDetailDrawer: React.FC<EmployeeDetailDrawerProps> = ({
           {/* Skills */}
           {employee.professional_detail?.skills && (
             <div>
-              <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+              <div style={{ fontWeight: 400, fontSize: '0.875rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
                 Skills & Technologies
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>

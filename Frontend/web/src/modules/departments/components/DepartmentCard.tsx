@@ -32,24 +32,24 @@ export const DepartmentCard: React.FC<DepartmentCardProps> = ({ department }) =>
               width: '38px',
               height: '38px',
               borderRadius: 'var(--radius-md)',
-              background: 'rgba(99, 102, 241, 0.1)',
+              background: 'rgba(217, 70, 239, 0.1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--color-primary-400)',
+              color: 'var(--color-accent-magenta)',
             }}
           >
             <Building2 size={20} />
           </div>
           <span
             className="badge badge-primary"
-            style={{ fontFamily: 'monospace', fontWeight: 700 }}
+            style={{ fontFamily: 'monospace', fontWeight: 500 }}
           >
             {department.code}
           </span>
         </div>
 
-        <h3 style={{ fontSize: '1.125rem', marginBottom: '0.35rem' }}>{department.name}</h3>
+        <h3 style={{ fontSize: '1.0625rem', marginBottom: '0.35rem', fontWeight: 500 }}>{department.name}</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', minHeight: '38px' }}>
           {department.description || 'Organizational business unit.'}
         </p>

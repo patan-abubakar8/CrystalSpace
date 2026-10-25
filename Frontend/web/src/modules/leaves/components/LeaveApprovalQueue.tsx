@@ -58,7 +58,7 @@ export const LeaveApprovalQueue: React.FC<LeaveApprovalQueueProps> = ({
           color="var(--color-success)"
           style={{ marginBottom: '0.75rem' }}
         />
-        <div style={{ fontWeight: 600 }}>Zero Pending Approvals</div>
+        <div style={{ fontWeight: 400 }}>Zero Pending Approvals</div>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', marginTop: '0.2rem' }}>
           All employee absence requests in your queue have been processed.
         </p>
@@ -85,7 +85,7 @@ export const LeaveApprovalQueue: React.FC<LeaveApprovalQueueProps> = ({
         >
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
-              <span style={{ fontWeight: 700, fontSize: '0.9375rem' }}>
+              <span style={{ fontWeight: 500, fontSize: '0.9375rem' }}>
                 {leave.employee_name || `Employee #${leave.employee_id}`}
               </span>
               <span className="badge badge-warning">
@@ -110,7 +110,7 @@ export const LeaveApprovalQueue: React.FC<LeaveApprovalQueueProps> = ({
                 {new Date(leave.end_date).toLocaleDateString()}
               </span>
               <span>•</span>
-              <strong>{leave.total_days} Day(s)</strong>
+              <span>{leave.total_days} Day(s)</span>
             </div>
 
             <p style={{ fontSize: '0.8125rem', color: 'var(--text-primary)', fontStyle: 'italic' }}>

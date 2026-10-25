@@ -58,21 +58,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
               width: '40px',
               height: '40px',
               borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800))',
+              background: 'var(--color-primary-gradient)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#ffffff',
-              boxShadow: '0 2px 8px rgba(79, 70, 229, 0.3)',
+              boxShadow: 'var(--color-primary-glow)',
             }}
           >
             <Layers size={22} />
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: '1.125rem', letterSpacing: '-0.02em' }}>
+            <div style={{ fontWeight: 500, fontSize: '1.0625rem', letterSpacing: '-0.01em' }}>
               CrystalSpace
             </div>
-            <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>
+            <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>
               ENTERPRISE SUITE
             </div>
           </div>
@@ -83,9 +83,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           <div
             style={{
               fontSize: '0.6875rem',
-              fontWeight: 700,
+              fontWeight: 400,
               textTransform: 'uppercase',
-              letterSpacing: '0.08em',
+              letterSpacing: '0.05em',
               color: 'var(--text-tertiary)',
               padding: '0 0.75rem 0.5rem',
             }}
@@ -109,9 +109,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                     padding: '0.75rem 0.875rem',
                     borderRadius: 'var(--radius-md)',
                     border: 'none',
-                    background: isActive ? 'var(--color-primary-600)' : 'transparent',
+                    background: isActive ? 'var(--color-primary-gradient)' : 'transparent',
                     color: isActive ? '#ffffff' : 'var(--text-secondary)',
-                    fontWeight: isActive ? 600 : 500,
+                    fontWeight: isActive ? 500 : 400,
                     fontSize: '0.875rem',
                     cursor: 'pointer',
                     transition: 'all var(--transition-fast)',
@@ -154,12 +154,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                 width: '36px',
                 height: '36px',
                 borderRadius: 'var(--radius-full)',
-                background: 'linear-gradient(135deg, #10b981, #059669)',
+                background: 'var(--color-primary-gradient)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#ffffff',
-                fontWeight: 700,
+                fontWeight: 500,
                 fontSize: '0.875rem',
                 flexShrink: 0,
               }}
@@ -170,7 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
               <div
                 style={{
                   fontSize: '0.8125rem',
-                  fontWeight: 600,
+                  fontWeight: 400,
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -185,9 +185,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.25rem',
+                  fontWeight: 400,
                 }}
               >
-                <ShieldCheck size={12} color="var(--color-primary-400)" />
+                <ShieldCheck size={12} color="var(--color-accent-magenta)" />
                 {user?.role}
               </div>
             </div>

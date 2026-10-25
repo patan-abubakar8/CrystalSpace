@@ -106,7 +106,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           value={isLoading ? '...' : stats?.total_employees ?? 0}
           icon={Users}
           changeText="Active members registered"
-          accentColor="#6366f1"
+          accentColor="var(--color-accent-magenta)"
           onClick={() => onNavigate('employees')}
         />
 
@@ -116,7 +116,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           value={isLoading ? '...' : stats?.total_departments ?? 0}
           icon={Building2}
           changeText="Operational units"
-          accentColor="#0ea5e9"
+          accentColor="var(--color-accent-violet)"
           onClick={() => onNavigate('departments')}
         />
 
@@ -146,8 +146,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         {/* N-Tier Architecture Diagnostics Card */}
         <div className="card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
-            <Layers size={18} color="var(--color-primary-400)" />
-            <h2 style={{ fontSize: '1.125rem' }}>N-Tier Architecture Health</h2>
+            <Layers size={18} color="var(--color-accent-magenta)" />
+            <h2 style={{ fontSize: '1.0625rem', fontWeight: 500 }}>N-Tier Architecture Health</h2>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
@@ -163,8 +163,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               }}
             >
               <div>
-                <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>Tier 1: Presentation API</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                <div style={{ fontWeight: 400, fontSize: '0.8125rem' }}>Tier 1: Presentation API</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>
                   Go Chi Router + JWT Auth Middleware
                 </div>
               </div>
@@ -183,8 +183,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               }}
             >
               <div>
-                <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>Tier 2: Business Logic Layer</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                <div style={{ fontWeight: 400, fontSize: '0.8125rem' }}>Tier 2: Business Logic Layer</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>
                   Service domain validation & rules
                 </div>
               </div>
@@ -203,8 +203,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               }}
             >
               <div>
-                <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>Tier 3: Data Access Layer</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                <div style={{ fontWeight: 400, fontSize: '0.8125rem' }}>Tier 3: Data Access Layer</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>
                   PostgreSQL pgxpool (Port 5432)
                 </div>
               </div>
@@ -217,25 +217,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
             <Shield size={18} color="var(--color-success)" />
-            <h2 style={{ fontSize: '1.125rem' }}>Active Session Security</h2>
+            <h2 style={{ fontSize: '1.0625rem', fontWeight: 500 }}>Active Session Security</h2>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Authenticated User</span>
-              <span style={{ fontWeight: 600 }}>{user?.email}</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>Authenticated User</span>
+              <span style={{ fontWeight: 400 }}>{user?.email}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Assigned Role</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>Assigned Role</span>
               <span className="badge badge-primary">{user?.role}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>State Manager</span>
-              <span style={{ fontWeight: 600, color: 'var(--color-primary-400)' }}>TanStack Query v5</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>State Manager</span>
+              <span style={{ fontWeight: 400, color: 'var(--color-accent-magenta)' }}>TanStack Query v5</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Role-Based Access</span>
-              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>Role-Based Access</span>
+              <span style={{ color: 'var(--color-success)', fontWeight: 400 }}>
                 {user?.role === 'SuperAdmin' || user?.role === 'Admin'
                   ? 'Full Administrative Privileges'
                   : user?.role === 'HR'

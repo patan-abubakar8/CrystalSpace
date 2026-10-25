@@ -311,14 +311,14 @@ export const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
                 type="checkbox"
                 checked={formData.create_user_account}
                 onChange={handleChange}
-                style={{ width: '18px', height: '18px', accentColor: 'var(--color-primary-600)' }}
+                style={{ width: '18px', height: '18px', accentColor: 'var(--color-accent-magenta)' }}
               />
               <label
                 htmlFor="create_user_account"
-                style={{ fontSize: '0.8125rem', cursor: 'pointer', userSelect: 'none' }}
+                style={{ fontSize: '0.8125rem', cursor: 'pointer', userSelect: 'none', fontWeight: 400 }}
               >
-                <strong>Provision CrystalSpace Login Account</strong>
-                <div style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>
+                <span>Provision CrystalSpace Login Account</span>
+                <div style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem', fontWeight: 400 }}>
                   Auto-generates user account with credentials (Password: Password@123)
                 </div>
               </label>

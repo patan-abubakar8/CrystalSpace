@@ -48,7 +48,7 @@ export const StatCard: React.FC<StatCardProps> = ({
       />
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <span style={{ fontSize: '0.8125rem', fontWeight: 400, color: 'var(--text-secondary)' }}>
           {label}
         </span>
         <div
@@ -71,10 +71,10 @@ export const StatCard: React.FC<StatCardProps> = ({
       <div>
         <div
           style={{
-            fontSize: '2rem',
-            fontWeight: 800,
+            fontSize: '1.875rem',
+            fontWeight: 500,
             fontFamily: 'var(--font-heading)',
-            letterSpacing: '-0.03em',
+            letterSpacing: '-0.02em',
             lineHeight: 1,
             marginBottom: '0.5rem',
           }}

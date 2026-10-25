@@ -33,10 +33,12 @@
 ---
 
 ## Milestone 3: Client Scaffolding
-- [ ] **Frontend/web**:
-  - [ ] Scaffold React (Vite + TypeScript) project.
-  - [ ] Establish design system & tokens (Inter font, clean UI layout).
-  - [ ] Integrate API client & auth session.
+- [x] **Frontend/web**:
+  - [x] Scaffold React (Vite + TypeScript) project with modular architecture.
+  - [x] Establish Vanilla CSS design token system (`tokens.css`, `global.css`, `components.css`, dark/light themes, Outfit & Plus Jakarta Sans typography).
+  - [x] Integrate TanStack Query v5 (`@tanstack/react-query`) with automatic query caching, background polling, and mutations.
+  - [x] Implement feature modules: `auth`, `dashboard`, `employees`, `departments`, `leaves`.
+  - [x] Production build verified (`npm run build` passing with zero errors).
 - [ ] **Frontend/mobile**:
   - [ ] Scaffold Flutter app with clean architecture.
   - [ ] Implement mobile auth flow & secure storage.

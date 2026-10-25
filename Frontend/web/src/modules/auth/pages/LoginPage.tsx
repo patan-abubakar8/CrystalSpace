@@ -88,18 +88,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       <main className="auth-split-content">
         {/* LEFT SIDE: Headline + Tagline + Know more about crystal */}
         <div className="auth-left-section animate-fade-in">
-          <h1 className="auth-main-headline">
-            Log in to your <br />
-            <span className="auth-headline-gradient">crystal Account</span>
-          </h1>
+          <div className="auth-headline-block">
+            <h1 className="auth-main-headline">
+              Log in to your <br />
+              <span className="auth-headline-gradient">crystal Account</span>
+            </h1>
 
-          <p className="auth-tagline">
-            The unified workspace for modern enterprise workforce governance.
-          </p>
+            <p className="auth-tagline">
+              The unified workspace for enterprise governance.
+            </p>
+          </div>
 
           <a
             href="#landing"
-            className="auth-learn-more-link"
+            className="auth-learn-more-link auth-learn-more-desktop"
             onClick={handleLandingClick}
           >
             <span>Know more about crystal</span>
@@ -192,6 +194,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               {isLoading ? 'Logging in...' : 'Log in'}
             </button>
           </form>
+
+          {/* Mobile bottom link */}
+          <a
+            href="#landing"
+            className="auth-learn-more-link auth-learn-more-mobile"
+            onClick={handleLandingClick}
+          >
+            <span>Know more about crystal</span>
+            <ArrowRight size={15} />
+          </a>
         </div>
       </main>
 

@@ -304,100 +304,147 @@
   font-weight: 400;
 }
 
-/* Responsive Toast Notifications */
+/* Minimal Pill Toast Notifications (matching reference design) */
 .toast-container {
   position: fixed;
   z-index: 9999;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.65rem;
   pointer-events: none;
   box-sizing: border-box;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  top: 1.5rem;
 }
 
 @media (max-width: 640px) {
   .toast-container {
-    bottom: 1.25rem;
-    left: 1rem;
-    right: 1rem;
-    top: auto;
-    width: auto;
-    max-width: 100%;
-    align-items: stretch;
+    top: 1.25rem;
+    max-width: calc(100vw - 1.5rem);
   }
 }
 
-@media (min-width: 641px) {
-  .toast-container {
-    bottom: 2rem;
-    right: 2rem;
-    top: auto;
-    width: 360px;
-    max-width: calc(100vw - 4rem);
-  }
-}
-
-.toast-item {
+.toast-pill {
   pointer-events: auto;
-  padding: 0.85rem 1.15rem;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-  background: var(--bg-surface-elevated, #1a1c23);
-  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.1));
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.95rem 0.45rem 0.55rem;
+  border-radius: 9999px;
+  background: #141519;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4);
   box-sizing: border-box;
-  width: 100%;
+  width: max-content;
+  max-width: 100%;
+  animation: toastPillEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
-.toast-item-success {
-  border-left: 3px solid var(--color-success, #10b981);
+@keyframes toastPillEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.toast-item-error {
-  border-left: 3px solid var(--color-danger, #f43f5e);
+/* Filled Circular Icons */
+.toast-pill-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
 }
 
-.toast-item-warning {
-  border-left: 3px solid var(--color-warning, #f59e0b);
+.toast-pill-icon-success {
+  background: #10b981;
 }
 
-.toast-item-info {
-  border-left: 3px solid var(--color-info, #38bdf8);
+.toast-pill-icon-error {
+  background: #f97316;
 }
 
-.toast-title {
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: var(--text-primary);
-  line-height: 1.3;
+.toast-pill-icon-warning {
+  background: #f59e0b;
 }
 
-.toast-message {
+.toast-pill-icon-info {
+  background: #475569;
+}
+
+.toast-pill-text {
   font-size: 0.8125rem;
-  color: var(--text-secondary);
-  margin-top: 0.2rem;
-  line-height: 1.4;
-  word-break: break-word;
+  font-weight: 400;
+  color: #f8fafc;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
-.toast-close-btn {
+@media (max-width: 480px) {
+  .toast-pill-text {
+    white-space: normal;
+    font-size: 0.78125rem;
+    max-width: 240px;
+  }
+}
+
+.toast-pill-divider {
+  width: 1px;
+  height: 14px;
+  background-color: rgba(255, 255, 255, 0.18);
+  margin: 0 0.2rem;
+  flex-shrink: 0;
+}
+
+.toast-pill-action {
   background: none;
   border: none;
-  color: var(--text-tertiary);
+  color: #f8fafc;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.15rem 0.35rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-radius: 6px;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.toast-pill-action:hover {
+  color: #ffffff;
+  opacity: 0.85;
+}
+
+.toast-pill-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
   cursor: pointer;
   padding: 0.2rem;
-  font-size: 1.125rem;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color var(--transition-fast);
+  border-radius: 50%;
   flex-shrink: 0;
+  transition: color var(--transition-fast);
 }
 
-.toast-close-btn:hover {
-  color: var(--text-primary);
+.toast-pill-close:hover {
+  color: #ffffff;
 }

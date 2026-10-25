@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { Check, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
@@ -7,15 +8,24 @@ export interface NotificationItem {
   type: NotificationType;
   title: string;
   message?: string;
+  actionLabel?: string;
+  onAction?: () => void;
   duration?: number;
 }
 
 interface NotificationContextType {
   notifications: NotificationItem[];
-  notify: (type: NotificationType, title: string, message?: string, duration?: number) => void;
-  success: (title: string, message?: string) => void;
-  error: (title: string, message?: string) => void;
-  info: (title: string, message?: string) => void;
+  notify: (
+    type: NotificationType,
+    title: string,
+    message?: string,
+    duration?: number,
+    actionLabel?: string,
+    onAction?: () => void
+  ) => void;
+  success: (title: string, message?: string, actionLabel?: string, onAction?: () => void) => void;
+  error: (title: string, message?: string, actionLabel?: string, onAction?: () => void) => void;
+  info: (title: string, message?: string, actionLabel?: string, onAction?: () => void) => void;
   dismiss: (id: string) => void;
 }
 
@@ -29,11 +39,19 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, []);
 
   const notify = useCallback(
-    (type: NotificationType, title: string, message?: string, duration: number = 3200) => {
+    (
+      type: NotificationType,
+      title: string,
+      message?: string,
+      duration: number = 3200,
+      actionLabel?: string,
+      onAction?: () => void
+    ) => {
       const id = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-      const newItem: NotificationItem = { id, type, title, message, duration };
+      const newItem: NotificationItem = { id, type, title, message, duration, actionLabel, onAction };
 
-      setNotifications((prev) => [...prev.slice(-1), newItem]);
+      // Keep only current notification for ultra-clean pill presence
+      setNotifications([newItem]);
 
       if (duration > 0) {
         setTimeout(() => {
@@ -45,15 +63,18 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   );
 
   const success = useCallback(
-    (title: string, message?: string) => notify('success', title, message),
+    (title: string, message?: string, actionLabel?: string, onAction?: () => void) =>
+      notify('success', title, message, 3200, actionLabel, onAction),
     [notify]
   );
   const error = useCallback(
-    (title: string, message?: string) => notify('error', title, message),
+    (title: string, message?: string, actionLabel?: string, onAction?: () => void) =>
+      notify('error', title, message, 3600, actionLabel, onAction),
     [notify]
   );
   const info = useCallback(
-    (title: string, message?: string) => notify('info', title, message),
+    (title: string, message?: string, actionLabel?: string, onAction?: () => void) =>
+      notify('info', title, message, 3200, actionLabel, onAction),
     [notify]
   );
 
@@ -62,26 +83,55 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       value={{ notifications, notify, success, error, info, dismiss }}
     >
       {children}
-      {/* Toast Render Container */}
+      {/* Toast Render Container: Sleek centered pill matching reference */}
       <div id="toast-container" className="toast-container">
-        {notifications.map((n) => (
-          <div
-            key={n.id}
-            className={`toast-item toast-item-${n.type} animate-fade-in`}
-          >
-            <div>
-              <div className="toast-title">{n.title}</div>
-              {n.message && <div className="toast-message">{n.message}</div>}
-            </div>
-            <button
-              onClick={() => dismiss(n.id)}
-              className="toast-close-btn"
-              aria-label="Dismiss notification"
+        {notifications.map((n) => {
+          const displayText = n.message || n.title;
+
+          return (
+            <div
+              key={n.id}
+              className={`toast-pill toast-pill-${n.type}`}
+              role="alert"
             >
-              ×
-            </button>
-          </div>
-        ))}
+              {/* Solid Filled Circular Icon matching mockup */}
+              <div className={`toast-pill-icon toast-pill-icon-${n.type}`}>
+                {n.type === 'success' && <Check size={13} strokeWidth={2.8} />}
+                {n.type === 'error' && <AlertCircle size={14} strokeWidth={2.6} />}
+                {n.type === 'warning' && <AlertTriangle size={13} strokeWidth={2.6} />}
+                {n.type === 'info' && <Info size={13} strokeWidth={2.8} />}
+              </div>
+
+              {/* Toast Message */}
+              <span className="toast-pill-text">{displayText}</span>
+
+              {/* Optional Action Button (e.g. Verify) */}
+              {n.actionLabel && (
+                <>
+                  <div className="toast-pill-divider" />
+                  <button
+                    className="toast-pill-action"
+                    onClick={() => {
+                      n.onAction?.();
+                      dismiss(n.id);
+                    }}
+                  >
+                    {n.actionLabel}
+                  </button>
+                </>
+              )}
+
+              {/* Subtle Dismiss Cross */}
+              <button
+                onClick={() => dismiss(n.id)}
+                className="toast-pill-close"
+                aria-label="Dismiss notification"
+              >
+                <X size={13} />
+              </button>
+            </div>
+          );
+        })}
       </div>
     </NotificationContext.Provider>
   );

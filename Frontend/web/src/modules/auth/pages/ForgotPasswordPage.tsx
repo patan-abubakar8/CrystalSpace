@@ -11,8 +11,6 @@ import {
   AlertCircle,
   Mail,
   ShieldCheck,
-  KeyRound,
-  Clock,
 } from 'lucide-react';
 import './LoginPage.css';
 
@@ -56,223 +54,144 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onBackTo
   };
 
   return (
-    <div className="auth-split-layout">
-      {/* ====================================================================
-          LEFT PANEL: Immersive Security Showcase
-          ==================================================================== */}
-      <aside className="auth-showcase-panel">
-        <div className="auth-showcase-orb" />
-        <div className="auth-showcase-grid" />
+    <div className="auth-page-container">
+      {/* Centered Ambient Aura behind Card */}
+      <div className="auth-ambient-aura" />
+      <div className="auth-bg-grid" />
 
-        {/* Brand Header */}
-        <div className="auth-showcase-header">
-          <CrystalLogo variant="full" height={38} theme={theme} />
+      {/* TOP HEADER BAR: Brand Logo on Left, Theme Toggle on Right */}
+      <header className="auth-header-bar">
+        <div className="auth-logo-wrap">
+          <CrystalLogo variant="full" height={36} theme={theme} />
         </div>
 
-        {/* Narrative & Security Showcase */}
-        <div className="auth-showcase-body">
-          <div className="auth-showcase-pill">
-            <ShieldCheck size={13} />
-            <span>Account Recovery Protocol</span>
-          </div>
+        <button
+          id="btn-forgot-theme-toggle"
+          onClick={toggleTheme}
+          className="auth-theme-toggle"
+          title="Toggle color theme"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+      </header>
 
-          <h1 className="auth-showcase-title">
-            Cryptographic <br />
-            <span className="auth-headline-gradient">Identity Verification</span> &amp; Security.
-          </h1>
-
-          <p className="auth-showcase-desc">
-            Protecting enterprise integrity with time-sensitive single-use tokens,
-            cryptographic signatures, and strict audit logging.
-          </p>
-
-          <div className="auth-feature-list">
-            <div className="auth-feature-item">
-              <div className="auth-feature-icon-wrap">
-                <Clock size={18} />
-              </div>
-              <div className="auth-feature-text">
-                <div className="auth-feature-name">Time-Bound Ephemeral Tokens</div>
-                <div className="auth-feature-summary">
-                  Recovery links expire automatically in 15 minutes and can only be used once.
-                </div>
-              </div>
-            </div>
-
-            <div className="auth-feature-item">
-              <div className="auth-feature-icon-wrap">
-                <KeyRound size={18} />
-              </div>
-              <div className="auth-feature-text">
-                <div className="auth-feature-name">Multi-Layered Verification</div>
-                <div className="auth-feature-summary">
-                  Cryptographically signed link dispatched directly to your registered address.
-                </div>
-              </div>
-            </div>
-
-            <div className="auth-feature-item">
-              <div className="auth-feature-icon-wrap">
-                <ShieldCheck size={18} />
-              </div>
-              <div className="auth-feature-text">
-                <div className="auth-feature-name">Audited Security Event</div>
-                <div className="auth-feature-summary">
-                  Password reset attempts are logged with client metadata in the organizational trail.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Operational Status & Trust Footer */}
-        <div className="auth-showcase-footer">
-          <div className="auth-status-indicator">
-            <span className="auth-status-dot" />
-            <span>All Systems Operational · SOC2 Type II Certified</span>
-          </div>
-          <span>CrystalSpace v2.4</span>
-        </div>
-      </aside>
-
-      {/* ====================================================================
-          RIGHT PANEL: Focused Recovery Card
-          ==================================================================== */}
-      <main className="auth-form-panel">
-        {/* Top Actions: Mobile Brand + Theme Switcher */}
-        <header className="auth-top-actions">
-          <div className="auth-mobile-logo">
-            <CrystalLogo variant="full" height={32} theme={theme} />
-          </div>
-
-          <button
-            id="btn-forgot-theme-toggle"
-            onClick={toggleTheme}
-            className="auth-theme-toggle"
-            title="Toggle color theme"
-            aria-label="Toggle theme"
+      {/* CENTER VIEWPORT: Pure Focused Recovery Card */}
+      <main className="auth-center-stage">
+        <div className="auth-card animate-fade-in">
+          <a
+            href="#login"
+            className="auth-back-link"
+            onClick={handleBackClick}
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-        </header>
+            <ArrowLeft size={15} />
+            <span>Back to login</span>
+          </a>
 
-        {/* Center: Frosted Glass Auth Card */}
-        <div className="auth-form-center">
-          <div className="auth-card animate-fade-in">
-            <a
-              href="#login"
-              className="auth-back-link"
-              onClick={handleBackClick}
-            >
-              <ArrowLeft size={15} />
-              <span>Back to login</span>
-            </a>
-
-            {!isSubmitted ? (
-              <>
-                <div className="auth-card-header">
-                  <h2 className="auth-card-title">
-                    Reset your <br />
-                    <span className="auth-headline-gradient">Password</span>
-                  </h2>
-                  <p className="auth-card-subtitle">
-                    Enter your registered email address and we&apos;ll send a secure password recovery link.
-                  </p>
-                </div>
-
-                {errorMsg && (
-                  <div className="auth-alert-box" role="alert">
-                    <AlertCircle size={15} style={{ flexShrink: 0 }} />
-                    <span>{errorMsg}</span>
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                  <div className="auth-form-group">
-                    <label htmlFor="forgot-email" className="auth-form-label">
-                      Email address
-                    </label>
-                    <div className="auth-input-wrapper">
-                      <Mail size={16} className="auth-input-icon" />
-                      <input
-                        id="forgot-email"
-                        type="email"
-                        className="auth-input-field"
-                        placeholder="name@organization.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="email"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    id="btn-forgot-submit"
-                    type="submit"
-                    className="auth-submit-btn"
-                    disabled={isSubmitting}
-                    style={{ marginTop: '0.75rem' }}
-                  >
-                    {isSubmitting ? (
-                      'Sending link...'
-                    ) : (
-                      <>
-                        <span>Send reset link</span>
-                        <ArrowRight size={16} />
-                      </>
-                    )}
-                  </button>
-
-                  <div className="auth-card-footer-info">
-                    <span className="auth-security-badge">
-                      <ShieldCheck size={14} />
-                      <span>Cryptographically Signed Link · 15m Expiry</span>
-                    </span>
-                  </div>
-                </form>
-              </>
-            ) : (
-              <div className="auth-success-card animate-fade-in">
-                <div className="auth-success-icon-wrap">
-                  <Check size={28} strokeWidth={2.5} />
-                </div>
-
-                <h3 className="auth-success-title">Recovery Link Dispatched</h3>
-                <p className="auth-success-desc">
-                  If an account exists for <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{email}</span>,
-                  you will receive password reset instructions shortly.
+          {!isSubmitted ? (
+            <>
+              <div className="auth-card-header">
+                <h1 className="auth-card-title">
+                  Reset your <br />
+                  <span className="auth-headline-gradient">Password</span>
+                </h1>
+                <p className="auth-card-subtitle">
+                  Enter your registered email address and we&apos;ll send a secure password recovery link.
                 </p>
+              </div>
+
+              {errorMsg && (
+                <div className="auth-alert-box" role="alert">
+                  <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <div className="auth-form-group">
+                  <label htmlFor="forgot-email" className="auth-form-label">
+                    Email address
+                  </label>
+                  <div className="auth-input-wrapper">
+                    <Mail size={16} className="auth-input-icon" />
+                    <input
+                      id="forgot-email"
+                      type="email"
+                      className="auth-input-field"
+                      placeholder="name@organization.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
+                      required
+                    />
+                  </div>
+                </div>
 
                 <button
-                  id="btn-forgot-back-login"
-                  type="button"
+                  id="btn-forgot-submit"
+                  type="submit"
                   className="auth-submit-btn"
-                  onClick={onBackToLogin}
+                  disabled={isSubmitting}
+                  style={{ marginTop: '0.75rem' }}
                 >
-                  Return to login
+                  {isSubmitting ? (
+                    'Sending link...'
+                  ) : (
+                    <>
+                      <span>Send reset link</span>
+                      <ArrowRight size={16} />
+                    </>
+                  )}
                 </button>
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Bottom Footer */}
-        <footer className="auth-panel-footer">
-          <span>© 2026 CrystalSpace Inc. All rights reserved.</span>
-          <div className="auth-footer-links">
-            <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
-              Privacy Policy
-            </a>
-            <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
-              Terms of Service
-            </a>
-            <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
-              Security
-            </a>
-          </div>
-        </footer>
+                <div className="auth-card-footer-info">
+                  <span className="auth-security-badge">
+                    <ShieldCheck size={14} />
+                    <span>Cryptographically Signed Link · 15m Expiry</span>
+                  </span>
+                </div>
+              </form>
+            </>
+          ) : (
+            <div className="auth-success-card animate-fade-in">
+              <div className="auth-success-icon-wrap">
+                <Check size={28} strokeWidth={2.5} />
+              </div>
+
+              <h2 className="auth-success-title">Recovery Link Dispatched</h2>
+              <p className="auth-success-desc">
+                If an account exists for <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{email}</span>,
+                you will receive password reset instructions shortly.
+              </p>
+
+              <button
+                id="btn-forgot-back-login"
+                type="button"
+                className="auth-submit-btn"
+                onClick={onBackToLogin}
+              >
+                Return to login
+              </button>
+            </div>
+          )}
+        </div>
       </main>
+
+      {/* BOTTOM FOOTER */}
+      <footer className="auth-footer-bar">
+        <span>© 2026 CrystalSpace Inc. All rights reserved.</span>
+        <div className="auth-footer-links">
+          <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
+            Privacy Policy
+          </a>
+          <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
+            Terms of Service
+          </a>
+          <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
+            Security
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };

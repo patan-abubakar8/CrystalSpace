@@ -139,11 +139,11 @@
 .auth-tagline {
   color: var(--text-secondary);
   font-size: clamp(0.95rem, 1.2vw, 1.0625rem);
-  line-height: 1.6;
+  line-height: 1.5;
   font-weight: 400;
-  margin-top: 1.25rem;
+  margin-top: 1.15rem;
   margin-bottom: 0;
-  max-width: 460px;
+  max-width: 580px;
 }
 
 .auth-learn-more-link {

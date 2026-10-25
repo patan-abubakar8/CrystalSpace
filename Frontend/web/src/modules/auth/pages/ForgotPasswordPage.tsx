@@ -96,7 +96,7 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
           </h1>
 
           <p className="auth-tagline">
-            Enter your registered organizational email address and we&apos;ll dispatch a secure recovery link.
+            Enter your organizational email to receive a secure recovery link.
           </p>
 
           <a

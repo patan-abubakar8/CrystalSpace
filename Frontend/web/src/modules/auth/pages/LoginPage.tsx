@@ -94,7 +94,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           </h1>
 
           <p className="auth-tagline">
-            Streamline workforce governance, departmental operations, and enterprise telemetry in one workspace.
+            The unified workspace for modern enterprise workforce governance.
           </p>
 
           <a

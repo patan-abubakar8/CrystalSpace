@@ -40,12 +40,12 @@
   background: radial-gradient(circle, rgba(217, 70, 239, 0.05) 0%, rgba(147, 51, 234, 0.015) 50%, transparent 70%);
 }
 
-/* Responsive Top Bar: Theme on left, Logo on right */
+/* Responsive Top Bar: Logo on left, Theme on right */
 .login-header-bar {
   width: 100%;
-  max-width: 1360px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1.75rem 2.5rem;
+  padding: 2rem 2rem 0.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -86,13 +86,13 @@
 .login-content-wrapper {
   flex: 1;
   width: 100%;
-  max-width: 1240px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2.5rem 3rem;
+  padding: clamp(2.5rem, 8vh, 5rem) 2rem 3rem;
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  align-items: center;
-  gap: 4rem;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: start;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
   position: relative;
   z-index: 10;
   box-sizing: border-box;
@@ -102,8 +102,9 @@
 .login-headline-section {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   max-width: 520px;
+  padding-top: 0.25rem;
 }
 
 .login-main-headline {

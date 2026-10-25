@@ -34,8 +34,12 @@ export const LoginPage: React.FC = () => {
       {/* Soft Ambient Neon Glow */}
       <div className="login-ambient-glow" />
 
-      {/* TOP HEADER BAR: Theme Toggle on Left, Brand Logo on Right */}
+      {/* TOP HEADER BAR: Brand Logo on Left, Theme Toggle on Right */}
       <header className="login-header-bar">
+        <div className="login-logo-wrapper">
+          <CrystalLogo variant="full" height={34} theme={theme} />
+        </div>
+
         <button
           id="btn-login-theme-toggle"
           onClick={toggleTheme}
@@ -45,10 +49,6 @@ export const LoginPage: React.FC = () => {
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
-
-        <div className="login-logo-wrapper">
-          <CrystalLogo variant="full" height={34} theme={theme} />
-        </div>
       </header>
 
       {/* TWO COLUMN RESPONSIVE CONTENT AREA */}

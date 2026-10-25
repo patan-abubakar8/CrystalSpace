@@ -76,7 +76,7 @@ export const LoginPage: React.FC = () => {
             {/* Input 1: Email / Number */}
             <div className="login-form-group">
               <label htmlFor="login-email" className="login-form-label">
-                Email address
+                Email
               </label>
               <input
                 id="login-email"
@@ -93,7 +93,7 @@ export const LoginPage: React.FC = () => {
             {/* Input 2: Password with Eye Toggle */}
             <div className="login-form-group">
               <label htmlFor="login-password" className="login-form-label">
-                Enter your password
+                Password
               </label>
               <div className="login-password-container">
                 <input

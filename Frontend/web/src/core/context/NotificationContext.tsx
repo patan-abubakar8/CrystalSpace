@@ -29,11 +29,11 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, []);
 
   const notify = useCallback(
-    (type: NotificationType, title: string, message?: string, duration: number = 4000) => {
+    (type: NotificationType, title: string, message?: string, duration: number = 3200) => {
       const id = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
       const newItem: NotificationItem = { id, type, title, message, duration };
 
-      setNotifications((prev) => [...prev, newItem]);
+      setNotifications((prev) => [...prev.slice(-1), newItem]);
 
       if (duration > 0) {
         setTimeout(() => {
@@ -63,57 +63,19 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     >
       {children}
       {/* Toast Render Container */}
-      <div
-        id="toast-container"
-        style={{
-          position: 'fixed',
-          top: '1.5rem',
-          right: '1.5rem',
-          zIndex: 9999,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.75rem',
-          pointerEvents: 'none',
-          maxWidth: '400px',
-          width: '100%',
-        }}
-      >
+      <div id="toast-container" className="toast-container">
         {notifications.map((n) => (
           <div
             key={n.id}
-            className="animate-fade-in card"
-            style={{
-              pointerEvents: 'auto',
-              padding: '1rem',
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'space-between',
-              gap: '0.75rem',
-              borderLeft: `4px solid ${
-                n.type === 'success'
-                  ? 'var(--color-success)'
-                  : n.type === 'error'
-                  ? 'var(--color-danger)'
-                  : n.type === 'warning'
-                  ? 'var(--color-warning)'
-                  : 'var(--color-info)'
-              }`,
-              boxShadow: 'var(--shadow-lg)',
-              background: 'var(--bg-surface)',
-            }}
+            className={`toast-item toast-item-${n.type} animate-fade-in`}
           >
             <div>
-              <div style={{ fontWeight: 500, fontSize: '0.875rem' }}>{n.title}</div>
-              {n.message && (
-                <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-                  {n.message}
-                </div>
-              )}
+              <div className="toast-title">{n.title}</div>
+              {n.message && <div className="toast-message">{n.message}</div>}
             </div>
             <button
               onClick={() => dismiss(n.id)}
-              className="btn btn-ghost btn-sm"
-              style={{ padding: '0.2rem', minWidth: 'auto', lineHeight: 1 }}
+              className="toast-close-btn"
               aria-label="Dismiss notification"
             >
               ×

@@ -82,7 +82,10 @@ func main() {
 		{Name: "Administration", Code: "ADM", Description: "Office and Systems Administration"},
 	}
 	for _, d := range depts {
-		_ = deptRepo.Create(ctx, &d)
+		deptCopy := d
+		if err := deptRepo.Create(ctx, &deptCopy); err != nil {
+			slog.Warn("Department seed notice (may already exist)", "dept", d.Name, "error", err)
+		}
 	}
 	slog.Info("Seeded default departments")
 

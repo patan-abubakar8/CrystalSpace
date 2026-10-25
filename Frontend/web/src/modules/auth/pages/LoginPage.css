@@ -91,17 +91,17 @@
 }
 
 /* ==========================================================================
-   Full-Width Main 2-Column Content Area (Edge-to-edge, No Box Margins)
+   Main 2-Column Content Area (Centered & Close Proximity, No Card)
    ========================================================================== */
 .auth-split-content {
   flex: 1;
   width: 100%;
-  margin: 0;
+  margin: 0 auto;
   padding: clamp(1rem, 2.5vh, 2.5rem) clamp(1.5rem, 4vw, 4rem);
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: clamp(2.5rem, 6vw, 6rem);
+  gap: clamp(3rem, 5vw, 5.5rem);
   position: relative;
   z-index: 10;
   box-sizing: border-box;
@@ -114,14 +114,16 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 680px;
+  width: 100%;
+  max-width: 520px;
+  flex-shrink: 1;
 }
 
 .auth-main-headline {
-  font-size: clamp(2.4rem, 4vw, 4.2rem);
-  line-height: 1.12;
+  font-size: clamp(2.4rem, 3.8vw, 3.8rem);
+  line-height: 1.15;
   font-weight: 400;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
   margin: 0;
 }
@@ -136,12 +138,12 @@
 
 .auth-tagline {
   color: var(--text-secondary);
-  font-size: clamp(1rem, 1.25vw, 1.15rem);
+  font-size: clamp(0.95rem, 1.2vw, 1.0625rem);
   line-height: 1.6;
   font-weight: 400;
   margin-top: 1.25rem;
   margin-bottom: 0;
-  max-width: 560px;
+  max-width: 460px;
 }
 
 .auth-learn-more-link {
@@ -163,15 +165,16 @@
 }
 
 /* ==========================================================================
-   RIGHT SIDE: Pure Form (NO CARD CONTAINER - sits cleanly on canvas)
+   RIGHT SIDE: Pure Form (NO CARD CONTAINER - sits cleanly next to left)
    ========================================================================== */
 .auth-right-section {
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  max-width: 480px;
-  margin-left: auto;
+  max-width: 440px;
+  flex-shrink: 0;
+  margin: 0;
   box-sizing: border-box;
 }
 
@@ -436,7 +439,7 @@
   }
 
   .auth-split-content {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 2rem;
     padding: 1.25rem 1.5rem 2rem;
   }

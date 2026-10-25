@@ -9,16 +9,18 @@ import {
   ArrowRight,
   Check,
   AlertCircle,
-  Mail,
-  ShieldCheck,
 } from 'lucide-react';
 import './LoginPage.css';
 
 interface ForgotPasswordPageProps {
   onBackToLogin: () => void;
+  onNavigateToLanding?: () => void;
 }
 
-export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onBackToLogin }) => {
+export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
+  onBackToLogin,
+  onNavigateToLanding,
+}) => {
   const { theme, toggleTheme } = useTheme();
   const { success } = useNotification();
 
@@ -53,11 +55,19 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onBackTo
     onBackToLogin();
   };
 
+  const handleLandingClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onNavigateToLanding) {
+      onNavigateToLanding();
+    } else {
+      window.location.hash = '#landing';
+    }
+  };
+
   return (
     <div className="auth-page-container">
-      {/* Centered Ambient Aura behind Card */}
+      {/* Soft Ambient Crystal Glow */}
       <div className="auth-ambient-aura" />
-      <div className="auth-bg-grid" />
 
       {/* TOP HEADER BAR: Brand Logo on Left, Theme Toggle on Right */}
       <header className="auth-header-bar">
@@ -76,9 +86,31 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onBackTo
         </button>
       </header>
 
-      {/* CENTER VIEWPORT: Pure Focused Recovery Card */}
-      <main className="auth-center-stage">
-        <div className="auth-card animate-fade-in">
+      {/* TWO-COLUMN UNBOXED CONTENT (NO CARD CONTAINER) */}
+      <main className="auth-split-content">
+        {/* LEFT SIDE: Headline + Tagline + Know more about crystal */}
+        <div className="auth-left-section animate-fade-in">
+          <h1 className="auth-main-headline">
+            Reset your <br />
+            <span className="auth-headline-gradient">crystal Password</span>
+          </h1>
+
+          <p className="auth-tagline">
+            Enter your registered organizational email address and we&apos;ll dispatch a secure recovery link.
+          </p>
+
+          <a
+            href="#landing"
+            className="auth-learn-more-link"
+            onClick={handleLandingClick}
+          >
+            <span>Know more about crystal</span>
+            <ArrowRight size={15} />
+          </a>
+        </div>
+
+        {/* RIGHT SIDE: Clean Form sitting directly on page (NO CARD) */}
+        <div className="auth-right-section animate-fade-in">
           <a
             href="#login"
             className="auth-back-link"
@@ -88,74 +120,45 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onBackTo
             <span>Back to login</span>
           </a>
 
+          {errorMsg && (
+            <div className="auth-alert-box" role="alert">
+              <AlertCircle size={15} style={{ flexShrink: 0 }} />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
           {!isSubmitted ? (
-            <>
-              <div className="auth-card-header">
-                <h1 className="auth-card-title">
-                  Reset your <br />
-                  <span className="auth-headline-gradient">Password</span>
-                </h1>
-                <p className="auth-card-subtitle">
-                  Enter your registered email address and we&apos;ll send a secure password recovery link.
-                </p>
+            <form onSubmit={handleSubmit} className="auth-clean-form">
+              <div className="auth-form-group">
+                <label htmlFor="forgot-email" className="auth-form-label">
+                  Email
+                </label>
+                <input
+                  id="forgot-email"
+                  type="email"
+                  className="auth-input-field"
+                  placeholder="name@organization.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                />
               </div>
 
-              {errorMsg && (
-                <div className="auth-alert-box" role="alert">
-                  <AlertCircle size={15} style={{ flexShrink: 0 }} />
-                  <span>{errorMsg}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                <div className="auth-form-group">
-                  <label htmlFor="forgot-email" className="auth-form-label">
-                    Email address
-                  </label>
-                  <div className="auth-input-wrapper">
-                    <Mail size={16} className="auth-input-icon" />
-                    <input
-                      id="forgot-email"
-                      type="email"
-                      className="auth-input-field"
-                      placeholder="name@organization.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      autoComplete="email"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <button
-                  id="btn-forgot-submit"
-                  type="submit"
-                  className="auth-submit-btn"
-                  disabled={isSubmitting}
-                  style={{ marginTop: '0.75rem' }}
-                >
-                  {isSubmitting ? (
-                    'Sending link...'
-                  ) : (
-                    <>
-                      <span>Send reset link</span>
-                      <ArrowRight size={16} />
-                    </>
-                  )}
-                </button>
-
-                <div className="auth-card-footer-info">
-                  <span className="auth-security-badge">
-                    <ShieldCheck size={14} />
-                    <span>Cryptographically Signed Link · 15m Expiry</span>
-                  </span>
-                </div>
-              </form>
-            </>
+              <button
+                id="btn-forgot-submit"
+                type="submit"
+                className="auth-submit-btn"
+                disabled={isSubmitting}
+                style={{ marginTop: '0.5rem' }}
+              >
+                {isSubmitting ? 'Sending link...' : 'Send reset link'}
+              </button>
+            </form>
           ) : (
-            <div className="auth-success-card animate-fade-in">
+            <div className="auth-success-state animate-fade-in">
               <div className="auth-success-icon-wrap">
-                <Check size={28} strokeWidth={2.5} />
+                <Check size={24} strokeWidth={2.5} />
               </div>
 
               <h2 className="auth-success-title">Recovery Link Dispatched</h2>

@@ -3,23 +3,24 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../../../core/context/ThemeContext';
 import { CrystalLogo } from '../../../core/ui/CrystalLogo';
 import {
-  Mail,
-  Lock,
   Eye,
   EyeOff,
   Moon,
   Sun,
   AlertCircle,
-  ShieldCheck,
   ArrowRight,
 } from 'lucide-react';
 import './LoginPage.css';
 
 interface LoginPageProps {
   onNavigateToForgot?: () => void;
+  onNavigateToLanding?: () => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({
+  onNavigateToForgot,
+  onNavigateToLanding,
+}) => {
   const { login, isLoading } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -52,11 +53,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
     }
   };
 
+  const handleLandingClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onNavigateToLanding) {
+      onNavigateToLanding();
+    } else {
+      window.location.hash = '#landing';
+    }
+  };
+
   return (
     <div className="auth-page-container">
-      {/* Centered Ambient Aura behind Card */}
+      {/* Soft Ambient Crystal Glow */}
       <div className="auth-ambient-aura" />
-      <div className="auth-bg-grid" />
 
       {/* TOP HEADER BAR: Brand Logo on Left, Theme Toggle on Right */}
       <header className="auth-header-bar">
@@ -75,19 +84,31 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
         </button>
       </header>
 
-      {/* CENTER VIEWPORT: Pure Focused Auth Card */}
-      <main className="auth-center-stage">
-        <div className="auth-card animate-fade-in">
-          <div className="auth-card-header">
-            <h1 className="auth-card-title">
-              Login to your <br />
-              <span className="auth-headline-gradient">Crystal Account</span>
-            </h1>
-            <p className="auth-card-subtitle">
-              Enter your organizational credentials to sign in.
-            </p>
-          </div>
+      {/* TWO-COLUMN UNBOXED CONTENT (NO CARD CONTAINER) */}
+      <main className="auth-split-content">
+        {/* LEFT SIDE: Headline + Tagline + Know more about crystal */}
+        <div className="auth-left-section animate-fade-in">
+          <h1 className="auth-main-headline">
+            Log in to your <br />
+            <span className="auth-headline-gradient">crystal Account</span>
+          </h1>
 
+          <p className="auth-tagline">
+            Streamline workforce governance, departmental operations, and enterprise telemetry in one workspace.
+          </p>
+
+          <a
+            href="#landing"
+            className="auth-learn-more-link"
+            onClick={handleLandingClick}
+          >
+            <span>Know more about crystal</span>
+            <ArrowRight size={15} />
+          </a>
+        </div>
+
+        {/* RIGHT SIDE: Clean Form sitting directly on page (NO CARD) */}
+        <div className="auth-right-section animate-fade-in">
           {errorMsg && (
             <div className="auth-alert-box" role="alert">
               <AlertCircle size={15} style={{ flexShrink: 0 }} />
@@ -95,34 +116,30 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <form onSubmit={handleSubmit} className="auth-clean-form">
             {/* Email Address */}
             <div className="auth-form-group">
               <label htmlFor="login-email" className="auth-form-label">
-                Email address
+                Email
               </label>
-              <div className="auth-input-wrapper">
-                <Mail size={16} className="auth-input-icon" />
-                <input
-                  id="login-email"
-                  type="email"
-                  className="auth-input-field"
-                  placeholder="name@organization.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  required
-                />
-              </div>
+              <input
+                id="login-email"
+                type="email"
+                className="auth-input-field"
+                placeholder="superadmin@organize.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                required
+              />
             </div>
 
-            {/* Password with Eye Toggle */}
+            {/* Password */}
             <div className="auth-form-group">
               <label htmlFor="login-password" className="auth-form-label">
                 Password
               </label>
-              <div className="auth-input-wrapper">
-                <Lock size={16} className="auth-input-icon" />
+              <div className="auth-password-wrapper">
                 <input
                   id="login-password"
                   type={showPassword ? 'text' : 'password'}
@@ -144,7 +161,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
               </div>
             </div>
 
-            {/* Remember me & Forget Password */}
+            {/* Options: Remember me & Forget password */}
             <div className="auth-options-row">
               <label className="auth-remember-label">
                 <input
@@ -165,30 +182,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
               </a>
             </div>
 
-            {/* Primary Submit Button */}
+            {/* Submit Button */}
             <button
               id="btn-login-submit"
               type="submit"
               className="auth-submit-btn"
               disabled={isLoading}
             >
-              {isLoading ? (
-                'Signing in...'
-              ) : (
-                <>
-                  <span>Log in</span>
-                  <ArrowRight size={16} />
-                </>
-              )}
+              {isLoading ? 'Logging in...' : 'Log in'}
             </button>
-
-            {/* Security Badge */}
-            <div className="auth-card-footer-info">
-              <span className="auth-security-badge">
-                <ShieldCheck size={14} />
-                <span>End-to-End Encrypted Session</span>
-              </span>
-            </div>
           </form>
         </div>
       </main>

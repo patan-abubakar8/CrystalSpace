@@ -1,7 +1,9 @@
 /* ==========================================================================
-   CrystalSpace Pure Focused Auth Layout (Linear / Clerk / Vercel Style)
-   Pure focused login card, perfectly centered in viewport with ambient glow
-   Strictly NO landing page marketing copy. Google Sans typography (non-bold)
+   CrystalSpace Pure Unboxed Auth Layout (No Card Design)
+   Left Side: "Log in to your crystal Account" + tagline + "Know more about crystal"
+   Right Side: Clean form sitting directly on page (No card container)
+   Google Sans typography (strictly non-bold: 400 & 500 weights)
+   Dynamically styled for Dark & Light themes via tokens
    ========================================================================== */
 
 .auth-page-container {
@@ -21,51 +23,29 @@
 }
 
 /* ==========================================================================
-   Ambient Crystal Aura (Centered Glow behind Card)
+   Soft Ambient Glow (Centered subtle crystal aura)
    ========================================================================== */
 .auth-ambient-aura {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 45%;
+  left: 45%;
   transform: translate(-50%, -50%);
-  width: 650px;
-  height: 650px;
+  width: 700px;
+  height: 700px;
   max-width: 90vw;
   max-height: 90vh;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(100px);
+  filter: blur(120px);
   z-index: 1;
 }
 
 [data-theme='dark'] .auth-ambient-aura {
-  background: radial-gradient(circle, rgba(217, 70, 239, 0.14) 0%, rgba(147, 51, 234, 0.06) 45%, transparent 70%);
+  background: radial-gradient(circle, rgba(217, 70, 239, 0.12) 0%, rgba(147, 51, 234, 0.04) 50%, transparent 70%);
 }
 
 [data-theme='light'] .auth-ambient-aura {
-  background: radial-gradient(circle, rgba(217, 70, 239, 0.08) 0%, rgba(147, 51, 234, 0.03) 45%, transparent 70%);
-}
-
-/* Subtle Geometric Pattern Overlay */
-.auth-bg-grid {
-  position: absolute;
-  inset: 0;
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.25;
-}
-
-[data-theme='dark'] .auth-bg-grid {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-}
-
-[data-theme='light'] .auth-bg-grid {
-  background-image: 
-    linear-gradient(to right, rgba(147, 51, 234, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(147, 51, 234, 0.04) 1px, transparent 1px);
+  background: radial-gradient(circle, rgba(217, 70, 239, 0.06) 0%, rgba(147, 51, 234, 0.02) 50%, transparent 70%);
 }
 
 /* ==========================================================================
@@ -73,9 +53,9 @@
    ========================================================================== */
 .auth-header-bar {
   width: 100%;
-  max-width: 1320px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 1.75rem 2rem 1rem;
+  padding: 2rem 2.5rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -112,74 +92,40 @@
 }
 
 /* ==========================================================================
-   Center Viewport: Focused Auth Card
+   Main 2-Column Content Area (Harmonious Optical Proximity, No Card)
    ========================================================================== */
-.auth-center-stage {
+.auth-split-content {
   flex: 1;
-  display: flex;
+  width: 100%;
+  max-width: 1100px;
+  margin: auto auto;
+  padding: 2rem 2.5rem 3rem;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
   align-items: center;
-  justify-content: center;
-  padding: 1.5rem 1.5rem 2rem;
+  gap: clamp(2.5rem, 5vw, 5rem);
   position: relative;
   z-index: 10;
   box-sizing: border-box;
 }
 
-.auth-card {
-  width: 100%;
-  max-width: 440px;
-  padding: clamp(2rem, 3.2vw, 2.75rem);
-  border-radius: 24px;
-  box-sizing: border-box;
-  position: relative;
-  transition: all var(--transition-normal);
+/* ==========================================================================
+   LEFT SIDE: Headline + Tagline + Know more about crystal
+   ========================================================================== */
+.auth-left-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 520px;
 }
 
-[data-theme='dark'] .auth-card {
-  background: rgba(20, 21, 28, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.65),
-              0 0 35px -8px rgba(192, 38, 211, 0.14);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-[data-theme='light'] .auth-card {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(217, 70, 239, 0.16);
-  box-shadow: 0 20px 50px -12px rgba(147, 51, 234, 0.09),
-              0 2px 10px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-/* Card Header */
-.auth-card-header {
-  margin-bottom: 2rem;
-}
-
-.auth-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  margin-bottom: 1.35rem;
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.auth-back-link:hover {
-  color: #d946ef;
-}
-
-.auth-card-title {
-  font-size: clamp(1.65rem, 2.2vw, 2.1rem);
-  line-height: 1.2;
+.auth-main-headline {
+  font-size: clamp(2.2rem, 3.6vw, 3.5rem);
+  line-height: 1.15;
   font-weight: 400;
   letter-spacing: -0.025em;
   color: var(--text-primary);
-  margin: 0 0 0.5rem 0;
+  margin: 0;
 }
 
 .auth-headline-gradient {
@@ -187,18 +133,55 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
-  font-weight: 500;
-}
-
-.auth-card-subtitle {
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
   font-weight: 400;
-  margin: 0;
 }
 
-/* Alert Box */
+.auth-tagline {
+  color: var(--text-secondary);
+  font-size: clamp(0.9375rem, 1.15vw, 1.0625rem);
+  line-height: 1.6;
+  font-weight: 400;
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+  max-width: 440px;
+}
+
+.auth-learn-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+  color: #d946ef;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  width: fit-content;
+  transition: gap var(--transition-fast), color var(--transition-fast);
+}
+
+.auth-learn-more-link:hover {
+  color: #c026d3;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   RIGHT SIDE: Pure Form (NO CARD - sits cleanly on page background)
+   ========================================================================== */
+.auth-right-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+  box-sizing: border-box;
+}
+
+.auth-clean-form {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .auth-alert-box {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -206,7 +189,7 @@
   background-color: var(--color-danger-bg);
   border: 1px solid rgba(244, 63, 94, 0.25);
   color: var(--color-danger);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -217,7 +200,7 @@
 
 /* Form Groups & Inputs */
 .auth-form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -230,25 +213,6 @@
   display: block;
 }
 
-.auth-input-wrapper {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.auth-input-icon {
-  position: absolute;
-  left: 1rem;
-  color: var(--text-tertiary);
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color var(--transition-fast);
-}
-
 .auth-input-field {
   width: 100%;
   height: 48px;
@@ -256,7 +220,7 @@
   border: 1px solid var(--border-default);
   color: var(--text-primary);
   border-radius: 14px;
-  padding: 0 1rem 0 2.85rem;
+  padding: 0 1rem;
   font-size: 0.875rem;
   font-weight: 400;
   font-family: inherit;
@@ -270,13 +234,14 @@
   box-shadow: 0 0 0 3px rgba(192, 38, 211, 0.16);
 }
 
-.auth-input-field:focus + .auth-input-icon,
-.auth-input-wrapper:focus-within .auth-input-icon {
-  color: #d946ef;
-}
-
 .auth-input-field::placeholder {
   color: var(--text-tertiary);
+}
+
+.auth-password-wrapper {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .auth-password-input {
@@ -286,6 +251,8 @@
 .auth-password-toggle {
   position: absolute;
   right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--text-tertiary);
@@ -307,7 +274,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-top: 0.25rem;
   margin-bottom: 1.75rem;
   font-size: 0.8125rem;
   width: 100%;
@@ -365,7 +331,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
 }
 
 .auth-submit-btn:hover:not(:disabled) {
@@ -380,21 +345,55 @@
   transform: none;
 }
 
-/* Security Badge below Form */
-.auth-card-footer-info {
-  margin-top: 1.75rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.auth-security-badge {
+/* Back Link for Forgot Password */
+.auth-back-link {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-  font-weight: 400;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.auth-back-link:hover {
+  color: #d946ef;
+}
+
+/* Success Confirmation State */
+.auth-success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+}
+
+.auth-success-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.auth-success-title {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.auth-success-desc {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
 }
 
 /* ==========================================================================
@@ -402,9 +401,9 @@
    ========================================================================== */
 .auth-footer-bar {
   width: 100%;
-  max-width: 1320px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 1.25rem 2rem 1.75rem;
+  padding: 1.25rem 2.5rem 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -432,76 +431,61 @@
 }
 
 /* ==========================================================================
-   Success State Card for Forgot Password
-   ========================================================================== */
-.auth-success-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 0.75rem 0 0.5rem;
-}
-
-.auth-success-icon-wrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--color-success);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.25rem;
-}
-
-.auth-success-title {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.auth-success-desc {
-  font-size: 0.875rem;
-  line-height: 1.55;
-  color: var(--text-secondary);
-  margin-bottom: 1.75rem;
-}
-
-/* ==========================================================================
    Responsive Adaptations
    ========================================================================== */
-@media (max-width: 640px) {
+@media (max-width: 960px) {
+  .auth-header-bar {
+    padding: 1.25rem 1.5rem 0.5rem;
+  }
+
+  .auth-split-content {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+    padding: 1.5rem 1.5rem 2.5rem;
+  }
+
+  .auth-left-section {
+    max-width: 100%;
+  }
+
+  .auth-right-section {
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  .auth-footer-bar {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
   .auth-header-bar {
     padding: 1rem 1rem 0.5rem;
   }
 
-  .auth-center-stage {
-    padding: 1rem 1rem 1.5rem;
+  .auth-split-content {
+    gap: 1.75rem;
+    padding: 1rem 1rem 2rem;
   }
 
-  .auth-card {
-    padding: 1.75rem 1.25rem;
-    border-radius: 20px;
-  }
-
-  .auth-card-title {
-    font-size: 1.65rem;
+  .auth-main-headline {
+    font-size: 1.75rem;
   }
 
   .auth-input-field {
     height: 46px;
+    border-radius: 12px;
   }
 
   .auth-submit-btn {
     height: 46px;
+    border-radius: 12px;
   }
 
   .auth-footer-bar {
-    padding: 1rem;
     flex-direction: column;
     gap: 0.6rem;
+    padding: 1rem;
     text-align: center;
     align-items: center;
   }

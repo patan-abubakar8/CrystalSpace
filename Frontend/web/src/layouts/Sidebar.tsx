@@ -1,12 +1,12 @@
 import React from 'react';
 import { useAuth } from '../modules/auth/context/AuthContext';
+import { CrystalLogo } from '../core/ui/CrystalLogo';
 import {
   LayoutDashboard,
   Users,
   Building2,
   CalendarCheck,
   LogOut,
-  Layers,
   ShieldCheck
 } from 'lucide-react';
 
@@ -46,36 +46,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
         {/* Brand Header */}
         <div
           style={{
-            padding: '1.5rem',
+            padding: '1.35rem 1.5rem',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.75rem',
             borderBottom: '1px solid var(--border-subtle)',
           }}
         >
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: 'var(--radius-md)',
-              background: 'var(--color-primary-gradient)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#ffffff',
-              boxShadow: 'var(--color-primary-glow)',
-            }}
-          >
-            <Layers size={22} />
-          </div>
-          <div>
-            <div style={{ fontWeight: 500, fontSize: '1.0625rem', letterSpacing: '-0.01em' }}>
-              CrystalSpace
-            </div>
-            <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>
-              ENTERPRISE SUITE
-            </div>
-          </div>
+          <CrystalLogo variant="full" height={32} />
         </div>
 
         {/* Navigation Items */}

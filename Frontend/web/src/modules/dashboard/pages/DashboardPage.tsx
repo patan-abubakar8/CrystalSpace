@@ -8,6 +8,7 @@ import { queryKeys } from '../../../core/api/queryClient';
 import { StatCard } from '../components/StatCard';
 import type { NavigationTab } from '../../../layouts/Sidebar';
 import { useAuth } from '../../auth/context/AuthContext';
+import { usePermissions } from '../../../core/context/PermissionContext';
 import {
   Users,
   Building2,
@@ -33,6 +34,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   onOpenApplyLeave,
 }) => {
   const { user } = useAuth();
+  const { can } = usePermissions();
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: queryKeys.dashboard.stats,
@@ -80,7 +82,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          {(user?.role === 'Admin' || user?.role === 'HR' || user?.role === 'SuperAdmin') && (
+          {can('employees', 'create') && (
             <button
               id="btn-quick-add-employee"
               onClick={() => {
@@ -93,16 +95,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </button>
           )}
 
-          <button
-            id="btn-quick-apply-leave"
-            onClick={() => {
-              onNavigate('leaves');
-              if (onOpenApplyLeave) onOpenApplyLeave();
-            }}
-            className="btn btn-secondary"
-          >
-            <CalendarPlus size={16} /> Request Leave
-          </button>
+          {can('leaves', 'create') && (
+            <button
+              id="btn-quick-apply-leave"
+              onClick={() => {
+                onNavigate('leaves');
+                if (onOpenApplyLeave) onOpenApplyLeave();
+              }}
+              className="btn btn-secondary"
+            >
+              <CalendarPlus size={16} /> Request Leave
+            </button>
+          )}
         </div>
       </div>
 

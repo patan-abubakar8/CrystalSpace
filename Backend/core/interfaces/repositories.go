@@ -64,3 +64,14 @@ type DocumentRepository interface {
 	ListByEmployeeID(ctx context.Context, employeeID int) ([]*models.EmployeeDocument, error)
 	Delete(ctx context.Context, id int) error
 }
+
+type PermissionRepository interface {
+	ListRoles(ctx context.Context) ([]*models.Role, error)
+	CreateRole(ctx context.Context, role *models.Role) error
+	DeleteRole(ctx context.Context, roleName string) error
+	GetRolePermissions(ctx context.Context, role string) ([]*models.PagePermission, error)
+	GetAllPermissions(ctx context.Context) ([]*models.PagePermission, error)
+	UpdateRolePermissions(ctx context.Context, role string, perms []models.PagePermission) error
+	HasPermission(ctx context.Context, role string, page string, action string) (bool, error)
+	InvalidateCache()
+}

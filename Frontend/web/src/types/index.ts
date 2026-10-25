@@ -150,3 +150,27 @@ export interface ApplyLeavePayload {
   total_days: number;
   reason: string;
 }
+
+export interface PagePermission {
+  page: string;
+  can_view: boolean;
+  can_create: boolean;
+  can_update: boolean;
+  can_delete: boolean;
+}
+
+export type PermissionsMap = Record<string, PagePermission>;
+
+export interface RoleRecord {
+  id: number;
+  name: string;
+  description: string;
+  is_system: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RolePermissionsMatrix {
+  role: RoleRecord;
+  permissions: Record<string, PagePermission>;
+}

@@ -27,6 +27,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab }) => {
       title: 'Leave & Attendance Management',
       subtitle: 'Submit leave requests, view leave quotas, and process approval queues',
     },
+    roles: {
+      title: 'Roles & Dynamic Permissions',
+      subtitle: 'System access control matrix. Manage view, create, update, and delete rights per role',
+    },
   };
 
   const meta = titles[currentTab] || { title: 'Workspace', subtitle: 'CrystalSpace Operations' };

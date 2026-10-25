@@ -25,7 +25,13 @@ func (h *EmployeeHandler) List(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 
 	page, _ := strconv.Atoi(q.Get("page"))
+	if page < 1 {
+		page = 1
+	}
 	pageSize, _ := strconv.Atoi(q.Get("page_size"))
+	if pageSize < 1 {
+		pageSize = 50
+	}
 
 	filter := models.EmployeeFilter{
 		Status:         q.Get("status"),
@@ -47,6 +53,11 @@ func (h *EmployeeHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	totalPages := 1
+	if pageSize > 0 && total > 0 {
+		totalPages = (total + pageSize - 1) / pageSize
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
@@ -56,7 +67,7 @@ func (h *EmployeeHandler) List(w http.ResponseWriter, r *http.Request) {
 			"page":       filter.Page,
 			"page_size":  filter.PageSize,
 			"total":      total,
-			"total_page": (total + filter.PageSize - 1) / filter.PageSize,
+			"total_page": totalPages,
 		},
 		"message": "Employees retrieved successfully",
 	})

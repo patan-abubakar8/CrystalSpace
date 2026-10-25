@@ -12,6 +12,8 @@ import { DashboardPage } from './modules/dashboard/pages/DashboardPage';
 import { EmployeesPage } from './modules/employees/pages/EmployeesPage';
 import { DepartmentsPage } from './modules/departments/pages/DepartmentsPage';
 import { LeavesPage } from './modules/leaves/pages/LeavesPage';
+import { RolesPage } from './modules/roles/pages/RolesPage';
+import { PermissionProvider } from './core/context/PermissionContext';
 
 const MainAppContent: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -109,6 +111,8 @@ const MainAppContent: React.FC = () => {
           onCloseApplyModal={() => setIsApplyLeaveOpen(false)}
         />
       )}
+
+      {currentTab === 'roles' && <RolesPage />}
     </AppLayout>
   );
 };
@@ -119,7 +123,9 @@ export const App: React.FC = () => {
       <ThemeProvider>
         <NotificationProvider>
           <AuthProvider>
-            <MainAppContent />
+            <PermissionProvider>
+              <MainAppContent />
+            </PermissionProvider>
           </AuthProvider>
         </NotificationProvider>
       </ThemeProvider>

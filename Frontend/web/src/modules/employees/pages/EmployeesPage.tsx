@@ -3,8 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { employeeApi } from '../api/employeeApi';
 import { departmentApi } from '../../departments/api/departmentApi';
 import { queryKeys } from '../../../core/api/queryClient';
-import { useAuth } from '../../auth/context/AuthContext';
 import { useNotification } from '../../../core/context/NotificationContext';
+import { usePermissions } from '../../../core/context/PermissionContext';
 import type { Employee } from '../../../types';
 import { AddEmployeeModal } from '../components/AddEmployeeModal';
 import { EmployeeDetailDrawer } from '../components/EmployeeDetailDrawer';
@@ -26,7 +26,6 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
   isAddModalOpen: controlledAddModalOpen,
   onCloseAddModal: controlledCloseAddModal,
 }) => {
-  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { success, error } = useNotification();
 
@@ -75,8 +74,7 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
     }
   };
 
-  const canManageEmployees =
-    user?.role === 'Admin' || user?.role === 'HR' || user?.role === 'SuperAdmin';
+  const { can } = usePermissions();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -89,7 +87,7 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
           </p>
         </div>
 
-        {canManageEmployees && (
+        {can('employees', 'create') && (
           <button
             id="btn-add-employee-trigger"
             className="btn btn-primary"
@@ -263,7 +261,7 @@ export const EmployeesPage: React.FC<EmployeesPageProps> = ({
                         <Eye size={14} /> View
                       </button>
 
-                      {canManageEmployees && (
+                      {can('employees', 'delete') && (
                         <button
                           id={`btn-delete-emp-${emp.id}`}
                           className="btn btn-danger btn-sm"

@@ -41,4 +41,8 @@ export const queryKeys = {
     balances: (employeeId?: number) => ['leaves', 'balances', employeeId] as const,
     pending: ['leaves', 'pending'] as const,
   },
+  permissions: {
+    my: ['permissions', 'my'] as const,
+    roles: ['permissions', 'roles'] as const,
+  },
 };

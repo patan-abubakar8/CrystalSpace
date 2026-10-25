@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"crystalspace/backend/core/interfaces"
 	"crystalspace/backend/core/models"
 	"crystalspace/backend/pkg/response"
 
@@ -83,6 +84,33 @@ func RequireRole(allowedRoles ...string) func(http.Handler) http.Handler {
 
 			if !allowed {
 				response.Error(w, http.StatusForbidden, "Forbidden: insufficient permissions for this operation")
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+// RequirePermission checks if the authenticated user's role has the requested action (view, create, update, delete) on the specified page.
+func RequirePermission(permRepo interfaces.PermissionRepository, page string, action string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			claims, ok := r.Context().Value(UserContextKey).(*models.UserClaims)
+			if !ok || claims == nil {
+				response.Error(w, http.StatusUnauthorized, "Unauthenticated")
+				return
+			}
+
+			// SuperAdmin always has master bypass privileges
+			if claims.Role == "SuperAdmin" {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			allowed, err := permRepo.HasPermission(r.Context(), claims.Role, page, action)
+			if err != nil || !allowed {
+				response.Error(w, http.StatusForbidden, "Forbidden: you do not have permission to "+action+" "+page)
 				return
 			}
 

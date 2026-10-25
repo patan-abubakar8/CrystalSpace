@@ -55,3 +55,11 @@ type ProjectService interface {
 type DashboardService interface {
 	GetStats(ctx context.Context) (*dto.DashboardStats, error)
 }
+
+type PermissionService interface {
+	GetMyPermissions(ctx context.Context, role string) (map[string]*models.PagePermission, error)
+	ListRolesWithPermissions(ctx context.Context) ([]*models.RolePermissionsMatrix, error)
+	UpdateRolePermissions(ctx context.Context, req dto.UpdateRolePermissionsRequest) error
+	CreateRole(ctx context.Context, req dto.CreateRoleRequest) (*models.Role, error)
+	DeleteRole(ctx context.Context, roleName string) error
+}

@@ -15,14 +15,16 @@ import (
 )
 
 type RouterParams struct {
-	Config           *config.Config
-	AuthService      interfaces.AuthService
-	EmployeeService  interfaces.EmployeeService
+	Config            *config.Config
+	AuthService       interfaces.AuthService
+	EmployeeService   interfaces.EmployeeService
 	DepartmentService interfaces.DepartmentService
-	LeaveService     interfaces.LeaveService
-	SalaryService    interfaces.SalaryService
-	ProjectService   interfaces.ProjectService
-	DashboardService interfaces.DashboardService
+	LeaveService      interfaces.LeaveService
+	SalaryService     interfaces.SalaryService
+	ProjectService    interfaces.ProjectService
+	DashboardService  interfaces.DashboardService
+	PermissionService interfaces.PermissionService
+	PermissionRepo    interfaces.PermissionRepository
 }
 
 func SetupRoutes(p RouterParams) *chi.Mux {
@@ -44,6 +46,7 @@ func SetupRoutes(p RouterParams) *chi.Mux {
 	salaryH := handlers.NewSalaryHandler(p.SalaryService)
 	projH := handlers.NewProjectHandler(p.ProjectService)
 	dashH := handlers.NewDashboardHandler(p.DashboardService)
+	permH := handlers.NewPermissionHandler(p.PermissionService)
 
 	// Liveness & Readiness Probe
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -69,69 +72,74 @@ func SetupRoutes(p RouterParams) *chi.Mux {
 			// Current User Profile
 			protected.Get("/auth/me", authH.GetProfile)
 
+			// Current User Dynamic Page Permissions (used by frontend to toggle UI elements)
+			protected.Get("/permissions/my", permH.GetMyPermissions)
+
 			// Dashboard Overview
 			protected.Get("/dashboard/stats", dashH.GetStats)
 
-			// Employee Management
+			// Employee Management (Enforced by can_view, can_create, can_update, can_delete)
 			protected.Route("/employees", func(emp chi.Router) {
+				emp.Use(middlewares.RequirePermission(p.PermissionRepo, "employees", "view"))
 				emp.Get("/", empH.List)
 				emp.Get("/{id}", empH.GetByID)
 
-				emp.Group(func(admin chi.Router) {
-					admin.Use(middlewares.RequireRole("Admin", "HR", "SuperAdmin"))
-					admin.Post("/", empH.Create)
-					admin.Put("/{id}", empH.Update)
-					admin.Delete("/{id}", empH.Delete)
-				})
+				emp.With(middlewares.RequirePermission(p.PermissionRepo, "employees", "create")).Post("/", empH.Create)
+				emp.With(middlewares.RequirePermission(p.PermissionRepo, "employees", "update")).Put("/{id}", empH.Update)
+				emp.With(middlewares.RequirePermission(p.PermissionRepo, "employees", "delete")).Delete("/{id}", empH.Delete)
 			})
 
-			// Department Management
+			// Department Management (Enforced by can_view, can_create, can_update, can_delete)
 			protected.Route("/departments", func(dept chi.Router) {
+				dept.Use(middlewares.RequirePermission(p.PermissionRepo, "departments", "view"))
 				dept.Get("/", deptH.List)
 				dept.Get("/{id}", deptH.GetByID)
 
-				dept.Group(func(admin chi.Router) {
-					admin.Use(middlewares.RequireRole("Admin", "HR", "SuperAdmin"))
-					admin.Post("/", deptH.Create)
-					admin.Put("/{id}", deptH.Update)
-					admin.Delete("/{id}", deptH.Delete)
-				})
+				dept.With(middlewares.RequirePermission(p.PermissionRepo, "departments", "create")).Post("/", deptH.Create)
+				dept.With(middlewares.RequirePermission(p.PermissionRepo, "departments", "update")).Put("/{id}", deptH.Update)
+				dept.With(middlewares.RequirePermission(p.PermissionRepo, "departments", "delete")).Delete("/{id}", deptH.Delete)
 			})
 
-			// Leaves Management
+			// Leaves Management (Enforced by can_view, can_create, can_update)
 			protected.Route("/leaves", func(l chi.Router) {
+				l.Use(middlewares.RequirePermission(p.PermissionRepo, "leaves", "view"))
 				l.Get("/my", leaveH.ListMyLeaves)
-				l.Post("/apply", leaveH.Apply)
 				l.Get("/types", leaveH.ListTypes)
 				l.Get("/balances/{employee_id}", leaveH.GetBalances)
 
-				l.Group(func(approver chi.Router) {
-					approver.Use(middlewares.RequireRole("Admin", "HR", "Manager", "SuperAdmin"))
-					approver.Get("/pending", leaveH.ListPending)
-					approver.Patch("/{id}/status", leaveH.Review)
-				})
+				l.With(middlewares.RequirePermission(p.PermissionRepo, "leaves", "create")).Post("/apply", leaveH.Apply)
+				l.With(middlewares.RequirePermission(p.PermissionRepo, "leaves", "update")).Get("/pending", leaveH.ListPending)
+				l.With(middlewares.RequirePermission(p.PermissionRepo, "leaves", "update")).Patch("/{id}/status", leaveH.Review)
 			})
 
-			// Compensation & Salaries
+			// Compensation & Salaries (Enforced by can_view, can_create, can_update)
 			protected.Route("/salaries", func(s chi.Router) {
-				s.Group(func(hr chi.Router) {
-					hr.Use(middlewares.RequireRole("Admin", "HR", "SuperAdmin"))
-					hr.Get("/employee/{employee_id}", salaryH.GetByEmployeeID)
-					hr.Post("/employee/{employee_id}", salaryH.Save)
-					hr.Get("/employee/{employee_id}/history", salaryH.GetHistory)
-				})
+				s.Use(middlewares.RequirePermission(p.PermissionRepo, "salaries", "view"))
+				s.Get("/employee/{employee_id}", salaryH.GetByEmployeeID)
+				s.Get("/employee/{employee_id}/history", salaryH.GetHistory)
+				s.With(middlewares.RequirePermission(p.PermissionRepo, "salaries", "create")).Post("/employee/{employee_id}", salaryH.Save)
 			})
 
-			// Projects & Tasks
+			// Projects & Tasks (Enforced by can_view, can_create, can_update)
 			protected.Route("/projects", func(proj chi.Router) {
+				proj.Use(middlewares.RequirePermission(p.PermissionRepo, "projects", "view"))
 				proj.Get("/", projH.ListProjects)
 				proj.Get("/{id}/tasks", projH.ListTasks)
-				proj.Patch("/tasks/{task_id}/status", projH.UpdateTaskStatus)
+				proj.With(middlewares.RequirePermission(p.PermissionRepo, "projects", "update")).Patch("/tasks/{task_id}/status", projH.UpdateTaskStatus)
+				proj.With(middlewares.RequirePermission(p.PermissionRepo, "projects", "create")).Post("/", projH.CreateProject)
+				proj.With(middlewares.RequirePermission(p.PermissionRepo, "projects", "create")).Post("/{id}/tasks", projH.CreateTask)
+			})
 
-				proj.Group(func(mgr chi.Router) {
-					mgr.Use(middlewares.RequireRole("Admin", "HR", "Manager", "SuperAdmin"))
-					mgr.Post("/", projH.CreateProject)
-					mgr.Post("/{id}/tasks", projH.CreateTask)
+			// Dynamic Roles & Permissions Matrix Management (System Admin / DB-configured roles)
+			protected.Route("/admin/roles", func(admin chi.Router) {
+				admin.Use(middlewares.RequirePermission(p.PermissionRepo, "roles", "view"))
+				admin.Get("/", permH.ListRoles)
+
+				admin.Group(func(edit chi.Router) {
+					edit.Use(middlewares.RequirePermission(p.PermissionRepo, "roles", "update"))
+					edit.Post("/", permH.CreateRole)
+					edit.Put("/{name}/permissions", permH.UpdatePermissions)
+					edit.Delete("/{name}", permH.DeleteRole)
 				})
 			})
 		})

@@ -166,3 +166,94 @@ CREATE INDEX IF NOT EXISTS idx_leaves_employee_id ON leaves(employee_id);
 CREATE INDEX IF NOT EXISTS idx_leaves_status ON leaves(status);
 CREATE INDEX IF NOT EXISTS idx_task_items_project_id ON task_items(project_id);
 CREATE INDEX IF NOT EXISTS idx_task_items_assigned_to ON task_items(assigned_to_employee_id);
+
+-- Dynamic Roles
+CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    is_system BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Dynamic Page Permissions (can_view, can_create, can_update, can_delete)
+CREATE TABLE IF NOT EXISTS role_permissions (
+    id SERIAL PRIMARY KEY,
+    role VARCHAR(50) NOT NULL,
+    page VARCHAR(50) NOT NULL,
+    can_view BOOLEAN NOT NULL DEFAULT FALSE,
+    can_create BOOLEAN NOT NULL DEFAULT FALSE,
+    can_update BOOLEAN NOT NULL DEFAULT FALSE,
+    can_delete BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(role, page)
+);
+
+-- Seed System Roles
+INSERT INTO roles (name, description, is_system) VALUES
+    ('SuperAdmin', 'System Administrator with full master bypass privileges', TRUE),
+    ('Admin', 'Executive Administrator with full workforce management privileges', FALSE),
+    ('HR', 'Human Resources management and employee lifecycle', FALSE),
+    ('Manager', 'Department & Team Operations and approvals', FALSE),
+    ('Employee', 'Standard workforce personnel self-service', FALSE)
+ON CONFLICT (name) DO NOTHING;
+
+-- Seed Default Page Permissions for All Roles
+-- Pages: dashboard, employees, departments, leaves, salaries, projects, roles
+
+-- SuperAdmin: full master access on all 4 actions across all pages
+INSERT INTO role_permissions (role, page, can_view, can_create, can_update, can_delete) VALUES
+    ('SuperAdmin', 'dashboard', TRUE, TRUE, TRUE, TRUE),
+    ('SuperAdmin', 'employees', TRUE, TRUE, TRUE, TRUE),
+    ('SuperAdmin', 'departments', TRUE, TRUE, TRUE, TRUE),
+    ('SuperAdmin', 'leaves', TRUE, TRUE, TRUE, TRUE),
+    ('SuperAdmin', 'salaries', TRUE, TRUE, TRUE, TRUE),
+    ('SuperAdmin', 'projects', TRUE, TRUE, TRUE, TRUE),
+    ('SuperAdmin', 'roles', TRUE, TRUE, TRUE, TRUE)
+ON CONFLICT (role, page) DO NOTHING;
+
+-- Admin: full access to organization pages; roles nav is FALSE by default unless SuperAdmin grants
+INSERT INTO role_permissions (role, page, can_view, can_create, can_update, can_delete) VALUES
+    ('Admin', 'dashboard', TRUE, TRUE, TRUE, TRUE),
+    ('Admin', 'employees', TRUE, TRUE, TRUE, TRUE),
+    ('Admin', 'departments', TRUE, TRUE, TRUE, TRUE),
+    ('Admin', 'leaves', TRUE, TRUE, TRUE, TRUE),
+    ('Admin', 'salaries', TRUE, TRUE, TRUE, TRUE),
+    ('Admin', 'projects', TRUE, TRUE, TRUE, TRUE),
+    ('Admin', 'roles', FALSE, FALSE, FALSE, FALSE)
+ON CONFLICT (role, page) DO NOTHING;
+
+-- HR: personnel, departments, leaves, salaries
+INSERT INTO role_permissions (role, page, can_view, can_create, can_update, can_delete) VALUES
+    ('HR', 'dashboard', TRUE, FALSE, FALSE, FALSE),
+    ('HR', 'employees', TRUE, TRUE, TRUE, FALSE),
+    ('HR', 'departments', TRUE, TRUE, TRUE, FALSE),
+    ('HR', 'leaves', TRUE, TRUE, TRUE, FALSE),
+    ('HR', 'salaries', TRUE, TRUE, TRUE, FALSE),
+    ('HR', 'projects', TRUE, FALSE, FALSE, FALSE),
+    ('HR', 'roles', FALSE, FALSE, FALSE, FALSE)
+ON CONFLICT (role, page) DO NOTHING;
+
+-- Manager: team leaves, projects
+INSERT INTO role_permissions (role, page, can_view, can_create, can_update, can_delete) VALUES
+    ('Manager', 'dashboard', TRUE, FALSE, FALSE, FALSE),
+    ('Manager', 'employees', TRUE, FALSE, FALSE, FALSE),
+    ('Manager', 'departments', TRUE, FALSE, FALSE, FALSE),
+    ('Manager', 'leaves', TRUE, TRUE, TRUE, FALSE),
+    ('Manager', 'salaries', FALSE, FALSE, FALSE, FALSE),
+    ('Manager', 'projects', TRUE, TRUE, TRUE, FALSE),
+    ('Manager', 'roles', FALSE, FALSE, FALSE, FALSE)
+ON CONFLICT (role, page) DO NOTHING;
+
+-- Employee: self service
+INSERT INTO role_permissions (role, page, can_view, can_create, can_update, can_delete) VALUES
+    ('Employee', 'dashboard', TRUE, FALSE, FALSE, FALSE),
+    ('Employee', 'employees', TRUE, FALSE, FALSE, FALSE),
+    ('Employee', 'departments', TRUE, FALSE, FALSE, FALSE),
+    ('Employee', 'leaves', TRUE, TRUE, FALSE, FALSE),
+    ('Employee', 'salaries', FALSE, FALSE, FALSE, FALSE),
+    ('Employee', 'projects', TRUE, FALSE, TRUE, FALSE),
+    ('Employee', 'roles', FALSE, FALSE, FALSE, FALSE)
+ON CONFLICT (role, page) DO NOTHING;

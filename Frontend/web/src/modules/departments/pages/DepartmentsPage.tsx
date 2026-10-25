@@ -4,20 +4,17 @@ import { departmentApi } from '../api/departmentApi';
 import { queryKeys } from '../../../core/api/queryClient';
 import { DepartmentCard } from '../components/DepartmentCard';
 import { CreateDepartmentModal } from '../components/CreateDepartmentModal';
-import { useAuth } from '../../auth/context/AuthContext';
+import { usePermissions } from '../../../core/context/PermissionContext';
 import { Building2, Plus } from 'lucide-react';
 
 export const DepartmentsPage: React.FC = () => {
-  const { user } = useAuth();
+  const { can } = usePermissions();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: departments = [], isLoading } = useQuery({
     queryKey: queryKeys.departments.all,
     queryFn: departmentApi.list,
   });
-
-  const canManage =
-    user?.role === 'Admin' || user?.role === 'HR' || user?.role === 'SuperAdmin';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -29,7 +26,7 @@ export const DepartmentsPage: React.FC = () => {
           </p>
         </div>
 
-        {canManage && (
+        {can('departments', 'create') && (
           <button
             id="btn-create-dept-trigger"
             className="btn btn-primary"

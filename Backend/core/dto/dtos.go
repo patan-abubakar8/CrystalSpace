@@ -146,3 +146,22 @@ type DashboardStats struct {
 	TotalDepartments int `json:"total_departments"`
 	TotalProjects    int `json:"total_projects"`
 }
+
+// Role & Permission DTOs
+type CreateRoleRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type PagePermissionDTO struct {
+	Page      string `json:"page"`
+	CanView   bool   `json:"can_view"`
+	CanCreate bool   `json:"can_create"`
+	CanUpdate bool   `json:"can_update"`
+	CanDelete bool   `json:"can_delete"`
+}
+
+type UpdateRolePermissionsRequest struct {
+	Role        string              `json:"role"`
+	Permissions []PagePermissionDTO `json:"permissions"`
+}

@@ -6,11 +6,12 @@ import {
   Users,
   Building2,
   CalendarCheck,
+  ShieldCheck,
   LogOut,
-  ShieldCheck
 } from 'lucide-react';
+import { usePermissions } from '../core/context/PermissionContext';
 
-export type NavigationTab = 'dashboard' | 'employees' | 'departments' | 'leaves';
+export type NavigationTab = 'dashboard' | 'employees' | 'departments' | 'leaves' | 'roles';
 
 interface SidebarProps {
   currentTab: NavigationTab;
@@ -19,13 +20,18 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => {
   const { user, logout } = useAuth();
+  const { can } = usePermissions();
 
   const navItems = [
     { id: 'dashboard' as NavigationTab, label: 'Dashboard', icon: LayoutDashboard },
     { id: 'employees' as NavigationTab, label: 'Employees', icon: Users },
     { id: 'departments' as NavigationTab, label: 'Departments', icon: Building2 },
     { id: 'leaves' as NavigationTab, label: 'Leave Management', icon: CalendarCheck },
+    { id: 'roles' as NavigationTab, label: 'Roles & Permissions', icon: ShieldCheck },
   ];
+
+  // Dynamically filter navigation items based on database permissions
+  const visibleNavItems = navItems.filter((item) => can(item.id, 'view'));
 
   return (
     <aside
@@ -70,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
             Main Menu
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-            {navItems.map((item) => {
+            {visibleNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
               return (

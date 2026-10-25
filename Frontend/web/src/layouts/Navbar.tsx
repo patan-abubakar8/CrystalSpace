@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../core/context/ThemeContext';
-import { Moon, Sun, Database } from 'lucide-react';
+import { Moon, Sun, Search, Bell } from 'lucide-react';
 import type { NavigationTab } from './Sidebar';
 
 interface NavbarProps {
@@ -53,45 +53,81 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab }) => {
         <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400 }}>{meta.subtitle}</div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        {/* Backend Connectivity Status Pill */}
-        <div
-          className="badge badge-success"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            padding: '0.3rem 0.75rem',
-            fontSize: '0.75rem',
-          }}
-          title="Connected to Golang N-Tier Backend"
-        >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+        {/* Global Search */}
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <Search
+            size={14}
+            style={{
+              position: 'absolute',
+              left: '0.75rem',
+              color: 'var(--text-tertiary)',
+              pointerEvents: 'none',
+            }}
+          />
+          <input
+            id="navbar-global-search"
+            type="text"
+            placeholder="Search directory..."
+            style={{
+              padding: '0.45rem 2.2rem 0.45rem 2.2rem',
+              fontSize: '0.8125rem',
+              backgroundColor: 'var(--bg-surface-elevated)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-full)',
+              color: 'var(--text-primary)',
+              width: '210px',
+              outline: 'none',
+              transition: 'all var(--transition-fast)',
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.width = '260px';
+              e.currentTarget.style.borderColor = 'var(--color-accent-magenta)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.width = '210px';
+              e.currentTarget.style.borderColor = 'var(--border-subtle)';
+            }}
+          />
           <span
             style={{
+              position: 'absolute',
+              right: '0.65rem',
+              fontSize: '0.65rem',
+              padding: '0.1rem 0.35rem',
+              borderRadius: 'var(--radius-xs)',
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--text-tertiary)',
+              lineHeight: 1,
+              pointerEvents: 'none',
+            }}
+          >
+            ⌘K
+          </span>
+        </div>
+
+        {/* Notifications */}
+        <button
+          id="btn-navbar-notifications"
+          className="btn btn-secondary btn-icon"
+          title="Notifications"
+          aria-label="Notifications"
+          style={{ position: 'relative' }}
+        >
+          <Bell size={16} />
+          <span
+            style={{
+              position: 'absolute',
+              top: '7px',
+              right: '7px',
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              backgroundColor: 'var(--color-success)',
-              boxShadow: '0 0 8px var(--color-success)',
+              backgroundColor: 'var(--color-accent-magenta)',
             }}
           />
-          <span>Go API v1 Active</span>
-        </div>
-
-        {/* Database Engine Pill */}
-        <div
-          className="badge badge-primary"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            padding: '0.3rem 0.75rem',
-            fontSize: '0.75rem',
-          }}
-        >
-          <Database size={13} />
-          <span>PostgreSQL</span>
-        </div>
+        </button>
 
         {/* Dark/Light Mode Switcher */}
         <button
@@ -101,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab }) => {
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
           aria-label="Toggle application theme"
         >
-          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </div>
     </header>

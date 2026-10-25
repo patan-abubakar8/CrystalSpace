@@ -10,15 +10,17 @@ export interface CrystalLogoProps {
   className?: string;
   style?: React.CSSProperties;
   alt?: string;
+  showBadge?: boolean;
 }
 
 export const CrystalLogo: React.FC<CrystalLogoProps> = ({
   variant = 'full',
   theme: explicitTheme = 'auto',
-  height = 34,
+  height = 36,
   className,
   style,
   alt = 'CrystalSpace',
+  showBadge = true,
 }) => {
   let activeTheme: 'dark' | 'light' = 'dark';
   try {
@@ -33,27 +35,82 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
   const isLight = resolvedTheme === 'light';
   const iconSrc = isLight ? iconLight : iconDark;
 
-  const numericHeight = typeof height === 'number' ? height : parseInt(String(height), 10) || 34;
-  const iconSize = Math.round(numericHeight * 0.95);
-  const fontSize = Math.round(numericHeight * 0.58);
+  const numericHeight = typeof height === 'number' ? height : parseInt(String(height), 10) || 36;
+  const badgeSize = numericHeight;
+  const innerIconSize = showBadge ? Math.round(badgeSize * 0.62) : Math.round(numericHeight * 0.95);
+  const fontSize = Math.round(numericHeight * 0.52);
+  const borderRadius = Math.max(8, Math.round(badgeSize * 0.28));
+
+  const renderBadge = () => {
+    if (!showBadge) {
+      return (
+        <img
+          src={iconSrc}
+          alt={alt}
+          height={numericHeight}
+          width={numericHeight}
+          style={{
+            height: `${numericHeight}px`,
+            width: `${numericHeight}px`,
+            display: 'block',
+            objectFit: 'contain',
+            userSelect: 'none',
+          }}
+        />
+      );
+    }
+
+    return (
+      <div
+        className="crystal-logo-badge"
+        style={{
+          width: `${badgeSize}px`,
+          height: `${badgeSize}px`,
+          borderRadius: `${borderRadius}px`,
+          background: isLight
+            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 240, 255, 0.9) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(217, 70, 239, 0.14) 50%, rgba(147, 51, 234, 0.08) 100%)',
+          border: isLight
+            ? '1px solid rgba(192, 38, 211, 0.24)'
+            : '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: isLight
+            ? '0 4px 12px -2px rgba(192, 38, 211, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9)'
+            : '0 4px 16px -2px rgba(192, 38, 211, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          transition: 'all var(--transition-fast)',
+        }}
+      >
+        <img
+          src={iconSrc}
+          alt=""
+          style={{
+            height: `${innerIconSize}px`,
+            width: `${innerIconSize}px`,
+            display: 'block',
+            objectFit: 'contain',
+            userSelect: 'none',
+          }}
+        />
+      </div>
+    );
+  };
 
   if (variant === 'icon') {
     return (
-      <img
-        src={iconSrc}
-        alt={alt}
-        height={numericHeight}
-        width={numericHeight}
+      <div
         className={className}
         style={{
-          height: `${numericHeight}px`,
-          width: `${numericHeight}px`,
-          display: 'block',
-          objectFit: 'contain',
-          userSelect: 'none',
+          display: 'inline-flex',
           ...style,
         }}
-      />
+      >
+        {renderBadge()}
+      </div>
     );
   }
 
@@ -63,29 +120,19 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: `${Math.max(6, Math.round(numericHeight * 0.22))}px`,
+        gap: `${Math.max(8, Math.round(numericHeight * 0.28))}px`,
         textDecoration: 'none',
         userSelect: 'none',
         lineHeight: 1,
         ...style,
       }}
     >
-      <img
-        src={iconSrc}
-        alt=""
-        style={{
-          height: `${iconSize}px`,
-          width: `${iconSize}px`,
-          display: 'block',
-          objectFit: 'contain',
-          flexShrink: 0,
-        }}
-      />
+      {renderBadge()}
       <span
         style={{
           fontFamily: 'var(--font-family)',
           fontSize: `${fontSize}px`,
-          letterSpacing: '-0.02em',
+          letterSpacing: '-0.025em',
           display: 'inline-flex',
           alignItems: 'center',
           lineHeight: 1,
@@ -106,7 +153,7 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
             background: 'linear-gradient(90deg, #e879f9 0%, #c026d3 50%, #9333ea 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            marginLeft: '1px',
+            marginLeft: '1.5px',
           }}
         >
           Space

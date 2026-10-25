@@ -2,7 +2,19 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../../../core/context/ThemeContext';
 import { CrystalLogo } from '../../../core/ui/CrystalLogo';
-import { Eye, EyeOff, Moon, Sun, AlertCircle } from 'lucide-react';
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Moon,
+  Sun,
+  AlertCircle,
+  ShieldCheck,
+  Sparkles,
+  Activity,
+  ArrowRight,
+} from 'lucide-react';
 import './LoginPage.css';
 
 interface LoginPageProps {
@@ -33,135 +45,250 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToForgot }) => {
     }
   };
 
+  const handleForgotClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onNavigateToForgot) {
+      onNavigateToForgot();
+    } else {
+      window.location.hash = '#forgot';
+    }
+  };
+
   return (
-    <div className="login-page-container">
-      {/* Soft Ambient Neon Glow */}
-      <div className="login-ambient-glow" />
+    <div className="auth-split-layout">
+      {/* ====================================================================
+          LEFT PANEL: Immersive Branded Showcase (Stripe/Linear Style)
+          ==================================================================== */}
+      <aside className="auth-showcase-panel">
+        <div className="auth-showcase-orb" />
+        <div className="auth-showcase-grid" />
 
-      {/* TOP HEADER BAR: Brand Logo on Left, Theme Toggle on Right */}
-      <header className="login-header-bar">
-        <div className="login-logo-wrapper">
-          <CrystalLogo variant="full" height={34} theme={theme} />
+        {/* Brand Header */}
+        <div className="auth-showcase-header">
+          <CrystalLogo variant="full" height={38} theme={theme} />
         </div>
 
-        <button
-          id="btn-login-theme-toggle"
-          onClick={toggleTheme}
-          className="login-theme-btn"
-          title="Toggle color theme"
-          aria-label="Toggle theme"
-        >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-      </header>
+        {/* Narrative & Feature Showcase */}
+        <div className="auth-showcase-body">
+          <div className="auth-showcase-pill">
+            <Sparkles size={13} />
+            <span>Enterprise Workspace Platform</span>
+          </div>
 
-      {/* TWO COLUMN RESPONSIVE CONTENT AREA */}
-      <main className="login-content-wrapper">
-        {/* LEFT COLUMN: Clean Headline */}
-        <div className="login-headline-section animate-fade-in">
-          <h1 className="login-main-headline">
-            Login to your <br />
-            <span className="login-headline-gradient">
-              Crystal Account
-            </span>
+          <h1 className="auth-showcase-title">
+            Next-Generation <br />
+            <span className="auth-headline-gradient">Workspace Governance</span> &amp; Intelligence.
           </h1>
-        </div>
 
-        {/* RIGHT COLUMN: Just Login Form with Forget Password */}
-        <div className="login-form-section animate-fade-in">
-          {errorMsg && (
-            <div className="login-alert-box">
-              <AlertCircle size={15} style={{ flexShrink: 0 }} />
-              <span>{errorMsg}</span>
-            </div>
-          )}
+          <p className="auth-showcase-desc">
+            Streamline workforce telemetry, granular role access, and organizational
+            departments in a high-security, unified cloud environment.
+          </p>
 
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            {/* Input 1: Email / Number */}
-            <div className="login-form-group">
-              <label htmlFor="login-email" className="login-form-label">
-                Email
-              </label>
-              <input
-                id="login-email"
-                type="email"
-                className="login-input-field"
-                placeholder="name@organization.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                required
-              />
-            </div>
-
-            {/* Input 2: Password with Eye Toggle */}
-            <div className="login-form-group">
-              <label htmlFor="login-password" className="login-form-label">
-                Password
-              </label>
-              <div className="login-password-container">
-                <input
-                  id="login-password"
-                  type={showPassword ? 'text' : 'password'}
-                  className="login-input-field login-password-input"
-                  placeholder="••••••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="login-password-toggle"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+          <div className="auth-feature-list">
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-wrap">
+                <ShieldCheck size={18} />
+              </div>
+              <div className="auth-feature-text">
+                <div className="auth-feature-name">Granular Access Governance</div>
+                <div className="auth-feature-summary">
+                  Role-based permissions, organizational tiers, and auditable access policies.
+                </div>
               </div>
             </div>
 
-            {/* Remember me & Forget Password */}
-            <div className="login-options-row">
-              <label className="login-remember-label">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="login-remember-checkbox"
-                />
-                Remember me
-              </label>
-
-              <a
-                href="#forgot"
-                className="login-forgot-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (onNavigateToForgot) {
-                    onNavigateToForgot();
-                  } else {
-                    window.location.hash = '#forgot';
-                  }
-                }}
-              >
-                Forget password
-              </a>
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-wrap">
+                <Activity size={18} />
+              </div>
+              <div className="auth-feature-text">
+                <div className="auth-feature-name">Real-Time Telemetry &amp; Sync</div>
+                <div className="auth-feature-summary">
+                  Live workforce status, departmental metrics, and leave scheduling.
+                </div>
+              </div>
             </div>
 
-            {/* Gradient Primary Button */}
-            <button
-              id="btn-login-submit"
-              type="submit"
-              className="login-submit-button"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing in...' : 'Log in'}
-            </button>
-          </form>
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-wrap">
+                <Lock size={18} />
+              </div>
+              <div className="auth-feature-text">
+                <div className="auth-feature-name">Zero-Trust Cryptographic Security</div>
+                <div className="auth-feature-summary">
+                  End-to-end encrypted sessions with continuous token authentication.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Operational Status & Trust Footer */}
+        <div className="auth-showcase-footer">
+          <div className="auth-status-indicator">
+            <span className="auth-status-dot" />
+            <span>All Systems Operational · SOC2 Type II Certified</span>
+          </div>
+          <span>CrystalSpace v2.4</span>
+        </div>
+      </aside>
+
+      {/* ====================================================================
+          RIGHT PANEL: Focused Auth Card
+          ==================================================================== */}
+      <main className="auth-form-panel">
+        {/* Top Actions: Mobile Brand + Theme Switcher */}
+        <header className="auth-top-actions">
+          <div className="auth-mobile-logo">
+            <CrystalLogo variant="full" height={32} theme={theme} />
+          </div>
+
+          <button
+            id="btn-login-theme-toggle"
+            onClick={toggleTheme}
+            className="auth-theme-toggle"
+            title="Toggle color theme"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+        </header>
+
+        {/* Center: Frosted Glass Auth Card */}
+        <div className="auth-form-center">
+          <div className="auth-card animate-fade-in">
+            <div className="auth-card-header">
+              <h2 className="auth-card-title">
+                Login to your <br />
+                <span className="auth-headline-gradient">Crystal Account</span>
+              </h2>
+              <p className="auth-card-subtitle">
+                Enter your organizational credentials to sign in.
+              </p>
+            </div>
+
+            {errorMsg && (
+              <div className="auth-alert-box" role="alert">
+                <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+              {/* Email Address */}
+              <div className="auth-form-group">
+                <label htmlFor="login-email" className="auth-form-label">
+                  Email address
+                </label>
+                <div className="auth-input-wrapper">
+                  <Mail size={16} className="auth-input-icon" />
+                  <input
+                    id="login-email"
+                    type="email"
+                    className="auth-input-field"
+                    placeholder="name@organization.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="auth-form-group">
+                <label htmlFor="login-password" className="auth-form-label">
+                  Password
+                </label>
+                <div className="auth-input-wrapper">
+                  <Lock size={16} className="auth-input-icon" />
+                  <input
+                    id="login-password"
+                    type={showPassword ? 'text' : 'password'}
+                    className="auth-input-field auth-password-input"
+                    placeholder="••••••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="auth-password-toggle"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Remember me & Forgot Password */}
+              <div className="auth-options-row">
+                <label className="auth-remember-label">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="auth-remember-checkbox"
+                  />
+                  Remember me
+                </label>
+
+                <a
+                  href="#forgot"
+                  className="auth-forgot-link"
+                  onClick={handleForgotClick}
+                >
+                  Forget password
+                </a>
+              </div>
+
+              {/* Submit CTA */}
+              <button
+                id="btn-login-submit"
+                type="submit"
+                className="auth-submit-btn"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  'Signing in...'
+                ) : (
+                  <>
+                    <span>Log in</span>
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </button>
+
+              {/* Security info */}
+              <div className="auth-card-footer-info">
+                <span className="auth-security-badge">
+                  <ShieldCheck size={14} />
+                  <span>End-to-End Encrypted Session</span>
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Bottom Footer */}
+        <footer className="auth-panel-footer">
+          <span>© 2026 CrystalSpace Inc. All rights reserved.</span>
+          <div className="auth-footer-links">
+            <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
+              Privacy Policy
+            </a>
+            <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
+              Terms of Service
+            </a>
+            <a href="#" className="auth-footer-link" onClick={(e) => e.preventDefault()}>
+              Security
+            </a>
+          </div>
+        </footer>
       </main>
     </div>
   );
 };
-

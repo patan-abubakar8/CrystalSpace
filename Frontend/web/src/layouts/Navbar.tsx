@@ -7,38 +7,13 @@ interface NavbarProps {
   currentTab: NavigationTab;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentTab }) => {
+export const Navbar: React.FC<NavbarProps> = () => {
   const { theme, toggleTheme } = useTheme();
-
-  const titles: Record<NavigationTab, { title: string; subtitle: string }> = {
-    dashboard: {
-      title: 'Executive Dashboard',
-      subtitle: 'Real-time overview of workforce metrics, approvals, and departments',
-    },
-    employees: {
-      title: 'Employee Directory',
-      subtitle: 'Manage organizational personnel, roles, and employment profiles',
-    },
-    departments: {
-      title: 'Departments & Hierarchy',
-      subtitle: 'Organizational units, headcounts, and departmental managers',
-    },
-    leaves: {
-      title: 'Leave & Attendance Management',
-      subtitle: 'Submit leave requests, view leave quotas, and process approval queues',
-    },
-    roles: {
-      title: 'Roles & Dynamic Permissions',
-      subtitle: 'System access control matrix. Manage view, create, update, and delete rights per role',
-    },
-  };
-
-  const meta = titles[currentTab] || { title: 'Workspace', subtitle: 'CrystalSpace Operations' };
 
   return (
     <header
       style={{
-        height: '70px',
+        height: '60px',
         borderBottom: '1px solid var(--border-subtle)',
         backgroundColor: 'var(--glass-bg)',
         backdropFilter: 'var(--glass-blur)',
@@ -52,9 +27,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab }) => {
         zIndex: 50,
       }}
     >
-      <div>
-        <div style={{ fontSize: '1.0625rem', fontWeight: 500 }}>{meta.title}</div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400 }}>{meta.subtitle}</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        {/* Clean top bar - workspace title managed within pages */}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>

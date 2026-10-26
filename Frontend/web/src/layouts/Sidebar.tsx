@@ -30,9 +30,16 @@ export type NavigationTab = 'dashboard' | 'employees' | 'departments' | 'leaves'
 interface SidebarProps {
   currentTab: NavigationTab;
   onTabChange: (tab: NavigationTab) => void;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  currentTab,
+  onTabChange,
+  isMobileOpen = false,
+  onCloseMobile,
+}) => {
   const { user, logout } = useAuth();
   const { can } = usePermissions();
   const { theme, toggleTheme } = useTheme();
@@ -58,6 +65,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
     });
   };
 
+  const isEffectiveExpanded = isExpanded || isMobileOpen;
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -77,12 +86,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
   return (
     <>
       <aside
-        className={`sidebar-container ${isExpanded ? 'expanded' : 'collapsed'}`}
+        className={`sidebar-container ${isEffectiveExpanded ? 'expanded' : 'collapsed'} ${isMobileOpen ? 'mobile-open' : ''}`}
         aria-label="Main Navigation"
       >
         {/* Top: Brand Header & Collapse/Expand Toggle */}
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-          {isExpanded ? (
+          {isEffectiveExpanded ? (
             <div
               style={{
                 display: 'flex',
@@ -95,21 +104,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
             >
               <div
                 style={{ cursor: 'pointer' }}
-                onClick={() => onTabChange('dashboard')}
+                onClick={() => {
+                  onTabChange('dashboard');
+                  onCloseMobile?.();
+                }}
                 title="CrystalSpace Dashboard"
               >
                 <CrystalLogo variant="full" height={26} theme={theme} />
               </div>
-              <button
-                id="btn-collapse-sidebar"
-                onClick={toggleSidebar}
-                className="sidebar-icon-btn"
-                style={{ width: '32px', height: '32px' }}
-                title="Collapse sidebar"
-                aria-label="Collapse sidebar"
-              >
-                <PanelLeftClose size={15} />
-              </button>
+              {isMobileOpen ? (
+                <button
+                  id="btn-close-mobile-drawer"
+                  onClick={onCloseMobile}
+                  className="sidebar-icon-btn"
+                  style={{ width: '32px', height: '32px' }}
+                  title="Close menu"
+                  aria-label="Close menu"
+                >
+                  <X size={18} />
+                </button>
+              ) : (
+                <button
+                  id="btn-collapse-sidebar"
+                  onClick={toggleSidebar}
+                  className="sidebar-icon-btn"
+                  style={{ width: '32px', height: '32px' }}
+                  title="Collapse sidebar"
+                  aria-label="Collapse sidebar"
+                >
+                  <PanelLeftClose size={15} />
+                </button>
+              )}
             </div>
           ) : (
             <div
@@ -162,12 +187,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
             style={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: isExpanded ? 'stretch' : 'center',
-              gap: isExpanded ? '0.25rem' : '0.625rem',
+              alignItems: isEffectiveExpanded ? 'stretch' : 'center',
+              gap: isEffectiveExpanded ? '0.25rem' : '0.625rem',
               width: '100%',
             }}
           >
-            {isExpanded && (
+            {isEffectiveExpanded && (
               <div
                 style={{
                   fontSize: '0.6875rem',
@@ -185,12 +210,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
               const Icon = item.icon;
               const isActive = currentTab === item.id;
 
-              if (isExpanded) {
+              if (isEffectiveExpanded) {
                 return (
                   <button
                     key={item.id}
                     id={`nav-row-${item.id}`}
-                    onClick={() => onTabChange(item.id)}
+                    onClick={() => {
+                      onTabChange(item.id);
+                      onCloseMobile?.();
+                    }}
                     className={`sidebar-row-btn ${isActive ? 'active' : ''}`}
                     aria-label={item.label}
                     aria-current={isActive ? 'page' : undefined}
@@ -205,7 +233,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                 <button
                   key={item.id}
                   id={`nav-rail-${item.id}`}
-                  onClick={() => onTabChange(item.id)}
+                  onClick={() => {
+                    onTabChange(item.id);
+                    onCloseMobile?.();
+                  }}
                   className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
                   aria-label={item.label}
                   aria-current={isActive ? 'page' : undefined}
@@ -223,15 +254,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           style={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: isExpanded ? 'stretch' : 'center',
-            gap: isExpanded ? '0.4rem' : '0.5rem',
+            alignItems: isEffectiveExpanded ? 'stretch' : 'center',
+            gap: isEffectiveExpanded ? '0.4rem' : '0.5rem',
             width: '100%',
           }}
         >
           {/* Subtle separator */}
           <div
             style={{
-              width: isExpanded ? '100%' : '26px',
+              width: isEffectiveExpanded ? '100%' : '26px',
               height: '1px',
               backgroundColor: 'var(--border-subtle)',
               margin: '0.25rem 0',
@@ -240,7 +271,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           />
 
           {/* 1. NOTIFICATION & THEME BUTTONS ABOVE PROFILE */}
-          {isExpanded ? (
+          {isEffectiveExpanded ? (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
               {/* Notification Button */}
               <button
@@ -320,7 +351,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           )}
 
           {/* 2. PROFILE WITH 3-DOT MENU (EXPANDED) OR HOVER FLYOUT (COLLAPSED) */}
-          {isExpanded ? (
+          {isEffectiveExpanded ? (
             <div style={{ position: 'relative' }}>
               {/* Profile Card in Expanded Mode */}
               <div
@@ -428,6 +459,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                       className="flyout-menu-item"
                       onClick={() => {
                         setIsUserDropdownOpen(false);
+                        onCloseMobile?.();
                         setIsSettingsOpen(true);
                       }}
                     >
@@ -439,6 +471,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                       className="flyout-menu-item"
                       onClick={() => {
                         setIsUserDropdownOpen(false);
+                        onCloseMobile?.();
                         setIsHelpOpen(true);
                       }}
                     >
@@ -452,6 +485,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                       className="flyout-menu-item danger"
                       onClick={() => {
                         setIsUserDropdownOpen(false);
+                        onCloseMobile?.();
                         logout();
                       }}
                     >
@@ -579,6 +613,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           )}
         </div>
       </aside>
+
+      {/* Mobile Drawer Backdrop */}
+      {isMobileOpen && (
+        <div
+          className="mobile-drawer-backdrop"
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Notifications Modal */}
       {isNotificationOpen && (

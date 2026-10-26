@@ -262,3 +262,89 @@ button, input, select, textarea {
 .sidebar-container.expanded .sidebar-tooltip {
   display: none !important;
 }
+
+/* Profile Flyout & Dropdown Menus */
+.profile-flyout-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-flyout-menu {
+  position: absolute;
+  left: calc(100% + 12px);
+  bottom: 0;
+  min-width: 220px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  padding: 0.625rem;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px) scale(0.96);
+  transition: opacity 160ms cubic-bezier(0.4, 0, 0.2, 1), transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* Invisible hover bridge to prevent closing when moving cursor across gap */
+.profile-flyout-menu::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+}
+
+.profile-flyout-wrapper:hover .profile-flyout-menu,
+.profile-flyout-menu.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Dropdown Menu when Expanded */
+.profile-dropdown-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  min-width: 210px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  padding: 0.625rem;
+  z-index: 1000;
+  backdrop-filter: var(--glass-blur);
+}
+
+.flyout-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  text-align: left;
+  outline: none;
+}
+
+.flyout-menu-item:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--color-accent-magenta);
+}
+
+.flyout-menu-item.danger:hover {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+

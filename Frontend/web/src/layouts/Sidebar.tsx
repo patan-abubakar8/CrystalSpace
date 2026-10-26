@@ -18,6 +18,9 @@ import {
   ExternalLink,
   PanelLeftClose,
   PanelLeftOpen,
+  Bell,
+  MoreVertical,
+  Clock,
 } from 'lucide-react';
 import { usePermissions } from '../core/context/PermissionContext';
 import { useTheme } from '../core/context/ThemeContext';
@@ -57,6 +60,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const navItems = [
     { id: 'dashboard' as NavigationTab, label: 'Dashboard', icon: LayoutDashboard },
@@ -142,7 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
                 id="btn-expand-sidebar"
                 onClick={toggleSidebar}
                 className="sidebar-icon-btn"
-                style={{ width: '32px', height: '32px', color: 'var(--text-tertiary)' }}
+                style={{ width: '32px', height: '32px' }}
                 title="Expand sidebar"
                 aria-label="Expand sidebar"
               >
@@ -162,7 +167,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
               width: '100%',
             }}
           >
-
+            {isExpanded && (
+              <div
+                style={{
+                  fontSize: '0.6875rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  color: 'var(--text-tertiary)',
+                  padding: '0.25rem 0.75rem 0.35rem',
+                }}
+              >
+                Main Menu
+              </div>
+            )}
 
             {visibleNavItems.map((item) => {
               const Icon = item.icon;
@@ -201,13 +218,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           </nav>
         </div>
 
-        {/* Bottom Utility Stack */}
+        {/* Bottom Utility Stack: Notification, Theme, and Profile */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: isExpanded ? 'stretch' : 'center',
-            gap: isExpanded ? '0.25rem' : '0.5rem',
+            gap: isExpanded ? '0.4rem' : '0.5rem',
             width: '100%',
           }}
         >
@@ -217,212 +234,452 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
               width: isExpanded ? '100%' : '26px',
               height: '1px',
               backgroundColor: 'var(--border-subtle)',
-              margin: '0.35rem 0',
+              margin: '0.25rem 0',
               alignSelf: 'center',
             }}
           />
 
-          {isExpanded && (
-            <div
-              style={{
-                fontSize: '0.6875rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'var(--text-tertiary)',
-                padding: '0.25rem 0.75rem 0.25rem',
-              }}
-            >
-              System
-            </div>
-          )}
-
-          {/* Settings */}
+          {/* 1. NOTIFICATION & THEME BUTTONS ABOVE PROFILE */}
           {isExpanded ? (
-            <button
-              id="btn-sidebar-settings"
-              onClick={() => setIsSettingsOpen(true)}
-              className="sidebar-row-btn"
-              aria-label="Platform Settings"
-            >
-              <Settings size={16} />
-              <span>Settings</span>
-            </button>
-          ) : (
-            <button
-              id="btn-sidebar-settings"
-              onClick={() => setIsSettingsOpen(true)}
-              className="sidebar-icon-btn"
-              aria-label="Platform Settings"
-            >
-              <Settings size={16} />
-              <span className="sidebar-tooltip">Settings</span>
-            </button>
-          )}
-
-          {/* Help & Support */}
-          {isExpanded ? (
-            <button
-              id="btn-sidebar-help"
-              onClick={() => setIsHelpOpen(true)}
-              className="sidebar-row-btn"
-              aria-label="Help & Documentation"
-            >
-              <HelpCircle size={16} />
-              <span>Help & Resources</span>
-            </button>
-          ) : (
-            <button
-              id="btn-sidebar-help"
-              onClick={() => setIsHelpOpen(true)}
-              className="sidebar-icon-btn"
-              aria-label="Help & Documentation"
-            >
-              <HelpCircle size={16} />
-              <span className="sidebar-tooltip">Help & Resources</span>
-            </button>
-          )}
-
-          {/* Logout */}
-          {isExpanded ? (
-            <button
-              id="btn-sidebar-logout"
-              onClick={logout}
-              className="sidebar-row-btn"
-              aria-label="Sign Out"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              <LogOut size={16} />
-              <span>Sign Out</span>
-            </button>
-          ) : (
-            <button
-              id="btn-sidebar-logout"
-              onClick={logout}
-              className="sidebar-icon-btn"
-              aria-label="Sign Out"
-              style={{ color: 'var(--text-tertiary)' }}
-            >
-              <LogOut size={16} />
-              <span className="sidebar-tooltip">Sign Out ({user?.role || 'User'})</span>
-            </button>
-          )}
-
-          {/* User Profile Avatar / Session Card */}
-          {isExpanded ? (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.625rem',
-                padding: '0.625rem 0.75rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--bg-surface-elevated)',
-                border: '1px solid var(--border-subtle)',
-                marginTop: '0.35rem',
-              }}
-            >
-              <div
-                style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  background: 'var(--color-primary-gradient)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ffffff',
-                  fontWeight: 500,
-                  fontSize: '0.75rem',
-                  position: 'relative',
-                  flexShrink: 0,
-                }}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+              {/* Notification Button */}
+              <button
+                id="btn-sidebar-notification"
+                onClick={() => setIsNotificationOpen(true)}
+                className="sidebar-row-btn"
+                style={{ padding: '0.45rem 0.6rem', fontSize: '0.75rem', position: 'relative' }}
+                title="View Notifications"
               >
-                {user?.email?.charAt(0).toUpperCase() || 'U'}
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <Bell size={15} />
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-1px',
+                      right: '-1px',
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--color-accent-magenta)',
+                    }}
+                  />
+                </div>
+                <span>Alerts</span>
+              </button>
+
+              {/* Theme Toggle Button */}
+              <button
+                id="btn-sidebar-theme"
+                onClick={toggleTheme}
+                className="sidebar-row-btn"
+                style={{ padding: '0.45rem 0.6rem', fontSize: '0.75rem' }}
+                title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+              >
+                {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+                <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+              {/* Notification Button */}
+              <button
+                id="btn-sidebar-notification"
+                onClick={() => setIsNotificationOpen(true)}
+                className="sidebar-icon-btn"
+                style={{ position: 'relative' }}
+                aria-label="Notifications"
+              >
+                <Bell size={16} />
                 <span
                   style={{
                     position: 'absolute',
-                    bottom: '0',
-                    right: '0',
-                    width: '7px',
-                    height: '7px',
+                    top: '8px',
+                    right: '8px',
+                    width: '6px',
+                    height: '6px',
                     borderRadius: '50%',
-                    backgroundColor: 'var(--color-success)',
-                    border: '1.5px solid var(--bg-surface)',
+                    backgroundColor: 'var(--color-accent-magenta)',
                   }}
                 />
+                <span className="sidebar-tooltip">Notifications</span>
+              </button>
+
+              {/* Theme Toggle Button */}
+              <button
+                id="btn-sidebar-theme"
+                onClick={toggleTheme}
+                className="sidebar-icon-btn"
+                aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+              >
+                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                <span className="sidebar-tooltip">
+                  {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                </span>
+              </button>
+            </div>
+          )}
+
+          {/* 2. PROFILE WITH 3-DOT MENU (EXPANDED) OR HOVER FLYOUT (COLLAPSED) */}
+          {isExpanded ? (
+            <div style={{ position: 'relative' }}>
+              {/* Profile Card in Expanded Mode */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.5rem 0.65rem',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'var(--bg-surface-elevated)',
+                  border: '1px solid var(--border-subtle)',
+                  marginTop: '0.2rem',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', minWidth: 0, flex: 1 }}>
+                  <div
+                    style={{
+                      width: '30px',
+                      height: '30px',
+                      borderRadius: '50%',
+                      background: 'var(--color-primary-gradient)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#ffffff',
+                      fontWeight: 500,
+                      fontSize: '0.75rem',
+                      position: 'relative',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {user?.email?.charAt(0).toUpperCase() || 'U'}
+                    <span
+                      style={{
+                        position: 'absolute',
+                        bottom: '0',
+                        right: '0',
+                        width: '7px',
+                        height: '7px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--color-success)',
+                        border: '1.5px solid var(--bg-surface)',
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        color: 'var(--text-primary)',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {user?.email || 'User Account'}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '0.6875rem',
+                        color: 'var(--color-accent-magenta)',
+                        fontWeight: 400,
+                      }}
+                    >
+                      {user?.role || 'SuperAdmin'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3-Dot Icon Button */}
+                <button
+                  id="btn-sidebar-user-more"
+                  onClick={() => setIsUserDropdownOpen((prev) => !prev)}
+                  className="sidebar-icon-btn"
+                  style={{ width: '28px', height: '28px' }}
+                  title="Account Options"
+                  aria-label="Account Options"
+                >
+                  <MoreVertical size={15} />
+                </button>
               </div>
 
-              <div style={{ minWidth: 0, flex: 1 }}>
+              {/* Dropdown Menu when 3-dot is clicked */}
+              {isUserDropdownOpen && (
+                <>
+                  <div
+                    style={{ position: 'fixed', inset: 0, zIndex: 999 }}
+                    onClick={() => setIsUserDropdownOpen(false)}
+                  />
+                  <div className="profile-dropdown-menu animate-fade-in">
+                    <div style={{ padding: '0.35rem 0.5rem', marginBottom: '0.25rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-primary)' }}>
+                        {user?.email}
+                      </div>
+                      <div style={{ fontSize: '0.6875rem', color: 'var(--color-accent-magenta)' }}>
+                        {user?.role}
+                      </div>
+                    </div>
+
+                    <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
+
+                    <button
+                      className="flyout-menu-item"
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                        setIsSettingsOpen(true);
+                      }}
+                    >
+                      <Settings size={15} />
+                      <span>Settings</span>
+                    </button>
+
+                    <button
+                      className="flyout-menu-item"
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                        setIsHelpOpen(true);
+                      }}
+                    >
+                      <HelpCircle size={15} />
+                      <span>Help & Resources</span>
+                    </button>
+
+                    <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
+
+                    <button
+                      className="flyout-menu-item danger"
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                        logout();
+                      }}
+                    >
+                      <LogOut size={15} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            /* Collapsed Mode: Hover on Profile Picture triggers Flyout */
+            <div className="profile-flyout-wrapper">
+              <button
+                id="btn-profile-collapsed-avatar"
+                className="sidebar-icon-btn"
+                style={{
+                  width: '34px',
+                  height: '34px',
+                  padding: 0,
+                  cursor: 'pointer',
+                }}
+                aria-label="Account Menu"
+              >
                 <div
                   style={{
-                    fontSize: '0.75rem',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'var(--color-primary-gradient)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
                     fontWeight: 500,
-                    color: 'var(--text-primary)',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    fontSize: '0.75rem',
+                    position: 'relative',
+                    boxShadow: '0 2px 8px rgba(217, 70, 239, 0.3)',
                   }}
                 >
-                  {user?.email || 'Authenticated User'}
+                  {user?.email?.charAt(0).toUpperCase() || 'U'}
+                  <span
+                    style={{
+                      position: 'absolute',
+                      bottom: '0',
+                      right: '0',
+                      width: '7px',
+                      height: '7px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--color-success)',
+                      border: '1.5px solid var(--bg-surface)',
+                    }}
+                  />
                 </div>
-                <div
-                  style={{
-                    fontSize: '0.6875rem',
-                    color: 'var(--color-accent-magenta)',
-                    fontWeight: 400,
-                  }}
+              </button>
+
+              {/* Flyout Menu Appearing on Hover (with bridge) */}
+              <div className="profile-flyout-menu">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.35rem 0.5rem' }}>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      background: 'var(--color-primary-gradient)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#ffffff',
+                      fontWeight: 500,
+                      fontSize: '0.75rem',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {user?.email?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        color: 'var(--text-primary)',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {user?.email || 'User Account'}
+                    </div>
+                    <div style={{ fontSize: '0.6875rem', color: 'var(--color-accent-magenta)' }}>
+                      {user?.role || 'SuperAdmin'}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
+
+                <button
+                  className="flyout-menu-item"
+                  onClick={() => setIsSettingsOpen(true)}
                 >
-                  {user?.role || 'SuperAdmin'}
-                </div>
+                  <Settings size={15} />
+                  <span>Platform Settings</span>
+                </button>
+
+                <button
+                  className="flyout-menu-item"
+                  onClick={() => setIsHelpOpen(true)}
+                >
+                  <HelpCircle size={15} />
+                  <span>Help & Resources</span>
+                </button>
+
+                <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
+
+                <button
+                  className="flyout-menu-item danger"
+                  onClick={logout}
+                >
+                  <LogOut size={15} />
+                  <span>Sign Out</span>
+                </button>
               </div>
-            </div>
-          ) : (
-            <div
-              className="sidebar-icon-btn"
-              style={{
-                width: '32px',
-                height: '32px',
-                marginTop: '0.15rem',
-                padding: 0,
-              }}
-            >
-              <div
-                style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  background: 'var(--color-primary-gradient)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ffffff',
-                  fontWeight: 500,
-                  fontSize: '0.75rem',
-                  position: 'relative',
-                  boxShadow: '0 2px 8px rgba(217, 70, 239, 0.3)',
-                }}
-              >
-                {user?.email?.charAt(0).toUpperCase() || 'U'}
-                <span
-                  style={{
-                    position: 'absolute',
-                    bottom: '0',
-                    right: '0',
-                    width: '7px',
-                    height: '7px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--color-success)',
-                    border: '1.5px solid var(--bg-surface)',
-                  }}
-                />
-              </div>
-              <span className="sidebar-tooltip">
-                {user?.email || 'Logged In'} ({user?.role || 'SuperAdmin'})
-              </span>
             </div>
           )}
         </div>
       </aside>
+
+      {/* Notifications Modal */}
+      {isNotificationOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 100,
+            padding: '1rem',
+          }}
+          onClick={() => setIsNotificationOpen(false)}
+        >
+          <div
+            className="card animate-fade-in"
+            style={{
+              width: '100%',
+              maxWidth: '420px',
+              padding: '1.5rem',
+              backgroundColor: 'var(--bg-surface-elevated)',
+              boxShadow: 'var(--shadow-xl)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '1.25rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Bell size={18} color="var(--color-accent-magenta)" />
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 500, margin: 0 }}>
+                  System Notifications
+                </h3>
+              </div>
+              <button
+                id="btn-close-notification-modal"
+                onClick={() => setIsNotificationOpen(false)}
+                className="btn btn-secondary btn-icon btn-sm"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div
+                style={{
+                  padding: '0.75rem 0.875rem',
+                  borderRadius: 'var(--radius-sm)',
+                  backgroundColor: 'var(--bg-surface)',
+                  border: '1px solid var(--border-subtle)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.8125rem', fontWeight: 500 }}>RBAC Dynamic Permissions Active</span>
+                  <span style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                    <Clock size={11} /> Just now
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem', lineHeight: 1.4 }}>
+                  Database-driven permission matrix for all organizational roles is synced with PostgreSQL.
+                </p>
+              </div>
+
+              <div
+                style={{
+                  padding: '0.75rem 0.875rem',
+                  borderRadius: 'var(--radius-sm)',
+                  backgroundColor: 'var(--bg-surface)',
+                  border: '1px solid var(--border-subtle)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.8125rem', fontWeight: 500 }}>API v1 Service Healthy</span>
+                  <span style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                    <Clock size={11} /> 5m ago
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem', lineHeight: 1.4 }}>
+                  Go N-Tier backend server connected with connection pool active.
+                </p>
+              </div>
+
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => setIsNotificationOpen(false)}
+                style={{ marginTop: '0.5rem', width: '100%', justifyContent: 'center' }}
+              >
+                Dismiss All Notifications
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Settings Modal */}
       {isSettingsOpen && (
@@ -628,12 +885,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
               >
                 <div style={{ fontSize: '0.8125rem', fontWeight: 500 }}>Quick Shortcuts</div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  <span>Global Search</span>
-                  <kbd style={{ padding: '0.1rem 0.4rem', borderRadius: '4px', backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)' }}>⌘K</kbd>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                   <span>Toggle Theme</span>
-                  <span style={{ color: 'var(--text-tertiary)' }}>Navbar / Settings</span>
+                  <span style={{ color: 'var(--text-tertiary)' }}>Sidebar / Preferences</span>
                 </div>
               </div>
 

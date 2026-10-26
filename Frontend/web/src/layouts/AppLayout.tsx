@@ -17,9 +17,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ currentTab, onTabChange, c
   return (
     <div className="app-container">
       {/* Mobile Top Header (only visible on screen widths <= 768px) */}
-      <header className="mobile-header">
+      <header className="mobile-top-header">
         <div
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          className="mobile-header-brand"
           onClick={() => onTabChange('dashboard')}
           title="CrystalSpace"
         >
@@ -28,28 +28,30 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ currentTab, onTabChange, c
 
         <button
           id="btn-mobile-hamburger"
+          type="button"
           onClick={() => setMobileMenuOpen(true)}
-          className="sidebar-icon-btn"
-          style={{ width: '36px', height: '36px' }}
+          className="mobile-hamburger-btn"
           aria-label="Open navigation menu"
         >
-          <Menu size={20} />
+          <Menu size={22} />
         </button>
       </header>
 
-      {/* Sidebar with mobile drawer support */}
-      <Sidebar
-        currentTab={currentTab}
-        onTabChange={(tab) => {
-          onTabChange(tab);
-          setMobileMenuOpen(false);
-        }}
-        isMobileOpen={mobileMenuOpen}
-        onCloseMobile={() => setMobileMenuOpen(false)}
-      />
+      {/* Main app body: desktop sidebar rail on left + main content, or mobile drawer */}
+      <div className="app-main-layout">
+        <Sidebar
+          currentTab={currentTab}
+          onTabChange={(tab) => {
+            onTabChange(tab);
+            setMobileMenuOpen(false);
+          }}
+          isMobileOpen={mobileMenuOpen}
+          onCloseMobile={() => setMobileMenuOpen(false)}
+        />
 
-      <div className="main-content">
-        <main className="page-wrapper animate-fade-in">{children}</main>
+        <div className="main-content">
+          <main className="page-wrapper animate-fade-in">{children}</main>
+        </div>
       </div>
     </div>
   );

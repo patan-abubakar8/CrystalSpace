@@ -32,6 +32,8 @@ interface SidebarProps {
   onTabChange: (tab: NavigationTab) => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
+  isNotificationOpen?: boolean;
+  onToggleNotification?: (open: boolean) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -39,6 +41,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onTabChange,
   isMobileOpen = false,
   onCloseMobile,
+  isNotificationOpen: externalNotificationOpen,
+  onToggleNotification,
 }) => {
   const { user, logout } = useAuth();
   const { can } = usePermissions();
@@ -70,7 +74,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [internalNotificationOpen, setInternalNotificationOpen] = useState(false);
+
+  const isNotificationOpen =
+    externalNotificationOpen !== undefined ? externalNotificationOpen : internalNotificationOpen;
+
+  const setIsNotificationOpen = (open: boolean | ((prev: boolean) => boolean)) => {
+    const nextVal = typeof open === 'function' ? open(isNotificationOpen) : open;
+    if (onToggleNotification) {
+      onToggleNotification(nextVal);
+    } else {
+      setInternalNotificationOpen(nextVal);
+    }
+  };
 
   const navItems = [
     { id: 'dashboard' as NavigationTab, label: 'Dashboard', icon: LayoutDashboard },

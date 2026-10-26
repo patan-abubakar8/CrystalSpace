@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sidebar, type NavigationTab } from './Sidebar';
 import { CrystalLogo } from '../core/ui/CrystalLogo';
-import { Menu } from 'lucide-react';
+import { Menu, Bell } from 'lucide-react';
 import { useTheme } from '../core/context/ThemeContext';
 
 interface AppLayoutProps {
@@ -12,6 +12,7 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ currentTab, onTabChange, children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { theme } = useTheme();
 
   return (
@@ -26,15 +27,44 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ currentTab, onTabChange, c
           <CrystalLogo variant="full" height={26} theme={theme} />
         </div>
 
-        <button
-          id="btn-mobile-hamburger"
-          type="button"
-          onClick={() => setMobileMenuOpen(true)}
-          className="mobile-hamburger-btn"
-          aria-label="Open navigation menu"
-        >
-          <Menu size={22} />
-        </button>
+        <div className="mobile-header-actions">
+          {/* Notification Button beside hamburger */}
+          <button
+            id="btn-mobile-notifications"
+            type="button"
+            onClick={() => setIsNotificationOpen(true)}
+            className="mobile-action-icon-btn"
+            aria-label="View notifications"
+            title="Notifications"
+          >
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <Bell size={21} />
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '-2px',
+                  right: '-2px',
+                  width: '7px',
+                  height: '7px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--color-accent-magenta)',
+                }}
+              />
+            </div>
+          </button>
+
+          {/* Hamburger Menu Button - dark, no container */}
+          <button
+            id="btn-mobile-hamburger"
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className="mobile-action-icon-btn"
+            aria-label="Open navigation menu"
+            title="Menu"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
       </header>
 
       {/* Main app body: desktop sidebar rail on left + main content, or mobile drawer */}
@@ -47,6 +77,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ currentTab, onTabChange, c
           }}
           isMobileOpen={mobileMenuOpen}
           onCloseMobile={() => setMobileMenuOpen(false)}
+          isNotificationOpen={isNotificationOpen}
+          onToggleNotification={setIsNotificationOpen}
         />
 
         <div className="main-content">

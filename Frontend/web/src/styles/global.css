@@ -406,28 +406,36 @@ button, input, select, textarea {
     flex-shrink: 0;
   }
 
-  /* Hamburger Menu Button on right of top header */
-  .mobile-hamburger-btn {
+  /* Actions on right of top header: Notification & Hamburger */
+  .mobile-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Clean dark icon buttons with NO container/box */
+  .mobile-action-icon-btn {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 38px !important;
-    height: 38px !important;
-    border-radius: var(--radius-sm) !important;
-    background-color: var(--bg-surface-elevated) !important;
-    border: 1px solid var(--border-default) !important;
-    color: var(--text-primary) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0.25rem !important;
+    color: var(--sidebar-icon-color, var(--text-primary)) !important;
     cursor: pointer !important;
-    transition: all var(--transition-fast) !important;
+    transition: transform var(--transition-fast), color var(--transition-fast) !important;
     flex-shrink: 0 !important;
-    padding: 0 !important;
   }
 
-  .mobile-hamburger-btn:hover,
-  .mobile-hamburger-btn:active {
-    background-color: var(--bg-surface-hover) !important;
+  .mobile-action-icon-btn:hover {
     color: var(--color-accent-magenta) !important;
-    border-color: var(--color-accent-magenta) !important;
+    transform: scale(1.08) !important;
+  }
+
+  .mobile-action-icon-btn:active {
+    transform: scale(0.95) !important;
   }
 
   .main-content {

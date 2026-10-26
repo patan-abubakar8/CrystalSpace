@@ -111,3 +111,74 @@ button, input, select, textarea {
     padding: 1.25rem;
   }
 }
+
+/* Slim Icon-Rail Sidebar */
+.sidebar-rail {
+  width: 76px;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0.625rem;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.sidebar-icon-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.sidebar-icon-btn:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+.sidebar-icon-btn.active {
+  background: var(--sidebar-active-bg);
+  border: 1px solid var(--sidebar-active-border);
+  color: var(--sidebar-active-color);
+  box-shadow: var(--sidebar-active-shadow);
+}
+
+.sidebar-tooltip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) scale(0.95);
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease, transform 120ms ease;
+  z-index: 100;
+}
+
+.sidebar-icon-btn:hover .sidebar-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}

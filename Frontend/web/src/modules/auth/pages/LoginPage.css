@@ -127,7 +127,7 @@
 }
 
 .auth-main-headline {
-  font-size: clamp(2.4rem, 3.8vw, 3.8rem);
+  font-size: clamp(2.04rem, 3.23vw, 3.23rem);
   line-height: 1.15;
   font-weight: 400;
   letter-spacing: -0.025em;
@@ -145,7 +145,7 @@
 
 .auth-tagline {
   color: var(--text-secondary);
-  font-size: clamp(0.9375rem, 1.15vw, 1.05rem);
+  font-size: clamp(0.8rem, 0.98vw, 0.89rem);
   line-height: 1.5;
   font-weight: 400;
   margin-top: 1.5rem;

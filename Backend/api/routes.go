@@ -24,6 +24,8 @@ type RouterParams struct {
 	ProjectService    interfaces.ProjectService
 	DashboardService  interfaces.DashboardService
 	PermissionService interfaces.PermissionService
+	AttendanceService interfaces.AttendanceService
+	OnboardingService interfaces.EmployeeOnboardingService
 	PermissionRepo    interfaces.PermissionRepository
 }
 
@@ -47,6 +49,8 @@ func SetupRoutes(p RouterParams) *chi.Mux {
 	projH := handlers.NewProjectHandler(p.ProjectService)
 	dashH := handlers.NewDashboardHandler(p.DashboardService)
 	permH := handlers.NewPermissionHandler(p.PermissionService)
+	attH := handlers.NewAttendanceHandler(p.AttendanceService, p.EmployeeService)
+	obH := handlers.NewEmployeeOnboardingHandler(p.OnboardingService)
 
 	// Liveness & Readiness Probe
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -87,6 +91,30 @@ func SetupRoutes(p RouterParams) *chi.Mux {
 				emp.With(middlewares.RequirePermission(p.PermissionRepo, "employees", "create")).Post("/", empH.Create)
 				emp.With(middlewares.RequirePermission(p.PermissionRepo, "employees", "update")).Put("/{id}", empH.Update)
 				emp.With(middlewares.RequirePermission(p.PermissionRepo, "employees", "delete")).Delete("/{id}", empH.Delete)
+
+				// Onboarding reference data (document types, work schedules, policies, roles)
+				emp.Get("/onboarding/reference", obH.ReferenceData)
+
+				// Employee onboarding drafts. Authorisation is enforced per-record in the
+				// service layer (owner or employees-drafts permission), and again per
+				// section for compensation, documents, assets and access.
+				emp.Route("/drafts", func(drafts chi.Router) {
+					drafts.Get("/", obH.ListDrafts)
+					drafts.Post("/", obH.CreateDraft)
+					drafts.Get("/{id}", obH.GetDraft)
+					drafts.Patch("/{id}", obH.UpdateDraft)
+					drafts.Delete("/{id}", obH.DeleteDraft)
+					drafts.Patch("/{id}/sections/{section}", obH.SaveSection)
+					drafts.Post("/{id}/validate", obH.ValidateDraft)
+					drafts.Post("/{id}/submit", obH.SubmitDraft)
+				})
+
+				// Employee audit / lifecycle history
+				emp.With(middlewares.RequirePermission(p.PermissionRepo, "employees-history", "view")).
+					Get("/{id}/history", obH.History)
+
+				// Permission-filtered profile tabs (documents, assets, allocations, access, history)
+				emp.Get("/{id}/extras", obH.Extras)
 			})
 
 			// Department Management (Enforced by can_view, can_create, can_update, can_delete)
@@ -128,6 +156,18 @@ func SetupRoutes(p RouterParams) *chi.Mux {
 				proj.With(middlewares.RequirePermission(p.PermissionRepo, "projects", "update")).Patch("/tasks/{task_id}/status", projH.UpdateTaskStatus)
 				proj.With(middlewares.RequirePermission(p.PermissionRepo, "projects", "create")).Post("/", projH.CreateProject)
 				proj.With(middlewares.RequirePermission(p.PermissionRepo, "projects", "create")).Post("/{id}/tasks", projH.CreateTask)
+			})
+
+			// Attendance & Time Tracking (Enforced by can_view, can_create)
+			protected.Route("/attendance", func(att chi.Router) {
+				att.Use(middlewares.RequirePermission(p.PermissionRepo, "attendance", "view"))
+				att.Get("/today", attH.GetToday)
+				att.Get("/heatmap", attH.GetHeatmap)
+				att.Get("/summary", attH.GetSummary)
+				att.Get("/overview", attH.GetOrgOverview)
+				att.Get("/", attH.List)
+
+				att.With(middlewares.RequirePermission(p.PermissionRepo, "attendance", "create")).Post("/punch", attH.Punch)
 			})
 
 			// Dynamic Roles & Permissions Matrix Management (System Admin / DB-configured roles)

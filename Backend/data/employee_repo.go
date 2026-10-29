@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"crystalspace/backend/core/interfaces"
@@ -110,21 +111,25 @@ func (r *employeeRepository) Create(ctx context.Context, emp *models.Employee) e
 func (r *employeeRepository) GetByID(ctx context.Context, id int) (*models.Employee, error) {
 	query := `
 		SELECT 
-			e.id, COALESCE(e.user_id::text, ''), e.first_name, e.last_name, e.email,
-			COALESCE(e.phone_number, ''), e.designation, e.department_id,
+			e.id, COALESCE(e.user_id::text, ''), e.first_name, COALESCE(e.middle_name, ''),
+			e.last_name, e.email, COALESCE(e.personal_email, ''),
+			COALESCE(e.phone_number, ''), COALESCE(e.alternate_phone, ''),
+			e.designation, COALESCE(e.job_title, ''), e.department_id,
 			COALESCE(d.name, ''), e.manager_id, COALESCE(e.employee_code, ''),
-			e.office_location, e.date_of_joining, e.status, e.created_at, e.updated_at
+			e.office_location, COALESCE(e.work_location, ''), e.date_of_joining, e.status,
+			COALESCE(e.onboarding_status, 'Completed'), e.created_at, e.updated_at
 		FROM employees e
 		LEFT JOIN departments d ON e.department_id = d.id
 		WHERE e.id = $1
 	`
 	var emp models.Employee
 	err := r.pool.QueryRow(ctx, query, id).Scan(
-		&emp.ID, &emp.UserID, &emp.FirstName, &emp.LastName, &emp.Email,
-		&emp.PhoneNumber, &emp.Designation, &emp.DepartmentID,
+		&emp.ID, &emp.UserID, &emp.FirstName, &emp.MiddleName, &emp.LastName, &emp.Email,
+		&emp.PersonalEmail, &emp.PhoneNumber, &emp.AlternatePhone,
+		&emp.Designation, &emp.JobTitle, &emp.DepartmentID,
 		&emp.DepartmentName, &emp.ManagerID, &emp.EmployeeCode,
-		&emp.OfficeLocation, &emp.DateOfJoining, &emp.Status,
-		&emp.CreatedAt, &emp.UpdatedAt,
+		&emp.OfficeLocation, &emp.WorkLocation, &emp.DateOfJoining, &emp.Status,
+		&emp.OnboardingStatus, &emp.CreatedAt, &emp.UpdatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -144,21 +149,25 @@ func (r *employeeRepository) GetByID(ctx context.Context, id int) (*models.Emplo
 func (r *employeeRepository) GetByUserID(ctx context.Context, userID string) (*models.Employee, error) {
 	query := `
 		SELECT 
-			e.id, COALESCE(e.user_id::text, ''), e.first_name, e.last_name, e.email,
-			COALESCE(e.phone_number, ''), e.designation, e.department_id,
+			e.id, COALESCE(e.user_id::text, ''), e.first_name, COALESCE(e.middle_name, ''),
+			e.last_name, e.email, COALESCE(e.personal_email, ''),
+			COALESCE(e.phone_number, ''), COALESCE(e.alternate_phone, ''),
+			e.designation, COALESCE(e.job_title, ''), e.department_id,
 			COALESCE(d.name, ''), e.manager_id, COALESCE(e.employee_code, ''),
-			e.office_location, e.date_of_joining, e.status, e.created_at, e.updated_at
+			e.office_location, COALESCE(e.work_location, ''), e.date_of_joining, e.status,
+			COALESCE(e.onboarding_status, 'Completed'), e.created_at, e.updated_at
 		FROM employees e
 		LEFT JOIN departments d ON e.department_id = d.id
 		WHERE e.user_id = $1
 	`
 	var emp models.Employee
 	err := r.pool.QueryRow(ctx, query, userID).Scan(
-		&emp.ID, &emp.UserID, &emp.FirstName, &emp.LastName, &emp.Email,
-		&emp.PhoneNumber, &emp.Designation, &emp.DepartmentID,
+		&emp.ID, &emp.UserID, &emp.FirstName, &emp.MiddleName, &emp.LastName, &emp.Email,
+		&emp.PersonalEmail, &emp.PhoneNumber, &emp.AlternatePhone,
+		&emp.Designation, &emp.JobTitle, &emp.DepartmentID,
 		&emp.DepartmentName, &emp.ManagerID, &emp.EmployeeCode,
-		&emp.OfficeLocation, &emp.DateOfJoining, &emp.Status,
-		&emp.CreatedAt, &emp.UpdatedAt,
+		&emp.OfficeLocation, &emp.WorkLocation, &emp.DateOfJoining, &emp.Status,
+		&emp.OnboardingStatus, &emp.CreatedAt, &emp.UpdatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -188,7 +197,9 @@ func (r *employeeRepository) List(ctx context.Context, filter models.EmployeeFil
 		FROM employees e
 		WHERE ($1::int IS NULL OR e.department_id = $1)
 		  AND ($2::text IS NULL OR e.status = $2)
-		  AND ($3::text IS NULL OR e.first_name ILIKE '%' || $3 || '%' OR e.last_name ILIKE '%' || $3 || '%' OR e.email ILIKE '%' || $3 || '%')
+		  AND ($3::text IS NULL OR e.first_name ILIKE '%' || $3 || '%' OR e.last_name ILIKE '%' || $3 || '%'
+		       OR e.email ILIKE '%' || $3 || '%' OR e.employee_code ILIKE '%' || $3 || '%')
+		  AND ($4::text IS NULL OR e.designation = $4)
 	`
 	var total int
 	var deptID *int = filter.DepartmentID
@@ -200,27 +211,55 @@ func (r *employeeRepository) List(ctx context.Context, filter models.EmployeeFil
 	if filter.SearchQuery != "" {
 		search = &filter.SearchQuery
 	}
+	var designation *string
+	if filter.Designation != "" {
+		designation = &filter.Designation
+	}
 
-	err := r.pool.QueryRow(ctx, countQuery, deptID, status, search).Scan(&total)
+	err := r.pool.QueryRow(ctx, countQuery, deptID, status, search, designation).Scan(&total)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to count employees: %w", err)
 	}
 
+	// Sorting is whitelisted so the SQL fragment can never be injected.
+	dir := "ASC"
+	if strings.EqualFold(filter.SortDir, "desc") {
+		dir = "DESC"
+	}
+	orderBy := "e.created_at DESC"
+	switch filter.SortBy {
+	case "name":
+		orderBy = "e.first_name " + dir + ", e.last_name " + dir
+	case "employee_code":
+		orderBy = "e.employee_code " + dir
+	case "department":
+		orderBy = "d.name " + dir + ", e.first_name ASC"
+	case "joining_date":
+		orderBy = "e.date_of_joining " + dir
+	case "status":
+		orderBy = "e.status " + dir
+	}
+
 	query := `
 		SELECT 
-			e.id, COALESCE(e.user_id::text, ''), e.first_name, e.last_name, e.email,
-			COALESCE(e.phone_number, ''), e.designation, e.department_id,
+			e.id, COALESCE(e.user_id::text, ''), e.first_name, COALESCE(e.middle_name, ''),
+			e.last_name, e.email, COALESCE(e.personal_email, ''),
+			COALESCE(e.phone_number, ''), COALESCE(e.alternate_phone, ''),
+			e.designation, COALESCE(e.job_title, ''), e.department_id,
 			COALESCE(d.name, ''), e.manager_id, COALESCE(e.employee_code, ''),
-			e.office_location, e.date_of_joining, e.status, e.created_at, e.updated_at
+			e.office_location, COALESCE(e.work_location, ''), e.date_of_joining, e.status,
+			COALESCE(e.onboarding_status, 'Completed'), e.created_at, e.updated_at
 		FROM employees e
 		LEFT JOIN departments d ON e.department_id = d.id
 		WHERE ($1::int IS NULL OR e.department_id = $1)
 		  AND ($2::text IS NULL OR e.status = $2)
-		  AND ($3::text IS NULL OR e.first_name ILIKE '%' || $3 || '%' OR e.last_name ILIKE '%' || $3 || '%' OR e.email ILIKE '%' || $3 || '%')
-		ORDER BY e.created_at DESC
-		LIMIT $4 OFFSET $5
+		  AND ($3::text IS NULL OR e.first_name ILIKE '%' || $3 || '%' OR e.last_name ILIKE '%' || $3 || '%'
+		       OR e.email ILIKE '%' || $3 || '%' OR e.employee_code ILIKE '%' || $3 || '%')
+		  AND ($4::text IS NULL OR e.designation = $4)
+		ORDER BY ` + orderBy + `
+		LIMIT $5 OFFSET $6
 	`
-	rows, err := r.pool.Query(ctx, query, deptID, status, search, filter.PageSize, offset)
+	rows, err := r.pool.Query(ctx, query, deptID, status, search, designation, filter.PageSize, offset)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to list employees: %w", err)
 	}
@@ -230,11 +269,12 @@ func (r *employeeRepository) List(ctx context.Context, filter models.EmployeeFil
 	for rows.Next() {
 		var emp models.Employee
 		if err := rows.Scan(
-			&emp.ID, &emp.UserID, &emp.FirstName, &emp.LastName, &emp.Email,
-			&emp.PhoneNumber, &emp.Designation, &emp.DepartmentID,
+			&emp.ID, &emp.UserID, &emp.FirstName, &emp.MiddleName, &emp.LastName, &emp.Email,
+			&emp.PersonalEmail, &emp.PhoneNumber, &emp.AlternatePhone,
+			&emp.Designation, &emp.JobTitle, &emp.DepartmentID,
 			&emp.DepartmentName, &emp.ManagerID, &emp.EmployeeCode,
-			&emp.OfficeLocation, &emp.DateOfJoining, &emp.Status,
-			&emp.CreatedAt, &emp.UpdatedAt,
+			&emp.OfficeLocation, &emp.WorkLocation, &emp.DateOfJoining, &emp.Status,
+			&emp.OnboardingStatus, &emp.CreatedAt, &emp.UpdatedAt,
 		); err != nil {
 			return nil, 0, err
 		}
@@ -280,8 +320,8 @@ func (r *employeeRepository) Count(ctx context.Context) (int, error) {
 
 func (r *employeeRepository) getPersonalDetail(ctx context.Context, empID int) *models.PersonalDetail {
 	var pd models.PersonalDetail
-	query := `SELECT id, employee_id, date_of_birth, COALESCE(gender, ''), COALESCE(marital_status, ''), COALESCE(blood_group, ''), COALESCE(address, ''), COALESCE(city, ''), COALESCE(state, ''), COALESCE(postal_code, ''), COALESCE(country, '') FROM employee_personal_details WHERE employee_id = $1`
-	err := r.pool.QueryRow(ctx, query, empID).Scan(&pd.ID, &pd.EmployeeID, &pd.DateOfBirth, &pd.Gender, &pd.MaritalStatus, &pd.BloodGroup, &pd.Address, &pd.City, &pd.State, &pd.PostalCode, &pd.Country)
+	query := `SELECT id, employee_id, date_of_birth, COALESCE(gender, ''), COALESCE(marital_status, ''), COALESCE(blood_group, ''), COALESCE(address, ''), COALESCE(permanent_address, ''), COALESCE(city, ''), COALESCE(state, ''), COALESCE(postal_code, ''), COALESCE(country, ''), COALESCE(personal_email, ''), COALESCE(alternate_phone, '') FROM employee_personal_details WHERE employee_id = $1`
+	err := r.pool.QueryRow(ctx, query, empID).Scan(&pd.ID, &pd.EmployeeID, &pd.DateOfBirth, &pd.Gender, &pd.MaritalStatus, &pd.BloodGroup, &pd.Address, &pd.PermanentAddress, &pd.City, &pd.State, &pd.PostalCode, &pd.Country, &pd.PersonalEmail, &pd.AlternatePhone)
 	if err != nil {
 		return nil
 	}

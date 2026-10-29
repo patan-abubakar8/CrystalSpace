@@ -53,6 +53,8 @@ func main() {
 	salaryRepo := data.NewSalaryRepository(dbPool)
 	projRepo := data.NewProjectRepository(dbPool)
 	permRepo := data.NewPermissionRepository(dbPool)
+	attRepo := data.NewAttendanceRepository(dbPool)
+	onboardingRepo := data.NewEmployeeOnboardingRepository(dbPool)
 
 	// 2. Instantiate Business Services (BLL)
 	authSvc := service.NewAuthService(userRepo, empRepo, cfg.JWTSecret)
@@ -63,6 +65,8 @@ func main() {
 	projSvc := service.NewProjectService(projRepo)
 	dashSvc := service.NewDashboardService(empRepo, leaveRepo, deptRepo, projRepo)
 	permSvc := service.NewPermissionService(permRepo)
+	attSvc := service.NewAttendanceService(attRepo)
+	onboardingSvc := service.NewEmployeeOnboardingService(onboardingRepo, empRepo, permRepo, leaveRepo)
 
 	// 3. Setup Presentation / API Routing (Tier 1)
 	router := api.SetupRoutes(api.RouterParams{
@@ -75,6 +79,8 @@ func main() {
 		ProjectService:    projSvc,
 		DashboardService:  dashSvc,
 		PermissionService: permSvc,
+		AttendanceService: attSvc,
+		OnboardingService: onboardingSvc,
 		PermissionRepo:    permRepo,
 	})
 

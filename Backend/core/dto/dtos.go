@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"encoding/json"
 	"time"
 
 	"crystalspace/backend/core/models"
@@ -76,6 +77,69 @@ type UpdateEmployeeRequest struct {
 	OfficeLocation string `json:"office_location"`
 	Status         string `json:"status"`
 	Skills         string `json:"skills,omitempty"`
+}
+
+// Employee onboarding DTOs
+type CreateEmployeeDraftRequest struct {
+	CurrentStep int `json:"current_step"`
+}
+
+type SaveDraftSectionRequest struct {
+	Version     int             `json:"version"`
+	CurrentStep int             `json:"current_step"`
+	Data        json.RawMessage `json:"data"`
+}
+
+type UpdateDraftRequest struct {
+	Version     int    `json:"version"`
+	CurrentStep int    `json:"current_step"`
+	Status      string `json:"status,omitempty"`
+}
+
+// EmployeeDraftPermissions tells the client which sections and actions to expose.
+// It is advisory only; every operation is re-checked on the server.
+type EmployeeDraftPermissions struct {
+	CanUpdate        bool `json:"can_update"`
+	CanDelete        bool `json:"can_delete"`
+	CanSubmit        bool `json:"can_submit"`
+	CompensationView bool `json:"compensation_view"`
+	CompensationEdit bool `json:"compensation_edit"`
+	DocumentsView    bool `json:"documents_view"`
+	DocumentsUpload  bool `json:"documents_upload"`
+	DocumentsVerify  bool `json:"documents_verify"`
+	AssetsView       bool `json:"assets_view"`
+	AssetsAssign     bool `json:"assets_assign"`
+	AccessView       bool `json:"access_view"`
+	AccessManage     bool `json:"access_manage"`
+	HistoryView      bool `json:"history_view"`
+	IsOwner          bool `json:"is_owner"`
+}
+
+type EmployeeDraftResponse struct {
+	Draft       *models.EmployeeDraft    `json:"draft"`
+	Permissions EmployeeDraftPermissions `json:"permissions"`
+	Validation  *models.DraftValidation  `json:"validation,omitempty"`
+}
+
+type OnboardingReferenceData struct {
+	DocumentTypes      []*models.DocumentType `json:"document_types"`
+	WorkSchedules      []*models.WorkSchedule `json:"work_schedules"`
+	LeavePolicies      []*models.LeavePolicy  `json:"leave_policies"`
+	LeaveTypes         []*models.LeaveType    `json:"leave_types"`
+	Roles              []string               `json:"roles"`
+	Assets             []*models.Asset        `json:"assets"`
+	EmploymentTypes    []string               `json:"employment_types"`
+	WorkModes          []string               `json:"work_modes"`
+	EmploymentStatuses []string               `json:"employment_statuses"`
+}
+
+type DraftSubmitResult struct {
+	EmployeeID         int    `json:"employee_id"`
+	EmployeeCode       string `json:"employee_code"`
+	DraftID            int    `json:"draft_id"`
+	AccountProvisioned bool   `json:"account_provisioned"`
+	// TemporaryPassword is returned exactly once when the server generated one.
+	TemporaryPassword string `json:"temporary_password,omitempty"`
 }
 
 // Department DTOs
@@ -164,4 +228,50 @@ type PagePermissionDTO struct {
 type UpdateRolePermissionsRequest struct {
 	Role        string              `json:"role"`
 	Permissions []PagePermissionDTO `json:"permissions"`
+}
+
+// Attendance DTOs
+type PunchRequest struct {
+	Action   string `json:"action"`              // "in", "out", "toggle"
+	WorkMode string `json:"work_mode,omitempty"` // "Office", "Remote", "Field"
+	Notes    string `json:"notes,omitempty"`
+}
+
+type AttendanceTodayResponse struct {
+	Attendance    *models.Attendance `json:"attendance,omitempty"`
+	IsClockedIn   bool               `json:"is_clocked_in"`
+	ActiveSeconds int64              `json:"active_seconds"`
+	TodayDate     string             `json:"today_date"`
+	CanPunch      bool               `json:"can_punch"`
+}
+
+type HeatmapCell struct {
+	Date       string  `json:"date"`        // YYYY-MM-DD
+	TotalHours float64 `json:"total_hours"` // 8.25
+	Level      int     `json:"level"`       // 0 to 4
+	Status     string  `json:"status"`      // Present, Late, HalfDay, Absent, OnLeave
+	ClockIn    string  `json:"clock_in"`
+	ClockOut   string  `json:"clock_out"`
+	WorkMode   string  `json:"work_mode"`
+}
+
+type AttendanceSummaryResponse struct {
+	AttendanceRate     float64       `json:"attendance_rate"`
+	AvgDailyHours      float64       `json:"avg_daily_hours"`
+	OnTimeArrivalRate  float64       `json:"on_time_arrival_rate"`
+	TotalWorkDays      int           `json:"total_work_days"`
+	TotalPresentDays   int           `json:"total_present_days"`
+	TotalLateDays      int           `json:"total_late_days"`
+	TotalLeaveDays     int           `json:"total_leave_days"`
+	TotalHours         float64       `json:"total_hours"`
+	TotalOvertimeHours float64       `json:"total_overtime_hours"`
+	DailyTrends        []HeatmapCell `json:"daily_trends"`
+}
+
+type OrgAttendanceTodayOverview struct {
+	TotalEmployees int `json:"total_employees"`
+	PresentCount   int `json:"present_count"`
+	LateCount      int `json:"late_count"`
+	OnLeaveCount   int `json:"on_leave_count"`
+	AbsentCount    int `json:"absent_count"`
 }

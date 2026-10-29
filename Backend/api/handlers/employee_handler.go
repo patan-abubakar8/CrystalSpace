@@ -35,8 +35,11 @@ func (h *EmployeeHandler) List(w http.ResponseWriter, r *http.Request) {
 
 	filter := models.EmployeeFilter{
 		Status:         q.Get("status"),
+		Designation:    q.Get("designation"),
 		SearchQuery:    q.Get("search"),
 		OfficeLocation: q.Get("location"),
+		SortBy:         q.Get("sort_by"),
+		SortDir:        q.Get("sort_dir"),
 		Page:           page,
 		PageSize:       pageSize,
 	}

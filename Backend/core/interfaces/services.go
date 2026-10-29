@@ -21,6 +21,21 @@ type EmployeeService interface {
 	Delete(ctx context.Context, id int) error
 }
 
+type EmployeeOnboardingService interface {
+	CreateDraft(ctx context.Context, actor models.Actor, req dto.CreateEmployeeDraftRequest) (*dto.EmployeeDraftResponse, error)
+	GetDraft(ctx context.Context, actor models.Actor, id int) (*dto.EmployeeDraftResponse, error)
+	ListDrafts(ctx context.Context, actor models.Actor, filter models.EmployeeDraftFilter) ([]*models.EmployeeDraftSummary, int, error)
+	SaveSection(ctx context.Context, actor models.Actor, id int, section string, req dto.SaveDraftSectionRequest) (*dto.EmployeeDraftResponse, error)
+	UpdateDraft(ctx context.Context, actor models.Actor, id int, req dto.UpdateDraftRequest) (*dto.EmployeeDraftResponse, error)
+	DeleteDraft(ctx context.Context, actor models.Actor, id int) error
+	ValidateDraft(ctx context.Context, actor models.Actor, id int) (*models.DraftValidation, error)
+	SubmitDraft(ctx context.Context, actor models.Actor, id int, req models.SubmitDraftRequest) (*dto.DraftSubmitResult, error)
+	ReferenceData(ctx context.Context, actor models.Actor) (*dto.OnboardingReferenceData, error)
+	History(ctx context.Context, actor models.Actor, employeeID int) ([]*models.EmployeeAuditLog, error)
+	Extras(ctx context.Context, actor models.Actor, employeeID int) (*models.EmployeeExtras, error)
+	AuditEmployeeAction(ctx context.Context, actor models.Actor, employeeID int, action, section, summary string)
+}
+
 type DepartmentService interface {
 	Create(ctx context.Context, req dto.CreateDepartmentRequest) (*models.Department, error)
 	GetByID(ctx context.Context, id int) (*models.Department, error)
@@ -62,4 +77,13 @@ type PermissionService interface {
 	UpdateRolePermissions(ctx context.Context, req dto.UpdateRolePermissionsRequest) error
 	CreateRole(ctx context.Context, req dto.CreateRoleRequest) (*models.Role, error)
 	DeleteRole(ctx context.Context, roleName string) error
+}
+
+type AttendanceService interface {
+	Punch(ctx context.Context, employeeID int, req dto.PunchRequest) (*models.Attendance, error)
+	GetToday(ctx context.Context, employeeID int) (*dto.AttendanceTodayResponse, error)
+	GetHeatmap(ctx context.Context, employeeID int, months int) ([]dto.HeatmapCell, error)
+	GetSummary(ctx context.Context, employeeID int, days int) (*dto.AttendanceSummaryResponse, error)
+	ListRecords(ctx context.Context, filter models.AttendanceFilter) ([]*models.Attendance, int, error)
+	GetTodayOverview(ctx context.Context) (*dto.OrgAttendanceTodayOverview, error)
 }

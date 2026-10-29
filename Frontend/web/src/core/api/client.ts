@@ -31,7 +31,7 @@ class HttpClient {
     }
   }
 
-  public async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+  private async send(endpoint: string, options: RequestOptions = {}): Promise<unknown> {
     const { requiresAuth = true, headers = {}, ...rest } = options;
 
     const finalHeaders: Record<string, string> = {
@@ -65,12 +65,7 @@ class HttpClient {
         throw new ApiError(errorMsg, response.status, responseData);
       }
 
-      // If backend wrapped in { success: true, data: ... }
-      if (responseData && typeof responseData === 'object' && 'data' in responseData) {
-        return responseData.data as T;
-      }
-
-      return responseData as T;
+      return responseData;
     } catch (err) {
       if (err instanceof ApiError) {
         throw err;
@@ -80,6 +75,26 @@ class HttpClient {
         0
       );
     }
+  }
+
+  public async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const responseData = await this.send(endpoint, options);
+    // If backend wrapped in { success: true, data: ... }
+    if (responseData && typeof responseData === 'object' && 'data' in responseData) {
+      return (responseData as { data: T }).data;
+    }
+    return responseData as T;
+  }
+
+  /** Returns the full envelope so callers can read pagination meta alongside data. */
+  public async getWithMeta<T>(
+    endpoint: string,
+    options?: RequestOptions
+  ): Promise<{ data: T; meta?: { page?: number; page_size?: number; total?: number; total_page?: number } }> {
+    return this.send(endpoint, { method: 'GET', ...options }) as Promise<{
+      data: T;
+      meta?: { page?: number; page_size?: number; total?: number; total_page?: number };
+    }>;
   }
 
   public get<T>(endpoint: string, options?: RequestOptions): Promise<T> {

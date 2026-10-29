@@ -31,6 +31,13 @@ export const queryKeys = {
     all: ['employees'] as const,
     list: (filters?: Record<string, unknown>) => ['employees', 'list', filters] as const,
     detail: (id: number) => ['employees', 'detail', id] as const,
+    history: (id: number) => ['employees', 'history', id] as const,
+  },
+  employeeDrafts: {
+    all: ['employee-drafts'] as const,
+    list: (filters?: Record<string, unknown>) => ['employee-drafts', 'list', filters] as const,
+    detail: (id: number) => ['employee-drafts', 'detail', id] as const,
+    reference: ['employee-drafts', 'reference'] as const,
   },
   departments: {
     all: ['departments'] as const,
@@ -45,4 +52,12 @@ export const queryKeys = {
     my: ['permissions', 'my'] as const,
     roles: ['permissions', 'roles'] as const,
   },
+  attendance: {
+    today: ['attendance', 'today'] as const,
+    heatmap: (employeeId?: number, months?: number) => ['attendance', 'heatmap', employeeId, months] as const,
+    summary: (employeeId?: number, days?: number) => ['attendance', 'summary', employeeId, days] as const,
+    overview: ['attendance', 'overview'] as const,
+    list: (filters?: Record<string, unknown>) => ['attendance', 'list', filters] as const,
+  },
 };
+

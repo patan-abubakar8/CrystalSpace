@@ -1,0 +1,15 @@
+{
+  "name": "crystalspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"magenta.bold,cyan.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd Backend && go run ./cmd/api",
+    "dev:frontend": "cd Frontend/web && npm run dev",
+    "build:frontend": "cd Frontend/web && npm run build",
+    "build:backend": "cd Backend && go build ./..."
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

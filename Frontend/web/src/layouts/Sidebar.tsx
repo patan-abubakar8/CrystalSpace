@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../modules/auth/context/AuthContext';
 import { CrystalLogo } from '../core/ui/CrystalLogo';
 import {
@@ -7,25 +7,109 @@ import {
   Building2,
   CalendarCheck,
   ShieldCheck,
-  Settings,
-  HelpCircle,
   LogOut,
   X,
   Moon,
   Sun,
-  Shield,
-  CheckCircle2,
-  ExternalLink,
   PanelLeftClose,
   PanelLeftOpen,
   Bell,
   MoreVertical,
   Clock,
+  FolderKanban,
+  CircleCheck,
+  NotebookPen,
+  CalendarDays,
+  MessagesSquare,
+  Video,
+  Ticket,
+  FileText,
+  Megaphone,
+  ListChecks,
+  ScrollText,
+  Settings,
 } from 'lucide-react';
 import { usePermissions } from '../core/context/PermissionContext';
 import { useTheme } from '../core/context/ThemeContext';
 
-export type NavigationTab = 'dashboard' | 'employees' | 'departments' | 'leaves' | 'roles';
+export type NavigationTab =
+  | 'dashboard'
+  | 'employees'
+  | 'departments'
+  | 'projects'
+  | 'tasks'
+  | 'daily-logs'
+  | 'attendance'
+  | 'leaves'
+  | 'calendar'
+  | 'chats'
+  | 'meetings'
+  | 'documents'
+  | 'support'
+  | 'announcements'
+  | 'roles'
+  | 'workflows'
+  | 'audit-logs'
+  | 'org-settings';
+
+interface NavItem {
+  id: NavigationTab;
+  label: string;
+  icon: React.ComponentType<{ size?: number }>;
+  /** Optional count pill (badge) rendered on the right of the row. */
+  badge?: number;
+}
+
+interface NavSection {
+  /** Section heading; the first section is unlabeled. */
+  label?: string;
+  items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
+  {
+    items: [
+      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { id: 'employees', label: 'Employees', icon: Users },
+      { id: 'departments', label: 'Departments', icon: Building2 },
+      { id: 'projects', label: 'Projects', icon: FolderKanban },
+      { id: 'tasks', label: 'Tasks', icon: CircleCheck },
+      { id: 'daily-logs', label: 'Daily Logs', icon: NotebookPen },
+    ],
+  },
+  {
+    label: 'People & Time',
+    items: [
+      { id: 'attendance', label: 'Attendance', icon: Clock },
+      { id: 'leaves', label: 'Leaves & Permissions', icon: CalendarCheck },
+      { id: 'calendar', label: 'Company Calendar', icon: CalendarDays },
+    ],
+  },
+  {
+    label: 'Collaboration',
+    items: [
+      { id: 'chats', label: 'Chats', icon: MessagesSquare },
+      { id: 'meetings', label: 'Meetings', icon: Video },
+      { id: 'documents', label: 'Documents', icon: FileText },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      { id: 'support', label: 'IT Support Tickets', icon: Ticket, badge: 3 },
+      { id: 'announcements', label: 'Announcements', icon: Megaphone },
+    ],
+  },
+  {
+    label: 'Administration',
+    items: [
+      { id: 'roles', label: 'Roles & Permissions', icon: ShieldCheck },
+      { id: 'workflows', label: 'Approval Workflows', icon: ListChecks, badge: 7 },
+      { id: 'audit-logs', label: 'Audit Logs', icon: ScrollText },
+      { id: 'org-settings', label: 'Org Settings', icon: Settings },
+    ],
+  },
+];
 
 interface SidebarProps {
   currentTab: NavigationTab;
@@ -47,6 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { user, logout } = useAuth();
   const { can } = usePermissions();
   const { theme, toggleTheme } = useTheme();
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Expand / Collapse state with localStorage persistence
   const [isExpanded, setIsExpanded] = useState<boolean>(() => {
@@ -63,7 +148,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       try {
         localStorage.setItem('cs_sidebar_expanded', String(next));
       } catch {
-        // Ignore localStorage error
+        // ignore
       }
       return next;
     });
@@ -71,8 +156,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const isEffectiveExpanded = isExpanded || isMobileOpen;
 
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [internalNotificationOpen, setInternalNotificationOpen] = useState(false);
 
@@ -88,16 +171,91 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  const navItems = [
-    { id: 'dashboard' as NavigationTab, label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'employees' as NavigationTab, label: 'Employees', icon: Users },
-    { id: 'departments' as NavigationTab, label: 'Departments', icon: Building2 },
-    { id: 'leaves' as NavigationTab, label: 'Leave Management', icon: CalendarCheck },
-    { id: 'roles' as NavigationTab, label: 'Roles & Permissions', icon: ShieldCheck },
-  ];
+  // Close the user dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+    if (isUserDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isUserDropdownOpen]);
 
-  // Dynamically filter navigation items based on database permissions
-  const visibleNavItems = navItems.filter((item) => can(item.id, 'view'));
+  // Filter navigation items based on permissions from the backend
+  const visibleSections = NAV_SECTIONS.map((section) => ({
+    label: section.label,
+    items: section.items.filter((item) => can(item.id, 'view')),
+  })).filter((section) => section.items.length > 0);
+
+  // Shared user dropdown menu (used in both expanded and collapsed modes)
+  const UserDropdown = () => (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: 'calc(100% + 0.5rem)',
+        left: isEffectiveExpanded ? '0' : 'calc(100% + 0.5rem)',
+        backgroundColor: 'var(--bg-surface)',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: 'var(--radius-md)',
+        boxShadow: 'var(--shadow-md)',
+        padding: '0.4rem 0',
+        minWidth: '180px',
+        zIndex: 1000,
+      }}
+    >
+      {/* User identity summary */}
+      <div
+        style={{
+          padding: '0.5rem 0.75rem 0.4rem',
+          borderBottom: '1px solid var(--border-subtle)',
+          marginBottom: '0.25rem',
+        }}
+      >
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {user?.email}
+        </div>
+        <div style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+          {user?.role}
+        </div>
+      </div>
+
+      {/* Logout action */}
+      <button
+        onClick={() => {
+          setIsUserDropdownOpen(false);
+          logout();
+        }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          width: '100%',
+          padding: '0.45rem 0.75rem',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          fontWeight: 400,
+          fontSize: '0.875rem',
+          color: 'var(--color-danger, #e05252)',
+          textAlign: 'left',
+          borderRadius: 0,
+          transition: 'background 0.15s',
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--bg-surface-elevated)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+        }}
+      >
+        <LogOut size={15} />
+        Logout
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -120,10 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <div
                 style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  onTabChange('dashboard');
-                  onCloseMobile?.();
-                }}
+                onClick={() => { onTabChange('dashboard'); onCloseMobile?.(); }}
                 title="CrystalSpace Dashboard"
               >
                 <CrystalLogo variant="full" height={26} theme={theme} />
@@ -162,7 +317,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 marginBottom: '1.25rem',
               }}
             >
-              {/* Logo Tile (Compact 38px, Logo height 20) */}
+              {/* Logo Tile (Compact) */}
               <button
                 id="sidebar-brand-btn"
                 onClick={() => onTabChange('dashboard')}
@@ -170,7 +325,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 style={{
                   width: '38px',
                   height: '38px',
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   backgroundColor: 'var(--bg-surface-elevated)',
                   border: '1px solid var(--border-subtle)',
                   boxShadow: 'var(--shadow-sm)',
@@ -183,7 +338,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="sidebar-tooltip">CrystalSpace Platform</span>
               </button>
 
-              {/* Expand Toggle Button */}
+              {/* Expand Toggle */}
               <button
                 id="btn-expand-sidebar"
                 onClick={toggleSidebar}
@@ -198,7 +353,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
 
-          {/* Primary Navigation Stack */}
+          {/* Primary Navigation */}
           <nav
             style={{
               display: 'flex',
@@ -208,64 +363,139 @@ export const Sidebar: React.FC<SidebarProps> = ({
               width: '100%',
             }}
           >
-            {isEffectiveExpanded && (
+            {visibleSections.map((section, sectionIndex) => (
               <div
+                key={section.label ?? `section-${sectionIndex}`}
                 style={{
-                  fontSize: '0.6875rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  color: 'var(--text-tertiary)',
-                  padding: '0.25rem 0.75rem 0.35rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: isEffectiveExpanded ? 'stretch' : 'center',
+                  gap: isEffectiveExpanded ? '0.15rem' : '0.4rem',
+                  width: '100%',
                 }}
               >
-                Main Menu
-              </div>
-            )}
+                {isEffectiveExpanded &&
+                  (section.label ? (
+                    <div
+                      style={{
+                        fontSize: '0.6875rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--text-tertiary)',
+                        padding: '0.85rem 0.75rem 0.3rem',
+                      }}
+                    >
+                      {section.label}
+                    </div>
+                  ) : (
+                    sectionIndex === 0 && (
+                      <div
+                        style={{
+                          fontSize: '0.6875rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                          color: 'var(--text-tertiary)',
+                          padding: '0.25rem 0.75rem 0.35rem',
+                        }}
+                      >
+                        Main Menu
+                      </div>
+                    )
+                  ))}
 
-            {visibleNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentTab === item.id;
-
-              if (isEffectiveExpanded) {
-                return (
-                  <button
-                    key={item.id}
-                    id={`nav-row-${item.id}`}
-                    onClick={() => {
-                      onTabChange(item.id);
-                      onCloseMobile?.();
+                {!isEffectiveExpanded && sectionIndex > 0 && (
+                  <div
+                    style={{
+                      width: '22px',
+                      height: '1px',
+                      backgroundColor: 'var(--border-subtle)',
+                      margin: '0.2rem 0',
                     }}
-                    className={`sidebar-row-btn ${isActive ? 'active' : ''}`}
-                    aria-label={item.label}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    <Icon size={16} />
-                    <span style={{ flex: 1, whiteSpace: 'nowrap' }}>{item.label}</span>
-                  </button>
-                );
-              }
+                  />
+                )}
 
-              return (
-                <button
-                  key={item.id}
-                  id={`nav-rail-${item.id}`}
-                  onClick={() => {
-                    onTabChange(item.id);
-                    onCloseMobile?.();
-                  }}
-                  className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
-                  aria-label={item.label}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <Icon size={16} />
-                  <span className="sidebar-tooltip">{item.label}</span>
-                </button>
-              );
-            })}
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentTab === item.id;
+
+                  if (isEffectiveExpanded) {
+                    return (
+                      <button
+                        key={item.id}
+                        id={`nav-row-${item.id}`}
+                        onClick={() => { onTabChange(item.id); onCloseMobile?.(); }}
+                        className={`sidebar-row-btn ${isActive ? 'active' : ''}`}
+                        aria-label={item.label}
+                        aria-current={isActive ? 'page' : undefined}
+                      >
+                        <Icon size={16} />
+                        <span style={{ flex: 1, whiteSpace: 'nowrap' }}>{item.label}</span>
+                        {!!item.badge && (
+                          <span
+                            style={{
+                              minWidth: '18px',
+                              height: '18px',
+                              padding: '0 0.3rem',
+                              borderRadius: 'var(--radius-full)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.6875rem',
+                              fontWeight: 500,
+                              lineHeight: 1,
+                              backgroundColor:
+                                item.id === 'support'
+                                  ? 'var(--color-danger-bg)'
+                                  : 'var(--bg-surface-elevated)',
+                              color:
+                                item.id === 'support'
+                                  ? 'var(--color-danger)'
+                                  : 'var(--text-secondary)',
+                            }}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  }
+
+                  return (
+                    <button
+                      key={item.id}
+                      id={`nav-rail-${item.id}`}
+                      onClick={() => { onTabChange(item.id); onCloseMobile?.(); }}
+                      className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
+                      aria-label={item.label}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      <Icon size={16} />
+                      {!!item.badge && (
+                        <span
+                          style={{
+                            position: 'absolute',
+                            top: '6px',
+                            right: '6px',
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor:
+                              item.id === 'support'
+                                ? 'var(--color-danger)'
+                                : 'var(--color-accent-magenta)',
+                          }}
+                        />
+                      )}
+                      <span className="sidebar-tooltip">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
           </nav>
         </div>
 
-        {/* Bottom Utility Stack: Notification, Theme, and Profile */}
+        {/* Bottom Utility Stack */}
         <div
           style={{
             display: 'flex',
@@ -275,7 +505,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             width: '100%',
           }}
         >
-          {/* Subtle separator */}
+          {/* Separator */}
           <div
             style={{
               width: isEffectiveExpanded ? '100%' : '26px',
@@ -286,10 +516,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             }}
           />
 
-          {/* 1. NOTIFICATION & THEME BUTTONS ABOVE PROFILE */}
+          {/* Notification & Theme */}
           {isEffectiveExpanded ? (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
-              {/* Notification Button */}
               <button
                 id="btn-sidebar-notification"
                 onClick={() => setIsNotificationOpen(true)}
@@ -314,7 +543,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span>Alerts</span>
               </button>
 
-              {/* Theme Toggle Button */}
               <button
                 id="btn-sidebar-theme"
                 onClick={toggleTheme}
@@ -328,7 +556,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
-              {/* Notification Button */}
               <button
                 id="btn-sidebar-notification"
                 onClick={() => setIsNotificationOpen(true)}
@@ -351,7 +578,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="sidebar-tooltip">Notifications</span>
               </button>
 
-              {/* Theme Toggle Button */}
               <button
                 id="btn-sidebar-theme"
                 onClick={toggleTheme}
@@ -366,10 +592,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
 
-          {/* 2. PROFILE WITH 3-DOT MENU (EXPANDED) OR HOVER FLYOUT (COLLAPSED) */}
+          {/* Profile Section with working 3-dot menu + logout */}
           {isEffectiveExpanded ? (
-            <div style={{ position: 'relative' }}>
-              {/* Profile Card in Expanded Mode */}
+            <div ref={userMenuRef} style={{ position: 'relative' }}>
+              {/* Profile card */}
               <div
                 style={{
                   display: 'flex',
@@ -387,7 +613,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     style={{
                       width: '30px',
                       height: '30px',
-                      borderRadius: '50%',
+                      borderRadius: '8px',
                       background: 'var(--color-primary-gradient)',
                       display: 'flex',
                       alignItems: 'center',
@@ -399,574 +625,66 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       flexShrink: 0,
                     }}
                   >
-                    {user?.email?.charAt(0).toUpperCase() || 'U'}
-                    <span
-                      style={{
-                        position: 'absolute',
-                        bottom: '0',
-                        right: '0',
-                        width: '7px',
-                        height: '7px',
-                        borderRadius: '50%',
-                        backgroundColor: 'var(--color-success)',
-                        border: '1.5px solid var(--bg-surface)',
-                      }}
-                    />
+                  {user?.email?.charAt(0).toUpperCase() ?? 'U'}
                   </div>
-
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div
-                      style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 500,
-                        color: 'var(--text-primary)',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {user?.email || 'User Account'}
+                  <div style={{ overflow: 'hidden', flexGrow: 1 }}>
+                    <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {user?.email}
                     </div>
-                    <div
-                      style={{
-                        fontSize: '0.6875rem',
-                        color: 'var(--color-accent-magenta)',
-                        fontWeight: 400,
-                      }}
-                    >
-                      {user?.role || 'SuperAdmin'}
+                    <div style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                      {user?.role}
                     </div>
                   </div>
                 </div>
 
-                {/* 3-Dot Icon Button */}
+                {/* Three-dot button */}
                 <button
-                  id="btn-sidebar-user-more"
-                  onClick={() => setIsUserDropdownOpen((prev) => !prev)}
                   className="sidebar-icon-btn"
-                  style={{ width: '28px', height: '28px' }}
-                  title="Account Options"
-                  aria-label="Account Options"
+                  onClick={() => setIsUserDropdownOpen((prev) => !prev)}
+                  aria-label="User menu"
+                  aria-expanded={isUserDropdownOpen}
                 >
-                  <MoreVertical size={15} />
+                  <MoreVertical size={16} />
                 </button>
               </div>
 
-              {/* Dropdown Menu when 3-dot is clicked */}
-              {isUserDropdownOpen && (
-                <>
-                  <div
-                    style={{ position: 'fixed', inset: 0, zIndex: 999 }}
-                    onClick={() => setIsUserDropdownOpen(false)}
-                  />
-                  <div className="profile-dropdown-menu animate-fade-in">
-                    <div style={{ padding: '0.35rem 0.5rem', marginBottom: '0.25rem' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-primary)' }}>
-                        {user?.email}
-                      </div>
-                      <div style={{ fontSize: '0.6875rem', color: 'var(--color-accent-magenta)' }}>
-                        {user?.role}
-                      </div>
-                    </div>
-
-                    <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
-
-                    <button
-                      className="flyout-menu-item"
-                      onClick={() => {
-                        setIsUserDropdownOpen(false);
-                        onCloseMobile?.();
-                        setIsSettingsOpen(true);
-                      }}
-                    >
-                      <Settings size={15} />
-                      <span>Settings</span>
-                    </button>
-
-                    <button
-                      className="flyout-menu-item"
-                      onClick={() => {
-                        setIsUserDropdownOpen(false);
-                        onCloseMobile?.();
-                        setIsHelpOpen(true);
-                      }}
-                    >
-                      <HelpCircle size={15} />
-                      <span>Help & Resources</span>
-                    </button>
-
-                    <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
-
-                    <button
-                      className="flyout-menu-item danger"
-                      onClick={() => {
-                        setIsUserDropdownOpen(false);
-                        onCloseMobile?.();
-                        logout();
-                      }}
-                    >
-                      <LogOut size={15} />
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
-                </>
-              )}
+              {/* Dropdown menu */}
+              {isUserDropdownOpen && <UserDropdown />}
             </div>
           ) : (
-            /* Collapsed Mode: Hover on Profile Picture triggers Flyout */
-            <div className="profile-flyout-wrapper">
+            <div ref={userMenuRef} style={{ position: 'relative' }}>
+              {/* Collapsed avatar button */}
               <button
-                id="btn-profile-collapsed-avatar"
                 className="sidebar-icon-btn"
-                style={{
-                  width: '34px',
-                  height: '34px',
-                  padding: 0,
-                  cursor: 'pointer',
-                }}
-                aria-label="Account Menu"
+                onClick={() => setIsUserDropdownOpen((prev) => !prev)}
+                aria-label="User menu"
+                aria-expanded={isUserDropdownOpen}
               >
                 <div
                   style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '8px',
                     background: 'var(--color-primary-gradient)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: '#ffffff',
                     fontWeight: 500,
-                    fontSize: '0.75rem',
-                    position: 'relative',
-                    boxShadow: '0 2px 8px rgba(217, 70, 239, 0.3)',
+                    fontSize: '0.875rem',
                   }}
                 >
-                  {user?.email?.charAt(0).toUpperCase() || 'U'}
-                  <span
-                    style={{
-                      position: 'absolute',
-                      bottom: '0',
-                      right: '0',
-                      width: '7px',
-                      height: '7px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--color-success)',
-                      border: '1.5px solid var(--bg-surface)',
-                    }}
-                  />
+                  {user?.email?.charAt(0).toUpperCase() ?? 'U'}
                 </div>
+                <span className="sidebar-tooltip">Profile & Logout</span>
               </button>
 
-              {/* Flyout Menu Appearing on Hover (with bridge) */}
-              <div className="profile-flyout-menu">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.35rem 0.5rem' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: 'var(--color-primary-gradient)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#ffffff',
-                      fontWeight: 500,
-                      fontSize: '0.75rem',
-                      flexShrink: 0,
-                    }}
-                  >
-                    {user?.email?.charAt(0).toUpperCase() || 'U'}
-                  </div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div
-                      style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 500,
-                        color: 'var(--text-primary)',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {user?.email || 'User Account'}
-                    </div>
-                    <div style={{ fontSize: '0.6875rem', color: 'var(--color-accent-magenta)' }}>
-                      {user?.role || 'SuperAdmin'}
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
-
-                <button
-                  className="flyout-menu-item"
-                  onClick={() => setIsSettingsOpen(true)}
-                >
-                  <Settings size={15} />
-                  <span>Platform Settings</span>
-                </button>
-
-                <button
-                  className="flyout-menu-item"
-                  onClick={() => setIsHelpOpen(true)}
-                >
-                  <HelpCircle size={15} />
-                  <span>Help & Resources</span>
-                </button>
-
-                <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.35rem 0' }} />
-
-                <button
-                  className="flyout-menu-item danger"
-                  onClick={logout}
-                >
-                  <LogOut size={15} />
-                  <span>Sign Out</span>
-                </button>
-              </div>
+              {/* Dropdown menu */}
+              {isUserDropdownOpen && <UserDropdown />}
             </div>
           )}
         </div>
       </aside>
-
-      {/* Mobile Drawer Backdrop */}
-      {isMobileOpen && (
-        <div
-          className="mobile-drawer-backdrop"
-          onClick={onCloseMobile}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Notifications Modal */}
-      {isNotificationOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.65)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 100,
-            padding: '1rem',
-          }}
-          onClick={() => setIsNotificationOpen(false)}
-        >
-          <div
-            className="card animate-fade-in"
-            style={{
-              width: '100%',
-              maxWidth: '420px',
-              padding: '1.5rem',
-              backgroundColor: 'var(--bg-surface-elevated)',
-              boxShadow: 'var(--shadow-xl)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '1.25rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Bell size={18} color="var(--color-accent-magenta)" />
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 500, margin: 0 }}>
-                  System Notifications
-                </h3>
-              </div>
-              <button
-                id="btn-close-notification-modal"
-                onClick={() => setIsNotificationOpen(false)}
-                className="btn btn-secondary btn-icon btn-sm"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div
-                style={{
-                  padding: '0.75rem 0.875rem',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.8125rem', fontWeight: 500 }}>RBAC Dynamic Permissions Active</span>
-                  <span style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                    <Clock size={11} /> Just now
-                  </span>
-                </div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem', lineHeight: 1.4 }}>
-                  Database-driven permission matrix for all organizational roles is synced with PostgreSQL.
-                </p>
-              </div>
-
-              <div
-                style={{
-                  padding: '0.75rem 0.875rem',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.8125rem', fontWeight: 500 }}>API v1 Service Healthy</span>
-                  <span style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                    <Clock size={11} /> 5m ago
-                  </span>
-                </div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem', lineHeight: 1.4 }}>
-                  Go N-Tier backend server connected with connection pool active.
-                </p>
-              </div>
-
-              <button
-                className="btn btn-secondary btn-sm"
-                onClick={() => setIsNotificationOpen(false)}
-                style={{ marginTop: '0.5rem', width: '100%', justifyContent: 'center' }}
-              >
-                Dismiss All Notifications
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Settings Modal */}
-      {isSettingsOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.65)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 100,
-            padding: '1rem',
-          }}
-          onClick={() => setIsSettingsOpen(false)}
-        >
-          <div
-            className="card animate-fade-in"
-            style={{
-              width: '100%',
-              maxWidth: '440px',
-              padding: '1.5rem',
-              backgroundColor: 'var(--bg-surface-elevated)',
-              boxShadow: 'var(--shadow-xl)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '1.25rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Settings size={18} color="var(--color-accent-magenta)" />
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 500, margin: 0 }}>
-                  Platform Preferences
-                </h3>
-              </div>
-              <button
-                id="btn-close-settings-modal"
-                onClick={() => setIsSettingsOpen(false)}
-                className="btn btn-secondary btn-icon btn-sm"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {/* Theme Preference */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0.875rem 1rem',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>Interface Appearance</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                    Current theme: {theme === 'dark' ? 'Dark Matte' : 'Clean Light'}
-                  </div>
-                </div>
-                <button
-                  id="btn-settings-toggle-theme"
-                  onClick={toggleTheme}
-                  className="btn btn-secondary btn-sm"
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-                >
-                  {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-                  <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-                </button>
-              </div>
-
-              {/* User Account Info */}
-              <div
-                style={{
-                  padding: '0.875rem 1rem',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                <div style={{ fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                  Authenticated Account
-                </div>
-                <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
-                  Email: <span style={{ color: 'var(--text-primary)' }}>{user?.email}</span>
-                </div>
-                <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
-                  Assigned Role:{' '}
-                  <span
-                    className="badge"
-                    style={{
-                      backgroundColor: 'rgba(168, 85, 247, 0.15)',
-                      color: 'var(--color-accent-magenta)',
-                      border: '1px solid rgba(168, 85, 247, 0.3)',
-                      fontSize: '0.7rem',
-                      padding: '0.15rem 0.45rem',
-                      marginLeft: '0.25rem',
-                    }}
-                  >
-                    <Shield size={10} style={{ marginRight: '0.2rem' }} />
-                    {user?.role}
-                  </span>
-                </div>
-              </div>
-
-              {/* Backend Engine Status */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.75rem 1rem',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                  border: '1px solid rgba(16, 185, 129, 0.2)',
-                  fontSize: '0.8125rem',
-                  color: 'var(--color-success)',
-                }}
-              >
-                <CheckCircle2 size={16} />
-                <span>Go N-Tier API v1 & PostgreSQL Connected</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Help & Support Modal */}
-      {isHelpOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.65)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 100,
-            padding: '1rem',
-          }}
-          onClick={() => setIsHelpOpen(false)}
-        >
-          <div
-            className="card animate-fade-in"
-            style={{
-              width: '100%',
-              maxWidth: '440px',
-              padding: '1.5rem',
-              backgroundColor: 'var(--bg-surface-elevated)',
-              boxShadow: 'var(--shadow-xl)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '1.25rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <HelpCircle size={18} color="var(--color-accent-magenta)" />
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 500, margin: 0 }}>
-                  Help & Documentation
-                </h3>
-              </div>
-              <button
-                id="btn-close-help-modal"
-                onClick={() => setIsHelpOpen(false)}
-                className="btn btn-secondary btn-icon btn-sm"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', lineHeight: 1.5 }}>
-                CrystalSpace is an enterprise Human Resource Management & Operations platform powered by Golang and PostgreSQL.
-              </p>
-
-              <div
-                style={{
-                  padding: '0.875rem 1rem',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-subtle)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
-                }}
-              >
-                <div style={{ fontSize: '0.8125rem', fontWeight: 500 }}>Quick Shortcuts</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  <span>Toggle Theme</span>
-                  <span style={{ color: 'var(--text-tertiary)' }}>Sidebar / Preferences</span>
-                </div>
-              </div>
-
-              <a
-                href="#landing"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsHelpOpen(false);
-                  window.location.hash = '#landing';
-                  window.location.reload();
-                }}
-                className="btn btn-secondary btn-sm"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', width: '100%' }}
-              >
-                <span>View Crystal Overview & Features</span>
-                <ExternalLink size={14} />
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

@@ -12,7 +12,9 @@ import { DashboardPage } from './modules/dashboard/pages/DashboardPage';
 import { EmployeesPage } from './modules/employees/pages/EmployeesPage';
 import { DepartmentsPage } from './modules/departments/pages/DepartmentsPage';
 import { LeavesPage } from './modules/leaves/pages/LeavesPage';
+import { AttendancePage } from './modules/attendance/pages/AttendancePage';
 import { RolesPage } from './modules/roles/pages/RolesPage';
+import { ModulePlaceholderPage } from './modules/shared/pages/ModulePlaceholderPage';
 import { PermissionProvider } from './core/context/PermissionContext';
 
 const MainAppContent: React.FC = () => {
@@ -52,7 +54,7 @@ const MainAppContent: React.FC = () => {
           style={{
             width: '40px',
             height: '40px',
-            borderRadius: '50%',
+            borderRadius: '8px',
             border: '3px solid var(--border-default)',
             borderTopColor: 'var(--color-accent-magenta)',
             animation: 'spin 1s linear infinite',
@@ -112,7 +114,14 @@ const MainAppContent: React.FC = () => {
         />
       )}
 
+      {currentTab === 'attendance' && <AttendancePage />}
+
       {currentTab === 'roles' && <RolesPage />}
+
+      {/* Menu entries whose modules are not built yet render a placeholder */}
+      {!(['dashboard', 'employees', 'departments', 'leaves', 'attendance', 'roles'] as NavigationTab[]).includes(currentTab) && (
+        <ModulePlaceholderPage tab={currentTab} />
+      )}
     </AppLayout>
   );
 };

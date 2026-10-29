@@ -229,9 +229,9 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
                               height: '34px',
                               borderRadius: 'var(--radius-sm)',
                               backgroundColor: isSuperAdmin
-                                ? 'rgba(168, 85, 247, 0.15)'
+                                ? 'rgba(74, 222, 128, 0.15)'
                                 : 'var(--bg-surface-elevated)',
-                              border: `1px solid ${isSuperAdmin ? 'rgba(168, 85, 247, 0.3)' : 'var(--border-subtle)'}`,
+                              border: `1px solid ${isSuperAdmin ? 'rgba(74, 222, 128, 0.3)' : 'var(--border-subtle)'}`,
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -271,9 +271,9 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
                             <span
                               className="badge"
                               style={{
-                                backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                                backgroundColor: 'rgba(74, 222, 128, 0.15)',
                                 color: 'var(--color-accent-magenta)',
-                                border: '1px solid rgba(168, 85, 247, 0.3)',
+                                border: '1px solid rgba(74, 222, 128, 0.3)',
                                 fontSize: '0.75rem',
                                 padding: '0.2rem 0.55rem',
                               }}

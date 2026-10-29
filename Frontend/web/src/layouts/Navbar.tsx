@@ -2,6 +2,7 @@ import React from 'react';
 import { useTheme } from '../core/context/ThemeContext';
 import { Moon, Sun, Search, Bell } from 'lucide-react';
 import type { NavigationTab } from './Sidebar';
+import { WorkTimer } from '../modules/attendance/components/WorkTimer';
 
 interface NavbarProps {
   currentTab: NavigationTab;
@@ -28,7 +29,8 @@ export const Navbar: React.FC<NavbarProps> = () => {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        {/* Clean top bar - workspace title managed within pages */}
+        {/* Workspace Title & Brand Live Session Pill */}
+        <WorkTimer compact />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>

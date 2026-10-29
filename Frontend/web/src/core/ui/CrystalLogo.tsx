@@ -39,7 +39,7 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
   const badgeSize = numericHeight;
   const innerIconSize = showBadge ? Math.round(badgeSize * 0.62) : Math.round(numericHeight * 0.95);
   const fontSize = Math.round(numericHeight * 0.44);
-  const borderRadius = Math.max(8, Math.round(badgeSize * 0.28));
+  const borderRadius = Math.min(8, Math.max(4, Math.round(badgeSize * 0.28)));
 
   const renderBadge = () => {
     if (!showBadge) {

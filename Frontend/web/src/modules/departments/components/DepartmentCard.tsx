@@ -32,7 +32,7 @@ export const DepartmentCard: React.FC<DepartmentCardProps> = ({ department }) =>
               width: '38px',
               height: '38px',
               borderRadius: 'var(--radius-md)',
-              background: 'rgba(217, 70, 239, 0.1)',
+              background: 'rgba(34, 197, 94, 0.1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

@@ -89,11 +89,11 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
           gap: '0.625rem',
           padding: '0.35rem 0.85rem',
           borderRadius: '8px',
-          backgroundColor: isClockedIn ? 'rgba(16, 185, 129, 0.1)' : 'var(--bg-surface-elevated)',
-          border: `1px solid ${isClockedIn ? 'rgba(16, 185, 129, 0.25)' : 'var(--border-subtle)'}`,
+          backgroundColor: isClockedIn ? 'var(--color-success-bg)' : 'var(--bg-surface-elevated)',
+          border: `1px solid ${isClockedIn ? 'var(--color-success-bg)' : 'var(--border-subtle)'}`,
           fontSize: '0.75rem',
           fontWeight: 400,
-          color: isClockedIn ? '#10B981' : 'var(--text-secondary)',
+          color: isClockedIn ? 'var(--color-success)' : 'var(--text-secondary)',
           cursor: onOpenTracker ? 'pointer' : 'default',
           transition: 'all var(--transition-fast)',
         }}
@@ -103,8 +103,8 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
             width: '7px',
             height: '7px',
             borderRadius: '50%',
-            backgroundColor: isClockedIn ? '#10B981' : 'var(--text-tertiary)',
-            boxShadow: isClockedIn ? '0 0 6px rgba(16, 185, 129, 0.7)' : 'none',
+            backgroundColor: isClockedIn ? 'var(--color-success)' : 'var(--text-tertiary)',
+            boxShadow: isClockedIn ? 'var(--glow-success)' : 'none',
             display: 'inline-block',
           }}
         />
@@ -120,7 +120,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
       style={{
         borderRadius: '12px',
         padding: '1.25rem 1.4rem',
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-surface-primary)',
         border: '1px solid var(--border-subtle)',
         boxShadow: 'var(--shadow-sm)',
         display: 'flex',
@@ -132,14 +132,14 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
     >
       {/* Row 1: Header & Work Mode Segmented Control */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
           <span
             style={{
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              backgroundColor: isClockedIn ? '#10B981' : 'var(--text-tertiary)',
-              boxShadow: isClockedIn ? '0 0 8px rgba(16, 185, 129, 0.7)' : 'none',
+              backgroundColor: isClockedIn ? 'var(--color-success)' : 'var(--text-tertiary)',
+              boxShadow: isClockedIn ? 'var(--glow-success)' : 'none',
               display: 'inline-block',
             }}
           />
@@ -172,7 +172,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
               color: selectedMode === 'Office' ? 'var(--text-primary)' : 'var(--text-secondary)',
               fontSize: '0.72rem',
               fontWeight: 400,
-              boxShadow: selectedMode === 'Office' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+              boxShadow: selectedMode === 'Office' ? 'var(--shadow-sm)' : 'none',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
             }}
@@ -194,7 +194,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
               color: selectedMode === 'Remote' ? 'var(--text-primary)' : 'var(--text-secondary)',
               fontSize: '0.72rem',
               fontWeight: 400,
-              boxShadow: selectedMode === 'Remote' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+              boxShadow: selectedMode === 'Remote' ? 'var(--shadow-sm)' : 'none',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
             }}
@@ -236,7 +236,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
           <span style={{ opacity: isClockedIn && secs % 2 === 0 ? 0.3 : 1, transition: 'opacity 0.2s ease', color: 'var(--text-tertiary)' }}>:</span>
           <span>{formattedMins}</span>
           <span style={{ opacity: isClockedIn && secs % 2 === 0 ? 0.3 : 1, transition: 'opacity 0.2s ease', color: 'var(--text-tertiary)' }}>:</span>
-          <span style={{ fontSize: '1.8rem', color: isClockedIn ? '#10B981' : 'var(--text-secondary)' }}>{formattedSecs}</span>
+          <span style={{ fontSize: '1.8rem', color: isClockedIn ? 'var(--color-success)' : 'var(--text-secondary)' }}>{formattedSecs}</span>
         </div>
 
         <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
@@ -260,7 +260,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
               height: '100%',
               width: `${dailyProgress}%`,
               borderRadius: '2px',
-              backgroundColor: isClockedIn ? '#10B981' : 'var(--text-tertiary)',
+              backgroundColor: isClockedIn ? 'var(--color-success)' : 'var(--text-tertiary)',
               transition: 'width 0.3s ease',
             }}
           />
@@ -292,7 +292,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
             <span>Punch In / Start Shift</span>
           </button>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
             <button
               id="btn-timer-pause"
               type="button"
@@ -329,9 +329,9 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '0.4rem',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.25)',
-                color: '#EF4444',
+                backgroundColor: 'var(--color-danger-bg)',
+                border: '1px solid var(--color-danger-bg)',
+                color: 'var(--color-danger)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
@@ -360,7 +360,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
           <span style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{weeklyHours}h / 45h</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#F59E0B' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--color-warning)' }}>
           <Flame size={12} />
           <span style={{ fontWeight: 400 }}>5-Day Streak</span>
         </div>
@@ -376,7 +376,7 @@ export const WorkTimer: React.FC<WorkTimerProps> = ({ compact = false, onOpenTra
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.25rem',
+              gap: 'var(--space-1)',
               fontSize: '0.72rem',
               padding: 0,
             }}

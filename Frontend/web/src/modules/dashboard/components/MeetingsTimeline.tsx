@@ -156,7 +156,7 @@ export const MeetingsTimeline: React.FC = () => {
       style={{
         borderRadius: '12px',
         padding: '1.25rem 1.5rem',
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-surface-primary)',
         border: '1px solid var(--border-subtle)',
         boxShadow: 'var(--shadow-sm)',
         display: 'flex',
@@ -165,16 +165,16 @@ export const MeetingsTimeline: React.FC = () => {
       }}
     >
       {/* Header: Title and Month Selector */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
           <div
             style={{
               width: '30px',
               height: '30px',
               borderRadius: '8px',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              color: '#3B82F6',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
+              backgroundColor: 'var(--color-info-bg)',
+              color: 'var(--color-info)',
+              border: '1px solid var(--color-info-bg)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -197,7 +197,7 @@ export const MeetingsTimeline: React.FC = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.25rem',
+            gap: 'var(--space-1)',
             backgroundColor: 'var(--bg-surface-elevated)',
             padding: '2px 4px',
             borderRadius: '6px',
@@ -231,7 +231,7 @@ export const MeetingsTimeline: React.FC = () => {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(6, 1fr)',
-          gap: '0.5rem',
+          gap: 'var(--space-2)',
         }}
       >
         {days.map((item) => {
@@ -248,7 +248,7 @@ export const MeetingsTimeline: React.FC = () => {
                 alignItems: 'center',
                 padding: '0.55rem 0.25rem',
                 borderRadius: '8px',
-                border: isSelected ? '1px solid #4ade80' : '1px solid var(--border-subtle)',
+                border: isSelected ? '1px solid var(--color-success)' : '1px solid var(--border-subtle)',
                 backgroundColor: isSelected ? 'var(--text-primary)' : 'var(--bg-surface-elevated)',
                 color: isSelected ? 'var(--bg-surface)' : 'var(--text-primary)',
                 cursor: 'pointer',
@@ -285,7 +285,7 @@ export const MeetingsTimeline: React.FC = () => {
                     width: '4px',
                     height: '4px',
                     borderRadius: '50%',
-                    backgroundColor: isSelected ? '#4ade80' : '#3B82F6',
+                    backgroundColor: isSelected ? 'var(--color-success)' : 'var(--color-info)',
                     marginTop: '0.3rem',
                   }}
                 />
@@ -310,7 +310,7 @@ export const MeetingsTimeline: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '1rem',
+                gap: 'var(--space-4)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
@@ -338,7 +338,7 @@ export const MeetingsTimeline: React.FC = () => {
                     flexShrink: 0,
                   }}
                 >
-                  <Clock size={12} style={{ color: '#3B82F6', marginBottom: '0.15rem' }} />
+                  <Clock size={12} style={{ color: 'var(--color-info)', marginBottom: '0.15rem' }} />
                   <span style={{ fontSize: '0.68rem', fontWeight: 400, color: 'var(--text-secondary)' }}>
                     {mtg.timeRange.split('–')[0].trim()}
                   </span>
@@ -373,7 +373,7 @@ export const MeetingsTimeline: React.FC = () => {
               </div>
 
               {/* Right Side: Attendees + Join Button */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexShrink: 0 }}>
                 {/* Avatars */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   {mtg.participants.map((p, idx) => (
@@ -428,7 +428,7 @@ export const MeetingsTimeline: React.FC = () => {
                     fontWeight: 400,
                   }}
                 >
-                  <Video size={12} style={{ color: '#3B82F6' }} /> Join
+                  <Video size={12} style={{ color: 'var(--color-info)' }} /> Join
                 </a>
               </div>
             </div>
@@ -456,7 +456,7 @@ export const MeetingsTimeline: React.FC = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backgroundColor: 'var(--bg-overlay)',
             backdropFilter: 'blur(6px)',
             display: 'flex',
             alignItems: 'center',
@@ -472,9 +472,9 @@ export const MeetingsTimeline: React.FC = () => {
               width: '100%',
               maxWidth: '480px',
               borderRadius: '12px',
-              backgroundColor: 'var(--bg-surface)',
+              backgroundColor: 'var(--bg-surface-primary)',
               border: '1px solid var(--border-default)',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+              boxShadow: 'var(--shadow-lg)',
               overflow: 'hidden',
             }}
             onClick={(e) => e.stopPropagation()}
@@ -495,8 +495,8 @@ export const MeetingsTimeline: React.FC = () => {
                     width: '32px',
                     height: '32px',
                     borderRadius: '8px',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    color: '#3B82F6',
+                    backgroundColor: 'var(--color-info-bg)',
+                    color: 'var(--color-info)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -524,7 +524,7 @@ export const MeetingsTimeline: React.FC = () => {
               </button>
             </div>
 
-            <div style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
               <div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Agenda & Description
@@ -538,7 +538,7 @@ export const MeetingsTimeline: React.FC = () => {
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.4rem' }}>
                   Participants ({activeMeeting.participants.length + activeMeeting.extraCount})
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
                   {activeMeeting.participants.map((p) => (
                     <div
                       key={p.id}
@@ -564,7 +564,7 @@ export const MeetingsTimeline: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 'var(--space-3)', marginTop: '0.5rem' }}>
                 <button
                   type="button"
                   onClick={() => setActiveMeeting(null)}

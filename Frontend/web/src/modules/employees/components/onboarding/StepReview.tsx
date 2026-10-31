@@ -67,7 +67,7 @@ export const StepReview: React.FC<StepReviewProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '1rem',
+                gap: 'var(--space-4)',
                 padding: '0.75rem 1rem',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: 'var(--radius-md)',
@@ -75,7 +75,7 @@ export const StepReview: React.FC<StepReviewProps> = ({
                 flexWrap: 'wrap',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                 <span
                   className={`badge ${isCompleted ? 'badge-success' : issues.length ? 'badge-danger' : 'badge-warning'}`}
                 >
@@ -100,7 +100,7 @@ export const StepReview: React.FC<StepReviewProps> = ({
         })}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-4)' }}>
         <Summary title="Employment">
           <Row label="Name" value={`${payload.personal.first_name} ${payload.personal.last_name}`.trim() || '—'} />
           <Row label="Employee ID" value={payload.employment.employee_code || 'Auto-generated'} />
@@ -191,7 +191,7 @@ const Summary: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 );
 
 const Row: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem' }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--space-3)' }}>
     <span style={{ color: 'var(--text-tertiary)' }}>{label}</span>
     <span style={{ textAlign: 'right' }}>{value}</span>
   </div>

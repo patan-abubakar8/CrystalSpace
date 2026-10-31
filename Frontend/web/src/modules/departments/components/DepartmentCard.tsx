@@ -15,7 +15,7 @@ export const DepartmentCard: React.FC<DepartmentCardProps> = ({ department }) =>
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        gap: '1.25rem',
+        gap: 'var(--space-5)',
       }}
     >
       <div>
@@ -32,11 +32,11 @@ export const DepartmentCard: React.FC<DepartmentCardProps> = ({ department }) =>
               width: '38px',
               height: '38px',
               borderRadius: 'var(--radius-md)',
-              background: 'rgba(34, 197, 94, 0.1)',
+              background: 'var(--color-success-bg)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--color-accent-magenta)',
+              color: 'var(--color-primary-action)',
             }}
           >
             <Building2 size={20} />

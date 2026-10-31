@@ -76,8 +76,8 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({
         style={{ maxWidth: '480px' }}
       >
         <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <CalendarPlus size={20} color="var(--color-primary-400)" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <CalendarPlus size={20} color="var(--color-accent)" />
             <h2 style={{ fontSize: '1.25rem' }}>Apply for Leave</h2>
           </div>
           <button
@@ -90,7 +90,7 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {formError && (
               <div
                 className="badge-danger"
@@ -99,7 +99,7 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({
                   borderRadius: 'var(--radius-md)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem',
+                  gap: 'var(--space-2)',
                 }}
               >
                 <AlertCircle size={16} />
@@ -125,7 +125,7 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({
               </select>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <div className="form-group">
                 <label className="form-label" htmlFor="start-date">
                   Start Date *

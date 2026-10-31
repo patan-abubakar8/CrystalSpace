@@ -247,13 +247,13 @@ export const StepDevices: React.FC<OnboardingStepProps> = ({
         </FormField>
       </FieldGrid>
 
-      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', marginBottom: '0.75rem' }}>
+      <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: '0.8125rem', marginBottom: '0.75rem' }}>
         <input
           type="checkbox"
           disabled={!permissions.assets_assign}
           checked={draft.acknowledgement}
           onChange={(e) => setDraft({ ...draft, acknowledgement: e.target.checked })}
-          style={{ accentColor: 'var(--color-accent-magenta)' }}
+          style={{ accentColor: 'var(--color-primary-action)' }}
         />
         Employee acknowledged receipt of this asset
       </label>
@@ -363,7 +363,7 @@ export const StepDevices: React.FC<OnboardingStepProps> = ({
                     type="checkbox"
                     checked={checked}
                     onChange={() => toggleArray('app_access', app)}
-                    style={{ accentColor: 'var(--color-accent-magenta)' }}
+                    style={{ accentColor: 'var(--color-primary-action)' }}
                   />
                   {app}
                 </label>
@@ -382,14 +382,14 @@ export const StepDevices: React.FC<OnboardingStepProps> = ({
         {CHECKLIST_OPTIONS.map((item) => (
           <label
             key={item}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: '0.8125rem' }}
           >
             <input
               type="checkbox"
               disabled={!permissions.access_manage}
               checked={devices.account.checklist.includes(item)}
               onChange={() => toggleArray('checklist', item)}
-              style={{ accentColor: 'var(--color-accent-magenta)' }}
+              style={{ accentColor: 'var(--color-primary-action)' }}
             />
             {item}
           </label>

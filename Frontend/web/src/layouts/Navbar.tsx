@@ -28,7 +28,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
         zIndex: 50,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
         {/* Workspace Title & Brand Live Session Pill */}
         <WorkTimer compact />
       </div>
@@ -62,7 +62,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
             }}
             onFocus={(e) => {
               e.currentTarget.style.width = '260px';
-              e.currentTarget.style.borderColor = 'var(--color-accent-magenta)';
+              e.currentTarget.style.borderColor = 'var(--color-primary-action)';
             }}
             onBlur={(e) => {
               e.currentTarget.style.width = '210px';
@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              backgroundColor: 'var(--color-accent-magenta)',
+              backgroundColor: 'var(--color-primary-action)',
             }}
           />
         </button>

@@ -273,10 +273,10 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       {/* Top Navigation & Role Details Header */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
           <button
             id="btn-back-to-roles"
             onClick={handleBack}
@@ -303,9 +303,9 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
                     borderRadius: 'var(--radius-full)',
                     fontSize: '0.75rem',
                     fontWeight: isSelected ? 500 : 400,
-                    border: isSelected ? '1px solid var(--color-accent-magenta)' : '1px solid var(--border-subtle)',
-                    backgroundColor: isSelected ? 'rgba(74, 222, 128, 0.12)' : 'var(--bg-surface)',
-                    color: isSelected ? 'var(--color-accent-magenta)' : 'var(--text-secondary)',
+                    border: isSelected ? '1px solid var(--color-primary-action)' : '1px solid var(--border-subtle)',
+                    backgroundColor: isSelected ? 'var(--color-success-bg)' : 'var(--bg-surface)',
+                    color: isSelected ? 'var(--color-primary-action)' : 'var(--text-secondary)',
                     cursor: 'pointer',
                     transition: 'all var(--transition-fast)',
                   }}
@@ -325,28 +325,28 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            gap: '1rem',
+            gap: 'var(--space-4)',
             padding: '1.25rem 1.5rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
             <div
               style={{
                 width: '44px',
                 height: '44px',
                 borderRadius: 'var(--radius-md)',
-                backgroundColor: isSuperAdmin ? 'rgba(74, 222, 128, 0.15)' : 'var(--bg-surface-elevated)',
-                border: `1px solid ${isSuperAdmin ? 'rgba(74, 222, 128, 0.3)' : 'var(--border-subtle)'}`,
+                backgroundColor: isSuperAdmin ? 'var(--color-success-bg)' : 'var(--bg-surface-elevated)',
+                border: `1px solid ${isSuperAdmin ? 'var(--color-success-bg)' : 'var(--border-subtle)'}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: isSuperAdmin ? 'var(--color-accent-magenta)' : 'var(--text-secondary)',
+                color: isSuperAdmin ? 'var(--color-primary-action)' : 'var(--text-secondary)',
               }}
             >
               {isSuperAdmin ? <ShieldCheck size={22} /> : <Shield size={22} />}
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 500, margin: 0 }}>
                   {roleName} Permissions
                 </h2>
@@ -366,9 +366,9 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
                   <span
                     className="badge"
                     style={{
-                      backgroundColor: 'rgba(59, 130, 246, 0.12)',
-                      color: 'var(--color-primary-blue)',
-                      border: '1px solid rgba(59, 130, 246, 0.25)',
+                      backgroundColor: 'var(--color-info-bg)',
+                      color: 'var(--color-accent)',
+                      border: '1px solid var(--color-info-bg)',
                       fontSize: '0.7rem',
                     }}
                   >
@@ -411,16 +411,16 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
           style={{
             padding: '0.875rem 1.25rem',
             borderRadius: 'var(--radius-md)',
-            backgroundColor: 'rgba(74, 222, 128, 0.08)',
-            border: '1px solid rgba(74, 222, 128, 0.25)',
+            backgroundColor: 'var(--color-success-bg)',
+            border: '1px solid var(--color-success-bg)',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.75rem',
+            gap: 'var(--space-3)',
             color: 'var(--text-secondary)',
             fontSize: '0.8125rem',
           }}
         >
-          <Lock size={16} color="var(--color-accent-magenta)" />
+          <Lock size={16} color="var(--color-primary-action)" />
           <span>
             <strong style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
               Master Access Policy:
@@ -531,7 +531,7 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: 'var(--color-accent-magenta)',
+                            color: 'var(--color-primary-action)',
                           }}
                         >
                           <Icon size={17} />
@@ -608,12 +608,12 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '1rem',
+            gap: 'var(--space-4)',
             zIndex: 40,
             backdropFilter: 'var(--glass-blur)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <span
               style={{
                 width: '8px',
@@ -627,7 +627,7 @@ export const RolePermissionsPage: React.FC<RolePermissionsPageProps> = ({
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
             <button
               id="btn-discard-permissions-bottom"
               onClick={handleDiscard}
@@ -674,7 +674,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ id, checked, disabled, onCh
         height: '22px',
         borderRadius: '8px',
         backgroundColor: checked
-          ? 'var(--color-accent-magenta)'
+          ? 'var(--color-primary-action)'
           : 'var(--border-default)',
         border: 'none',
         cursor: disabled ? 'not-allowed' : 'pointer',
@@ -690,8 +690,8 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ id, checked, disabled, onCh
           width: '18px',
           height: '18px',
           borderRadius: '8px',
-          backgroundColor: '#ffffff',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)',
+          backgroundColor: 'var(--switch-knob)',
+          boxShadow: 'var(--shadow-md)',
           transform: checked ? 'translateX(16px)' : 'translateX(0)',
           transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         }}

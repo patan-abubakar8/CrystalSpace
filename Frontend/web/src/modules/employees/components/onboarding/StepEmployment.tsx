@@ -267,7 +267,7 @@ export const StepEmployment: React.FC<OnboardingStepProps> = ({
       <GroupLabel>Application roles</GroupLabel>
       {permissions.access_manage ? (
         <>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', marginBottom: '1rem' }}>
             {reference.roles.map((role) => {
               const checked = e.roles.includes(role);
               return (
@@ -295,7 +295,7 @@ export const StepEmployment: React.FC<OnboardingStepProps> = ({
                           : e.roles.filter((r) => r !== role),
                       })
                     }
-                    style={{ accentColor: 'var(--color-accent-magenta)' }}
+                    style={{ accentColor: 'var(--color-primary-action)' }}
                   />
                   {role}
                 </label>

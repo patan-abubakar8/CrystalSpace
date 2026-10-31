@@ -191,7 +191,7 @@ export const StepCompensation: React.FC<OnboardingStepProps> = ({
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-          gap: '1rem',
+          gap: 'var(--space-4)',
           padding: '1rem',
           borderRadius: 'var(--radius-md)',
           border: '1px solid var(--border-subtle)',

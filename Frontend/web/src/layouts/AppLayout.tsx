@@ -47,7 +47,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ currentTab, onTabChange, c
                   width: '7px',
                   height: '7px',
                   borderRadius: '50%',
-                  backgroundColor: 'var(--color-accent-magenta)',
+                  backgroundColor: 'var(--color-primary-action)',
                 }}
               />
             </div>

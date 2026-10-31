@@ -97,7 +97,7 @@ export const ModulePlaceholderPage: React.FC<ModulePlaceholderPageProps> = ({ ta
   const Icon = meta?.icon ?? FileText;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       <div className="section-header">
         <div>
           <h1 className="section-title">{meta?.title ?? 'Module'}</h1>

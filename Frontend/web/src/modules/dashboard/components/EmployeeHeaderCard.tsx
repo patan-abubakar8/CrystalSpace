@@ -33,10 +33,10 @@ export const EmployeeHeaderCard: React.FC<EmployeeHeaderCardProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '1.25rem',
+        gap: 'var(--space-5)',
         padding: '1.25rem 1.5rem',
         borderRadius: '12px',
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-surface-primary)',
         border: '1px solid var(--border-subtle)',
         boxShadow: 'var(--shadow-sm)',
         position: 'relative',
@@ -51,7 +51,7 @@ export const EmployeeHeaderCard: React.FC<EmployeeHeaderCardProps> = ({
           left: '5%',
           right: '5%',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.4), transparent)',
+          background: 'linear-gradient(90deg, transparent, var(--accent-soft), transparent)',
           pointerEvents: 'none',
         }}
       />
@@ -69,7 +69,7 @@ export const EmployeeHeaderCard: React.FC<EmployeeHeaderCardProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               border: '1px solid var(--border-default)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+              boxShadow: 'var(--shadow-sm)',
               backgroundColor: 'var(--bg-surface-elevated)',
               flexShrink: 0,
             }}
@@ -96,9 +96,9 @@ export const EmployeeHeaderCard: React.FC<EmployeeHeaderCardProps> = ({
               width: '12px',
               height: '12px',
               borderRadius: '50%',
-              backgroundColor: '#10B981',
+              backgroundColor: 'var(--color-success)',
               border: '2px solid var(--bg-surface)',
-              boxShadow: '0 0 8px rgba(16, 185, 129, 0.7)',
+              boxShadow: 'var(--glow-success)',
             }}
           />
         </div>
@@ -124,9 +124,9 @@ export const EmployeeHeaderCard: React.FC<EmployeeHeaderCardProps> = ({
                 borderRadius: '6px',
                 fontSize: '0.72rem',
                 fontWeight: 400,
-                backgroundColor: 'rgba(74, 222, 128, 0.1)',
-                color: '#4ade80',
-                border: '1px solid rgba(74, 222, 128, 0.25)',
+                backgroundColor: 'var(--color-success-bg)',
+                color: 'var(--color-success)',
+                border: '1px solid var(--color-success-bg)',
                 letterSpacing: '0.02em',
                 display: 'inline-flex',
                 alignItems: 'center',

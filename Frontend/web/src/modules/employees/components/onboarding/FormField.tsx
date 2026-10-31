@@ -48,7 +48,7 @@ export const FieldGrid: React.FC<GridProps> = ({ children, columns = 2 }) => (
     style={{
       display: 'grid',
       gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-      gap: '1rem',
+      gap: 'var(--space-4)',
       marginBottom: '1rem',
     }}
   >
@@ -68,7 +68,7 @@ export const StepHeading: React.FC<SectionHeadingProps> = ({ title, description,
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
-      gap: '1rem',
+      gap: 'var(--space-4)',
       marginBottom: '1.25rem',
       flexWrap: 'wrap',
     }}

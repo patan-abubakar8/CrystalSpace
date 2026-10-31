@@ -64,8 +64,8 @@ export const CreateDepartmentModal: React.FC<CreateDepartmentModalProps> = ({
         style={{ maxWidth: '480px' }}
       >
         <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Building2 size={20} color="var(--color-primary-400)" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <Building2 size={20} color="var(--color-accent)" />
             <h2 style={{ fontSize: '1.25rem' }}>Create Department</h2>
           </div>
           <button
@@ -78,7 +78,7 @@ export const CreateDepartmentModal: React.FC<CreateDepartmentModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {formError && (
               <div
                 className="badge-danger"
@@ -87,7 +87,7 @@ export const CreateDepartmentModal: React.FC<CreateDepartmentModalProps> = ({
                   borderRadius: 'var(--radius-md)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem',
+                  gap: 'var(--space-2)',
                 }}
               >
                 <AlertCircle size={16} />

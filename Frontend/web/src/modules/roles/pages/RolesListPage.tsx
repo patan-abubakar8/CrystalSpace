@@ -44,7 +44,7 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
   const customRolesCount = totalRoles - systemRolesCount;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       {/* Page Title & Actions */}
       <div
         style={{
@@ -52,7 +52,7 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '1rem',
+          gap: 'var(--space-4)',
         }}
       >
         <div>
@@ -78,7 +78,7 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '1rem',
+          gap: 'var(--space-4)',
         }}
       >
         <div className="card" style={{ padding: '1.125rem 1.25rem' }}>
@@ -125,7 +125,7 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1rem',
+          gap: 'var(--space-4)',
           padding: '0.875rem 1.25rem',
         }}
       >
@@ -222,20 +222,20 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
                     >
                       {/* Role Name */}
                       <td style={{ padding: '1rem 1.25rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                           <div
                             style={{
                               width: '34px',
                               height: '34px',
                               borderRadius: 'var(--radius-sm)',
                               backgroundColor: isSuperAdmin
-                                ? 'rgba(74, 222, 128, 0.15)'
+                                ? 'var(--color-success-bg)'
                                 : 'var(--bg-surface-elevated)',
-                              border: `1px solid ${isSuperAdmin ? 'rgba(74, 222, 128, 0.3)' : 'var(--border-subtle)'}`,
+                              border: `1px solid ${isSuperAdmin ? 'var(--color-success-bg)' : 'var(--border-subtle)'}`,
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              color: isSuperAdmin ? 'var(--color-accent-magenta)' : 'var(--text-secondary)',
+                              color: isSuperAdmin ? 'var(--color-primary-action)' : 'var(--text-secondary)',
                             }}
                           >
                             {isSuperAdmin ? <ShieldCheck size={18} /> : <Shield size={17} />}
@@ -271,9 +271,9 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
                             <span
                               className="badge"
                               style={{
-                                backgroundColor: 'rgba(74, 222, 128, 0.15)',
-                                color: 'var(--color-accent-magenta)',
-                                border: '1px solid rgba(74, 222, 128, 0.3)',
+                                backgroundColor: 'var(--color-success-bg)',
+                                color: 'var(--color-primary-action)',
+                                border: '1px solid var(--color-success-bg)',
                                 fontSize: '0.75rem',
                                 padding: '0.2rem 0.55rem',
                               }}
@@ -283,13 +283,13 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
                             </span>
                           </div>
                         ) : (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                             <span
                               className="badge"
                               style={{
-                                backgroundColor: activePagesCount > 0 ? 'rgba(34, 197, 94, 0.12)' : 'var(--bg-surface-elevated)',
+                                backgroundColor: activePagesCount > 0 ? 'var(--color-success-bg)' : 'var(--bg-surface-elevated)',
                                 color: activePagesCount > 0 ? 'var(--color-success)' : 'var(--text-tertiary)',
-                                border: `1px solid ${activePagesCount > 0 ? 'rgba(34, 197, 94, 0.25)' : 'var(--border-subtle)'}`,
+                                border: `1px solid ${activePagesCount > 0 ? 'var(--color-success-bg)' : 'var(--border-subtle)'}`,
                                 fontSize: '0.75rem',
                                 padding: '0.2rem 0.55rem',
                               }}
@@ -313,7 +313,7 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
                               padding: '0.2rem 0.55rem',
                               display: 'inline-flex',
                               alignItems: 'center',
-                              gap: '0.25rem',
+                              gap: 'var(--space-1)',
                             }}
                           >
                             <Lock size={10} /> System Role
@@ -322,9 +322,9 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
                           <span
                             className="badge"
                             style={{
-                              backgroundColor: 'rgba(59, 130, 246, 0.12)',
-                              color: 'var(--color-primary-blue)',
-                              border: '1px solid rgba(59, 130, 246, 0.25)',
+                              backgroundColor: 'var(--color-info-bg)',
+                              color: 'var(--color-accent)',
+                              border: '1px solid var(--color-info-bg)',
                               fontSize: '0.75rem',
                               padding: '0.2rem 0.55rem',
                             }}
@@ -336,7 +336,7 @@ export const RolesListPage: React.FC<RolesListPageProps> = ({
 
                       {/* Actions */}
                       <td style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                           <button
                             id={`btn-configure-role-${m.role.name}`}
                             onClick={() => onSelectRole(m.role.name)}

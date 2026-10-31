@@ -67,7 +67,7 @@ export const LeaveApprovalQueue: React.FC<LeaveApprovalQueueProps> = ({
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
       {pendingLeaves.map((leave) => (
         <div
           key={leave.id}
@@ -78,13 +78,13 @@ export const LeaveApprovalQueue: React.FC<LeaveApprovalQueueProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            gap: '1rem',
+            gap: 'var(--space-4)',
             padding: '1.25rem',
             borderLeft: '4px solid var(--color-warning)',
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: '0.35rem' }}>
               <span style={{ fontWeight: 500, fontSize: '0.9375rem' }}>
                 {leave.employee_name || `Employee #${leave.employee_id}`}
               </span>
@@ -98,7 +98,7 @@ export const LeaveApprovalQueue: React.FC<LeaveApprovalQueueProps> = ({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '1rem',
+                gap: 'var(--space-4)',
                 fontSize: '0.8125rem',
                 color: 'var(--text-secondary)',
                 marginBottom: '0.5rem',
@@ -118,7 +118,7 @@ export const LeaveApprovalQueue: React.FC<LeaveApprovalQueueProps> = ({
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <button
               id={`btn-approve-leave-${leave.id}`}
               className="btn btn-primary btn-sm"

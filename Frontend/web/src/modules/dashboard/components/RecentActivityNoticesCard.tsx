@@ -90,12 +90,12 @@ export const RecentActivityNoticesCard: React.FC = () => {
       style={{
         borderRadius: '12px',
         padding: '1.25rem 1.5rem',
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-surface-primary)',
         border: '1px solid var(--border-subtle)',
         boxShadow: 'var(--shadow-sm)',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem',
+        gap: 'var(--space-4)',
       }}
     >
       {/* Header with Segmented Pill Switcher */}
@@ -105,7 +105,7 @@ export const RecentActivityNoticesCard: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '0.75rem',
+          gap: 'var(--space-3)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
@@ -114,12 +114,12 @@ export const RecentActivityNoticesCard: React.FC = () => {
               width: '30px',
               height: '30px',
               borderRadius: '8px',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              color: '#3B82F6',
+              backgroundColor: 'var(--color-info-bg)',
+              color: 'var(--color-info)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
+              border: '1px solid var(--color-info-bg)',
             }}
           >
             {activeTab === 'notices' ? <Megaphone size={15} /> : <Activity size={15} />}
@@ -215,14 +215,14 @@ export const RecentActivityNoticesCard: React.FC = () => {
                 e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated)';
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-2)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
                   {notice.type === 'security' ? (
-                    <ShieldAlert size={14} style={{ color: '#EF4444' }} />
+                    <ShieldAlert size={14} style={{ color: 'var(--color-danger)' }} />
                   ) : notice.type === 'event' ? (
-                    <Sparkles size={14} style={{ color: '#F59E0B' }} />
+                    <Sparkles size={14} style={{ color: 'var(--color-warning)' }} />
                   ) : (
-                    <Megaphone size={14} style={{ color: '#3B82F6' }} />
+                    <Megaphone size={14} style={{ color: 'var(--color-info)' }} />
                   )}
                   <span style={{ fontSize: '0.8125rem', fontWeight: 400, color: 'var(--text-primary)' }}>
                     {notice.title}
@@ -237,9 +237,9 @@ export const RecentActivityNoticesCard: React.FC = () => {
                         borderRadius: '4px',
                         fontSize: '0.62rem',
                         fontWeight: 400,
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        color: '#EF4444',
-                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                        backgroundColor: 'var(--color-danger-bg)',
+                        color: 'var(--color-danger)',
+                        border: '1px solid var(--color-danger-bg)',
                       }}
                     >
                       Priority
@@ -268,7 +268,7 @@ export const RecentActivityNoticesCard: React.FC = () => {
 
       {/* Tab 2: Activity Stream Content */}
       {activeTab === 'activity' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
           {RECENT_ACTIVITIES.map((act) => (
             <div
               key={act.id}
@@ -280,7 +280,7 @@ export const RecentActivityNoticesCard: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '0.75rem',
+                gap: 'var(--space-3)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
@@ -291,20 +291,20 @@ export const RecentActivityNoticesCard: React.FC = () => {
                     borderRadius: '50%',
                     backgroundColor:
                       act.type === 'punch'
-                        ? 'rgba(16, 185, 129, 0.1)'
+                        ? 'var(--color-success-bg)'
                         : act.type === 'meeting'
-                        ? 'rgba(74, 222, 128, 0.1)'
+                        ? 'var(--color-success-bg)'
                         : act.type === 'leave'
-                        ? 'rgba(245, 158, 11, 0.1)'
-                        : 'rgba(6, 182, 212, 0.1)',
+                        ? 'var(--color-warning-bg)'
+                        : 'var(--color-info-bg)',
                     color:
                       act.type === 'punch'
-                        ? '#10B981'
+                        ? 'var(--color-success)'
                         : act.type === 'meeting'
-                        ? '#4ade80'
+                        ? 'var(--color-success)'
                         : act.type === 'leave'
-                        ? '#F59E0B'
-                        : '#06B6D4',
+                        ? 'var(--color-warning)'
+                        : 'var(--color-info)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

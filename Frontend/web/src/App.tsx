@@ -45,7 +45,7 @@ const MainAppContent: React.FC = () => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '1rem',
+          gap: 'var(--space-4)',
           backgroundColor: 'var(--bg-app)',
           color: 'var(--text-secondary)',
         }}
@@ -56,7 +56,7 @@ const MainAppContent: React.FC = () => {
             height: '40px',
             borderRadius: '8px',
             border: '3px solid var(--border-default)',
-            borderTopColor: 'var(--color-accent-magenta)',
+            borderTopColor: 'var(--color-primary-action)',
             animation: 'spin 1s linear infinite',
           }}
         />

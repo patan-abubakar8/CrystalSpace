@@ -70,7 +70,7 @@ export const StepSchedule: React.FC<OnboardingStepProps> = ({
             style={{
               display: 'grid',
               gridTemplateColumns: '2fr 1fr 1.3fr auto',
-              gap: '0.75rem',
+              gap: 'var(--space-3)',
               alignItems: 'end',
               marginBottom: '0.75rem',
             }}

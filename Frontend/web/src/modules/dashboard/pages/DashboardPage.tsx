@@ -39,7 +39,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   }, [employees, user?.email]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', width: '100%' }}>
       {/* 
         ROW 1: Items 4 & 3
         - Item 4: My small info (avatar, name, designation, and role)
@@ -60,7 +60,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       */}
       <div className="employee-dashboard-grid">
         {/* LEFT COLUMN (60%): Work, Schedule & Company Pulse */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minWidth: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', minWidth: 0 }}>
           {/* Item 5: Ongoing Projects */}
           <ErrorBoundary fallbackTitle="Ongoing Projects unavailable">
             <OngoingProjectsCard />
@@ -78,7 +78,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         </div>
 
         {/* RIGHT COLUMN (40%): Daily Cockpit, Attendance & Communications */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minWidth: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', minWidth: 0 }}>
           {/* Item 1: Clock to punch in and punch out (with live circular timer & Office/Remote mode) */}
           <ErrorBoundary fallbackTitle="Work Timer unavailable">
             <WorkTimer onOpenTracker={() => onNavigate('attendance')} />

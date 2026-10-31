@@ -128,7 +128,7 @@ export const RolesPage: React.FC = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            backgroundColor: 'var(--bg-overlay)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
@@ -174,7 +174,7 @@ export const RolesPage: React.FC = () => {
                   createRoleMutation.mutate();
                 }
               }}
-              style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+              style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}
             >
               <div>
                 <label className="form-label" htmlFor="input-new-role-name">
@@ -210,7 +210,7 @@ export const RolesPage: React.FC = () => {
                 style={{
                   display: 'flex',
                   justifyContent: 'flex-end',
-                  gap: '0.75rem',
+                  gap: 'var(--space-3)',
                   marginTop: '0.5rem',
                 }}
               >

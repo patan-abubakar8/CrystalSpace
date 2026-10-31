@@ -94,14 +94,14 @@ export const DeviceInfoCard: React.FC<DeviceInfoCardProps> = ({ compact = false 
             fontSize: '0.75rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <span
               style={{
                 width: '7px',
                 height: '7px',
                 borderRadius: '50%',
-                backgroundColor: '#10B981',
-                boxShadow: '0 0 6px rgba(16, 185, 129, 0.7)',
+                backgroundColor: 'var(--color-success)',
+                boxShadow: 'var(--glow-success)',
                 display: 'inline-block',
               }}
             />
@@ -155,11 +155,11 @@ export const DeviceInfoCard: React.FC<DeviceInfoCardProps> = ({ compact = false 
       style={{
         padding: '1.25rem',
         borderRadius: '10px',
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-surface-primary)',
         border: '1px solid var(--border-subtle)',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem',
+        gap: 'var(--space-4)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -169,12 +169,12 @@ export const DeviceInfoCard: React.FC<DeviceInfoCardProps> = ({ compact = false 
               width: '32px',
               height: '32px',
               borderRadius: '6px',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              color: '#3B82F6',
+              backgroundColor: 'var(--color-info-bg)',
+              color: 'var(--color-info)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
+              border: '1px solid var(--color-info-bg)',
             }}
           >
             <Laptop size={16} />
@@ -209,7 +209,7 @@ export const DeviceInfoCard: React.FC<DeviceInfoCardProps> = ({ compact = false 
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr)))',
-          gap: '0.75rem',
+          gap: 'var(--space-3)',
           backgroundColor: 'var(--bg-surface-elevated)',
           padding: '0.85rem',
           borderRadius: '8px',
@@ -231,7 +231,7 @@ export const DeviceInfoCard: React.FC<DeviceInfoCardProps> = ({ compact = false 
         </div>
         <div>
           <div style={{ color: 'var(--text-tertiary)', marginBottom: '0.15rem' }}>Session Shield</div>
-          <div style={{ fontWeight: 400, color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+          <div style={{ fontWeight: 400, color: 'var(--color-success)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             <ShieldCheck size={13} /> Compliant
           </div>
         </div>
@@ -291,7 +291,7 @@ const TicketModal: React.FC<TicketModalProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.65)',
+        backgroundColor: 'var(--bg-overlay)',
         backdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
@@ -307,9 +307,9 @@ const TicketModal: React.FC<TicketModalProps> = ({
           width: '100%',
           maxWidth: '520px',
           borderRadius: '12px',
-          backgroundColor: 'var(--bg-surface)',
+          backgroundColor: 'var(--bg-surface-primary)',
           border: '1px solid var(--border-default)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
+          boxShadow: 'var(--shadow-xl)',
           overflow: 'hidden',
         }}
         onClick={(e) => e.stopPropagation()}
@@ -330,8 +330,8 @@ const TicketModal: React.FC<TicketModalProps> = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                color: '#EF4444',
+                backgroundColor: 'var(--color-danger-bg)',
+                color: 'var(--color-danger)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -359,8 +359,8 @@ const TicketModal: React.FC<TicketModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={onSubmit} style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <form onSubmit={onSubmit} style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 400, marginBottom: '0.35rem', color: 'var(--text-secondary)' }}>
                 Issue Category
@@ -445,7 +445,7 @@ const TicketModal: React.FC<TicketModalProps> = ({
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 'var(--space-3)', marginTop: '0.25rem' }}>
             <button
               type="button"
               onClick={onClose}

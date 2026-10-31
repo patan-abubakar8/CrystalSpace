@@ -142,7 +142,7 @@ export const StepPersonal: React.FC<OnboardingStepProps> = ({ payload, errors, p
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '0.5rem',
+          gap: 'var(--space-2)',
           fontSize: '0.8125rem',
           marginBottom: '1.25rem',
           cursor: 'pointer',
@@ -152,7 +152,7 @@ export const StepPersonal: React.FC<OnboardingStepProps> = ({ payload, errors, p
           type="checkbox"
           checked={sameAsCurrent}
           onChange={copyAddress}
-          style={{ accentColor: 'var(--color-accent-magenta)' }}
+          style={{ accentColor: 'var(--color-primary-action)' }}
         />
         Permanent address is the same as the current address
       </label>

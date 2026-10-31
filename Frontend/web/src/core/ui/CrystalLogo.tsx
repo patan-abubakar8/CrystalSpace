@@ -11,6 +11,10 @@ export interface CrystalLogoProps {
   style?: React.CSSProperties;
   alt?: string;
   showBadge?: boolean;
+  /** 'surface' = light card tile (default). 'inverted' = the glyph sits on a
+      solid text-colored tile, so it reads as a dark brand square in light
+      theme and a light one in dark theme — the reference sidebar mark. */
+  tone?: 'surface' | 'inverted';
 }
 
 export const CrystalLogo: React.FC<CrystalLogoProps> = ({
@@ -21,6 +25,7 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
   style,
   alt = 'CrystalSpace',
   showBadge = true,
+  tone = 'surface',
 }) => {
   let activeTheme: 'dark' | 'light' = 'dark';
   try {
@@ -33,7 +38,9 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
 
   const resolvedTheme = explicitTheme === 'auto' ? activeTheme : explicitTheme;
   const isLight = resolvedTheme === 'light';
-  const iconSrc = isLight ? iconLight : iconDark;
+  // An inverted tile flips which glyph works: the white glyph goes on the
+  // dark tile (light theme), the dark glyph on the light tile (dark theme).
+  const iconSrc = tone === 'inverted' ? (isLight ? iconDark : iconLight) : isLight ? iconLight : iconDark;
 
   const numericHeight = typeof height === 'number' ? height : parseInt(String(height), 10) || 36;
   const badgeSize = numericHeight;
@@ -67,17 +74,9 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
           width: `${badgeSize}px`,
           height: `${badgeSize}px`,
           borderRadius: `${borderRadius}px`,
-          background: isLight
-            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 240, 255, 0.9) 100%)'
-            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(217, 70, 239, 0.14) 50%, rgba(147, 51, 234, 0.08) 100%)',
-          border: isLight
-            ? '1px solid rgba(192, 38, 211, 0.24)'
-            : '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: isLight
-            ? '0 4px 12px -2px rgba(192, 38, 211, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9)'
-            : '0 4px 16px -2px rgba(192, 38, 211, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
+          background: tone === 'inverted' ? 'var(--text-primary)' : 'var(--bg-surface-primary)',
+          border: tone === 'inverted' ? '1px solid transparent' : '1px solid var(--border-default)',
+          boxShadow: tone === 'inverted' ? 'var(--shadow-md)' : 'var(--shadow-sm)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -141,7 +140,7 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
         <span
           style={{
             fontWeight: 400,
-            color: isLight ? '#0f172a' : '#ffffff',
+            color: 'var(--text-primary)',
             transition: 'color var(--transition-normal)',
           }}
         >
@@ -150,9 +149,7 @@ export const CrystalLogo: React.FC<CrystalLogoProps> = ({
         <span
           style={{
             fontWeight: 500,
-            background: 'linear-gradient(90deg, #e879f9 0%, #c026d3 50%, #9333ea 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            color: 'var(--color-accent)',
             marginLeft: '1.5px',
           }}
         >
